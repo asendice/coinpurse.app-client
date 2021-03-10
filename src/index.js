@@ -1,20 +1,20 @@
 // <--- this seems boiler plate af --->
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import App from './components/App';
-import reducers from './reducers';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./components/App.css";
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import App from "./components/App";
+import reducers from "./reducers";
 
 const store = createStore(reducers, applyMiddleware(thunk));
 
 ReactDOM.render(
-  <Provider
-     store={store}>
+  <Provider store={store}>
     <App />
-   </Provider>,
-  document.querySelector('#root')
+  </Provider>,
+  document.querySelector("#root")
 );
 
 // <--- this seems boiler plate af --->

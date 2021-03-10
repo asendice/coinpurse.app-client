@@ -1,0 +1,6 @@
+/* hides elements if vp is at <= 555px wrote for the table in Market.js  */
+@media screen and (max-width: 555px) {
+  .td-dis {
+    display: none;
+  }
+}
