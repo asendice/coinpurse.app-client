@@ -7,8 +7,6 @@ const VerticalHeader = (props) => {
     display: "none",
   });
 
-  console.log(props);
-
   const handleToggle = () => {
     let newState = Object.assign({}, menuStyle);
     if (newState.display === "none") {
@@ -29,22 +27,25 @@ const VerticalHeader = (props) => {
   const headerStyle = {
     color: "#000",
   };
+
+  const menuBkgColor = {
+    backgroundColor: "#7E7E7E",
+  };
   // <---- Possibly put in a CSS file ---->
 
   return (
     <>
       {/* menu display for mobile vp only  */}
-      <Grid padded className="mobile only">
-        <Menu borderless fluid style={{ margin: 0 }}>
+      <Grid className="mobile only" style={{ marginTop: "2px" }}>
+        <Menu borderless fluid>
           <Menu.Item link>
             <NavLink exact to="/">
-              <Header as="h1">
+              <Header as="h2">
                 <Icon name="exchange" size="mini" />
                 <Header.Content>{props.menuProps.name}</Header.Content>
               </Header>
             </NavLink>
           </Menu.Item>
-
           <Menu.Menu position="right">
             <Menu.Item>
               <Divider />
@@ -54,7 +55,6 @@ const VerticalHeader = (props) => {
             </Menu.Item>
           </Menu.Menu>
         </Menu>
-
         <Menu borderless vertical fluid style={mobileMenuStyle}>
           <Menu.Item link>
             <NavLink exact to={`/${props.menuProps.itemOne}`}>
@@ -73,10 +73,16 @@ const VerticalHeader = (props) => {
             </NavLink>
           </Menu.Item>
           <Menu.Item>
-            <Button fluid>Sign Up</Button>
+            <Button>
+              <Icon name="signup" size="large" color="grey" />
+              Sign Up
+            </Button>
           </Menu.Item>
           <Menu.Item>
-            <Button fluid>Log In</Button>
+            <Button>
+              <Icon name="sign in" size="large" color="grey" />
+              Log In
+            </Button>
           </Menu.Item>
         </Menu>
       </Grid>
@@ -94,7 +100,7 @@ const VerticalHeader = (props) => {
           >
             <Menu.Item>
               <NavLink exact to="/">
-                <Header as="h3" r>
+                <Header as="h3">
                   <Icon name="exchange" size="large" />
                 </Header>
               </NavLink>
@@ -127,7 +133,7 @@ const VerticalHeader = (props) => {
             <Menu.Item>
               <NavLink exact to="/">
                 <Header>
-                  <Icon name="sign in" size="large" color="grey"  />
+                  <Icon name="sign in" size="large" color="grey" />
                 </Header>
               </NavLink>
             </Menu.Item>
@@ -140,16 +146,16 @@ const VerticalHeader = (props) => {
       <Grid className="computer only">
         <Grid.Column>
           <Menu
-            size="tiny"
+            size="small"
             attached
             vertical
             borderless
-            fixed="left"
+            fixed="top"
             style={{ height: "100vh", backgroundColor: "#fff" }}
           >
             <Menu.Item link>
               <NavLink exact to="/">
-                <Header centered style={headerStyle} as="h3">
+                <Header style={headerStyle} as="h3">
                   <Header.Content>{props.menuProps.name}</Header.Content>
                 </Header>
               </NavLink>
@@ -175,10 +181,16 @@ const VerticalHeader = (props) => {
             <Divider hidden />
             <Divider hidden />
             <Menu.Item floated="right">
-              <Button fluid>Sign Up</Button>
+              <Button fluid>
+                <Icon name="signup" size="large" color="grey" />
+                Sign Up
+              </Button>
             </Menu.Item>
             <Menu.Item>
-              <Button fluid>Log In</Button>
+              <Button fluid>
+                <Icon name="sign in" size="large" color="grey" />
+                Log In
+              </Button>
             </Menu.Item>
           </Menu>
         </Grid.Column>

@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
-import { Grid, Container, Divider } from "semantic-ui-react";
+import {Container} from "semantic-ui-react";
 import VerticalHeader from "./VerticalHeader";
 import Market from "./Market";
 import Portfolio from "./Portfolio";
@@ -13,7 +13,7 @@ const App = () => {
     itemTwo:"portfolio",
   }
   return (
-    <Container>
+    <Container fluid>
       <BrowserRouter>
             <VerticalHeader
               menuProps={menuProps}

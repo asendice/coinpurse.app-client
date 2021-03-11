@@ -4,3 +4,8 @@
     display: none;
   }
 }
+
+.td-click:hover {
+  cursor: pointer;
+  background-color: rgb(220, 220, 220);
+}

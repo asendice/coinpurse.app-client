@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Icon , Segment } from "semantic-ui-react";
+import { Grid, Icon, Segment } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { getMarket } from "../actions";
+import { coinSelect } from "../actions";
 import { roundComma, convertMc } from "../number/NumberChanger";
 import SearchBar from "./SearchBar";
 import SearchNotFound from "./SearchNotFound";
+import CoinModal from "./CoinModal";
 
 const Market = (props) => {
   const [term, setTerm] = useState("");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     props.getMarket();
@@ -17,6 +20,12 @@ const Market = (props) => {
     setTerm(term);
   };
 
+  const onTableRowClick = (coin) => {
+    setOpen(true);
+    props.coinSelect(coin);
+  };
+
+  console.log(props.selectedCoin);
   const filterMarket = props.market.filter((coin) => {
     if (
       coin.name.toLowerCase().includes(term.toLowerCase()) ||
@@ -27,31 +36,39 @@ const Market = (props) => {
   });
 
   const renderNotFound = () => {
-    console.log(filterMarket.length); //returns the length of the market after search term 
+    //returns the length of the market after search term
     if (filterMarket.length === 0) {
-      return <div>
-        <SearchNotFound term={term} nf="Zero Results Found..." />
-      </div>;
+      return (
+        <div>
+          <SearchNotFound term={term} nf="Zero Results Found..." />
+        </div>
+      );
     } else {
       return;
     }
   };
 
   const renderArrow = (num) => {
-    return(
-      <Icon className={num >= 0 ? "arrow up" : "arrow down"}/>
-    )
-  }
+    return <Icon className={num >= 0 ? "arrow up" : "arrow down"} />;
+  };
 
   const renderMarket = () => {
     return filterMarket.map((coin) => {
       return (
-        <tr key={coin.id}>
+        <tr
+          key={coin.id}
+          onClick={() => onTableRowClick(coin)}
+          className="td-click"
+        >
           <td className="td-dis">
             <h4>{coin.market_cap_rank}</h4>
           </td>
           <td>
-            <img className="ui image avatar" src={coin.image} />
+            <img
+              className="ui image avatar"
+              src={coin.image}
+              alt={coin.image}
+            />
           </td>
           <td>
             <h4>{coin.name}</h4>
@@ -64,7 +81,10 @@ const Market = (props) => {
               color: coin.price_change_percentage_24h >= 0 ? "green" : "red",
             }}
           >
-            <h4>{renderArrow(coin.price_change_percentage_24h)}{roundComma(coin.price_change_percentage_24h)}%</h4>
+            <h4>
+              {renderArrow(coin.price_change_percentage_24h)}
+              {roundComma(coin.price_change_percentage_24h)}%
+            </h4>
           </td>
           <td className="td-dis">
             <h4>${convertMc(coin.market_cap)}</h4>
@@ -75,10 +95,10 @@ const Market = (props) => {
   };
   return (
     <Grid>
-      <Grid.Column computer={1} tablet={1}></Grid.Column>
-      <Grid.Column mobile={16} tablet={15} computer={15}>
+      <Grid.Column computer={3} tablet={2}></Grid.Column>
+      <Grid.Column mobile={16} tablet={12} computer={11}>
         <Segment padded raised>
-          <h1>Market</h1>
+          <h1>coinpurse.app/market</h1>
           <SearchBar
             label="search market"
             term={term}
@@ -98,13 +118,18 @@ const Market = (props) => {
             <tbody>{renderMarket()}</tbody>
           </table>
           {renderNotFound()}
+          <CoinModal open={open} setOpen={setOpen} />
         </Segment>
       </Grid.Column>
+      <Grid.Column computer={2} tablet={2}></Grid.Column>
     </Grid>
   );
 };
 
 const mapStateToProps = (state) => {
-  return { market: state.market };
+  return {
+    market: state.market,
+    selectedCoin: state.coin,
+  };
 };
-export default connect(mapStateToProps, { getMarket })(Market);
+export default connect(mapStateToProps, { getMarket, coinSelect })(Market);
