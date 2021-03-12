@@ -1,18 +1,12 @@
 import React from 'react';
+import {Segment, Header} from 'semantic-ui-react';
 
 const Portfolio = () => {
 
   return(
-    <div>
-      asdasd
-      asd
-      dasd
-      sad
-      adas
-      dsad
-      asd
-      
-    </div>
+    <Segment padded raised>
+      <Header as="h1">coinpurse/portfolio</Header>
+    </Segment>
   )
 
 

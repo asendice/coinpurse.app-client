@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Icon, Segment } from "semantic-ui-react";
+import { Icon, Segment } from "semantic-ui-react";
 import { connect } from "react-redux";
 import { getMarket } from "../actions";
 import { coinSelect } from "../actions";
@@ -25,7 +25,6 @@ const Market = (props) => {
     props.coinSelect(coin);
   };
 
-  console.log(props.selectedCoin);
   const filterMarket = props.market.filter((coin) => {
     if (
       coin.name.toLowerCase().includes(term.toLowerCase()) ||
@@ -36,7 +35,6 @@ const Market = (props) => {
   });
 
   const renderNotFound = () => {
-    //returns the length of the market after search term
     if (filterMarket.length === 0) {
       return (
         <div>
@@ -94,42 +92,37 @@ const Market = (props) => {
     });
   };
   return (
-    <Grid>
-      <Grid.Column computer={3} tablet={2}></Grid.Column>
-      <Grid.Column mobile={16} tablet={12} computer={11}>
-        <Segment padded raised>
-          <h1>coinpurse.app/market</h1>
-          <SearchBar
-            label="search market"
-            term={term}
-            onTermSubmit={onTermSubmit}
-          />
-          <table className="ui unstackable table attached">
-            <thead>
-              <tr>
-                <th className="td-dis">Rank</th>
-                <th className=""></th>
-                <th className="three wide">Name</th>
-                <th className="four wide">Price</th>
-                <th className="four wide">24hr</th>
-                <th className="three wide td-dis">MarketCap</th>
-              </tr>
-            </thead>
-            <tbody>{renderMarket()}</tbody>
-          </table>
-          {renderNotFound()}
-          <CoinModal open={open} setOpen={setOpen} />
-        </Segment>
-      </Grid.Column>
-      <Grid.Column computer={2} tablet={2}></Grid.Column>
-    </Grid>
+    <Segment padded raised>
+      <h1>coinpurse.app/market</h1>
+      <SearchBar
+        label="search market"
+        term={term}
+        onTermSubmit={onTermSubmit}
+      />
+      <table className="ui unstackable table attached">
+        <thead>
+          <tr>
+            <th className="td-dis">Rank</th>
+            <th className=""></th>
+            <th className="three wide">Name</th>
+            <th className="four wide">Price</th>
+            <th className="four wide">24hr</th>
+            <th className="three wide td-dis">MarketCap</th>
+          </tr>
+        </thead>
+        <tbody>{renderMarket()}</tbody>
+      </table>
+      {renderNotFound()}
+      <CoinModal open={open} setOpen={setOpen} />
+    </Segment>
   );
 };
 
 const mapStateToProps = (state) => {
   return {
     market: state.market,
-    selectedCoin: state.coin,
+    selectedCoin: state.selectedCoin,
+    info: state.info,
   };
 };
 export default connect(mapStateToProps, { getMarket, coinSelect })(Market);

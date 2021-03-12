@@ -24,19 +24,11 @@ const VerticalHeader = (props) => {
     margin: 0,
   };
 
-  const headerStyle = {
-    color: "#000",
-  };
-
-  const menuBkgColor = {
-    backgroundColor: "#7E7E7E",
-  };
-  // <---- Possibly put in a CSS file ---->
 
   return (
     <>
       {/* menu display for mobile vp only  */}
-      <Grid className="mobile only" style={{ marginTop: "2px" }}>
+      <Grid className="mobile only" style={{ marginTop: "1px" }}>
         <Menu borderless fluid>
           <Menu.Item link>
             <NavLink exact to="/">
@@ -155,22 +147,22 @@ const VerticalHeader = (props) => {
           >
             <Menu.Item link>
               <NavLink exact to="/">
-                <Header style={headerStyle} as="h3">
+                <Header as="h3">
                   <Header.Content>{props.menuProps.name}</Header.Content>
                 </Header>
               </NavLink>
             </Menu.Item>
             <Menu.Item link>
-              <NavLink exact to={`/${props.itemOne}`}>
-                <Header style={headerStyle} as="h3">
+              <NavLink exact to={`/${props.menuProps.itemOne}`}>
+                <Header as="h3">
                   <Icon name="chart line" />
                   <Header.Content>{props.menuProps.itemOne}</Header.Content>
                 </Header>
               </NavLink>
             </Menu.Item>
             <Menu.Item link>
-              <NavLink exact to={`${props.menuProps.itemTwo}`}>
-                <Header style={headerStyle} as="h3">
+              <NavLink exact to={`/${props.menuProps.itemTwo}`}>
+                <Header as="h3">
                   <Icon name="folder" />
                   <Header.Content>{props.menuProps.itemTwo}</Header.Content>
                 </Header>
