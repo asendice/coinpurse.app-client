@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Icon, Segment } from "semantic-ui-react";
-import { connect } from "react-redux";
-import { getMarket } from "../actions";
-import { coinSelect } from "../actions";
 import { roundComma, convertMc } from "../number/NumberChanger";
-import SearchBar from "./SearchBar";
+import { connect } from "react-redux";
+import { getMarket, coinSelect, modalInfo } from "../actions";
+import Title from "./Title";
 import SearchNotFound from "./SearchNotFound";
 import CoinModal from "./CoinModal";
 
@@ -14,6 +13,7 @@ const Market = (props) => {
 
   useEffect(() => {
     props.getMarket();
+    props.modalInfo();
   }, []);
 
   const onTermSubmit = (term) => {
@@ -91,15 +91,11 @@ const Market = (props) => {
       );
     });
   };
+
   return (
     <Segment padded raised>
-      <h1>coinpurse.app/market</h1>
-      <SearchBar
-        label="search market"
-        term={term}
-        onTermSubmit={onTermSubmit}
-      />
-      <table className="ui unstackable table attached">
+      <Title term={term} onTermSubmit={onTermSubmit} label="market" />
+      <table className="ui unstackable table">
         <thead>
           <tr>
             <th className="td-dis">Rank</th>
@@ -110,10 +106,15 @@ const Market = (props) => {
             <th className="three wide td-dis">MarketCap</th>
           </tr>
         </thead>
-        <tbody>{renderMarket()}</tbody>
+        <tbody className="tb">{renderMarket()}</tbody>
       </table>
       {renderNotFound()}
-      <CoinModal open={open} setOpen={setOpen} />
+      <CoinModal
+        open={open}
+        setOpen={setOpen}
+        info={props.info}
+        selectedCoin={props.selectedCoin}
+      />
     </Segment>
   );
 };
@@ -125,4 +126,7 @@ const mapStateToProps = (state) => {
     info: state.info,
   };
 };
-export default connect(mapStateToProps, { getMarket, coinSelect })(Market);
+
+export default connect(mapStateToProps, { getMarket, coinSelect, modalInfo })(
+  Market
+);

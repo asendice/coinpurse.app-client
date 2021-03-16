@@ -1,67 +1,69 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
+import _ from "lodash";
 import {
   Modal,
+  Segment,
+  Accordion,
   Header,
   Image,
   Grid,
   Label,
   Icon,
   Popup,
-  Segment,
+  Divider,
 } from "semantic-ui-react";
+import TransactionForm from './TransactionForm';
 import { roundComma } from "../number/NumberChanger";
-import { modalInfo } from "../actions/index";
-import { connect } from "react-redux";
 
 const CoinModal = (props) => {
-  useEffect(() => {
-    props.modalInfo();
-  }, []);
+  const[activeIndex, setActiveIndex] = useState(1);
+  const[index] = useState(0);
 
-  //     value: `$${roundComma(props.selectedCoin.current_price)}`,
-  //     valueB: `${roundComma(props.selectedCoin.price_change_percentage_24h)}%`,
-  //     value: `$${roundComma(props.selectedCoin.market_cap)}`,
-  //     valueB: `${roundComma(props.selectedCoin.market_cap_change_percentage_24h)}%`,
-  //     value: `$${roundComma(props.selectedCoin.ath)}`,
-  //     valueB: `$${props.selectedCoin.atl}`,
-  //     value: `${roundComma(props.selectedCoin.circulating_supply)}`,
-  //     valueB: `${
-  //       props.selectedCoin.total_supply > 0
-  //         ? `$${roundComma(props.selectedCoin.total_supply)}`
-  //         : "Not Available"
-  //     }`,
+  const values = [
+    `$${roundComma(props.selectedCoin.current_price)}`,
+    `${roundComma(props.selectedCoin.price_change_percentage_24h)}%`,
+    `$${roundComma(props.selectedCoin.market_cap)}`,
+    `${roundComma(props.selectedCoin.market_cap_change_percentage_24h)}%`,
+    `$${roundComma(props.selectedCoin.ath)}`,
+    `$${props.selectedCoin.atl}`,
+    `${roundComma(props.selectedCoin.circulating_supply)}`,
+    props.selectedCoin.total_supply > 0
+      ? `${roundComma(props.selectedCoin.total_supply)}`
+      : "Not Available",
+  ];
 
-  const renderGridColumn = () => {
-    return props.info.map((stat) => {
-      return (
-        <Grid.Column>
-          <Popup
-            content={stat.labelDescription}
-            position="right center"
-            trigger={
-              <Label style={{ cursor: "default" }} color="grey">
-                {stat.label}
-              </Label>
-            }
-          />
-          <Segment>
-            <h4>{stat.value}</h4>
-          </Segment>
-          <Popup
-            content={stat.labelDescriptionB}
-            position="right center"
-            trigger={
-              <Label style={{ cursor: "default" }} color="grey">
-                {stat.labelB}
-              </Label>
-            }
-          />
-          <Segment>
-            <h4>{stat.valueB}</h4>
-          </Segment>
-        </Grid.Column>
-      );
-    });
+  const handleClick= (e) => {
+    console.log('Add Transactions')
+    const newIndex = activeIndex === index ? -1 : index;
+    console.log('newIdex ', newIndex)
+    setActiveIndex(newIndex);
+  }
+
+  const renderLabel = () => {
+    const join = _.zip(values, props.info);
+    if (join[1][1]) {
+      return join.map((stat) => {
+        return (
+          <Grid.Column key={stat[1].id}>
+            <Popup
+              content={stat[1].labelDescription}
+              position="right center"
+              trigger={
+                <Label style={{ cursor: "default" }} color="grey">
+                  {stat[1].label}
+                </Label>
+              }
+            />
+            <Segment>
+              <Header as="h5">{stat[0]}</Header>
+            </Segment>
+            <Divider hidden/>
+          </Grid.Column>
+        );
+      });
+    } else {
+      return <div>nothing populated</div>;
+    }
   };
 
   return (
@@ -84,21 +86,24 @@ const CoinModal = (props) => {
         </span>
       </Modal.Header>
       <Modal.Content>
-        <Grid container columns={4} stackable divided>
-          <Grid.Row>{renderGridColumn()}</Grid.Row>
+        <Grid container columns={4} stackable>
+          <Grid.Row>{renderLabel()}</Grid.Row>
         </Grid>
       </Modal.Content>
       <Modal.Content>
-        <Header>Enter Trade</Header>
+        <Accordion>
+          <Accordion.Title
+          onClick={() => handleClick()}
+          index={index}
+          active={activeIndex === 0}
+          icon={<Icon name={activeIndex === 0 ? "minus" : "plus"}/>}
+          content={<Label size="large" color="grey">{activeIndex === 0 ? `Enter Transaction Information for ${props.selectedCoin.name}` : "Add Transactions?"}</Label>}
+          />
+        <Accordion.Content active={activeIndex === 0} content={<TransactionForm coin={props.selectedCoin} />} />
+        </Accordion>
       </Modal.Content>
     </Modal>
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    selectedCoin: state.selectedCoin,
-    info: state.info,
-  };
-};
-export default connect(mapStateToProps, { modalInfo })(CoinModal);
+export default CoinModal;

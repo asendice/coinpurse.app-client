@@ -9,3 +9,11 @@
   cursor: pointer;
   background-color: rgb(220, 220, 220);
 }
+
+.tb:hover{
+  cursor: pointer
+}
+
+.green-arrow:hover {
+  color: rgb(61, 202, 108);
+}

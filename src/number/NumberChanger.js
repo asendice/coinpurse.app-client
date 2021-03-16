@@ -1,3 +1,5 @@
+import {Icon} from 'semantic-ui-react';
+
 const roundComma = (num) => {
   if(num){
      return(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
@@ -22,7 +24,21 @@ if (num >= 1000) {
 return num;
 } 
 
+const today = new Date();
+const date = (today.getMonth()+1) + "-" + today.getDate() + "-" + today.getFullYear();
+const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 
 
+const copyRight = () => {
+   return (
+     <div>
+       <a href="/" style={{ color: "black" }}>
+         coinpurse.app <Icon name="copyright outline" />
+       </a>
+     </div>
+   );
+ };
+ 
 
-export { roundComma, convertMc};
+
+export { roundComma, convertMc, date, time, copyRight};

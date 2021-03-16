@@ -24,7 +24,6 @@ const VerticalHeader = (props) => {
     margin: 0,
   };
 
-
   return (
     <>
       {/* menu display for mobile vp only  */}
@@ -65,16 +64,20 @@ const VerticalHeader = (props) => {
             </NavLink>
           </Menu.Item>
           <Menu.Item>
-            <Button>
-              <Icon name="signup" size="large" color="grey" />
-              Sign Up
-            </Button>
+            <NavLink to="/register">
+              <Button>
+                <Icon name="signup" size="large" color="grey" />
+                Sign Up
+              </Button>
+            </NavLink>
           </Menu.Item>
           <Menu.Item>
-            <Button>
-              <Icon name="sign in" size="large" color="grey" />
-              Log In
-            </Button>
+            <NavLink to="/login">
+              <Button>
+                <Icon name="sign in" size="large" color="grey" />
+                Log In
+              </Button>
+            </NavLink>
           </Menu.Item>
         </Menu>
       </Grid>
@@ -98,7 +101,7 @@ const VerticalHeader = (props) => {
               </NavLink>
             </Menu.Item>
             <Menu.Item>
-              <NavLink exact to="/">
+              <NavLink exact to="/market">
                 <Header>
                   <Icon name="chart line" size="large" />
                 </Header>
@@ -116,14 +119,14 @@ const VerticalHeader = (props) => {
             <Divider hidden />
             <Divider hidden />
             <Menu.Item>
-              <NavLink exact to="/">
+              <NavLink exact to="/register">
                 <Header>
                   <Icon name="signup" size="large" color="grey" />
                 </Header>
               </NavLink>
             </Menu.Item>
             <Menu.Item>
-              <NavLink exact to="/">
+              <NavLink exact to="/login">
                 <Header>
                   <Icon name="sign in" size="large" color="grey" />
                 </Header>
@@ -173,16 +176,20 @@ const VerticalHeader = (props) => {
             <Divider hidden />
             <Divider hidden />
             <Menu.Item floated="right">
-              <Button fluid>
-                <Icon name="signup" size="large" color="grey" />
-                Sign Up
-              </Button>
+              <NavLink to="/register">
+                <Button fluid>
+                  <Icon name="signup" size="large" color="grey" />
+                  Sign Up
+                </Button>
+              </NavLink>
             </Menu.Item>
             <Menu.Item>
-              <Button fluid>
-                <Icon name="sign in" size="large" color="grey" />
-                Log In
-              </Button>
+              <NavLink to="/login">
+                <Button fluid>
+                  <Icon name="sign in" size="large" color="grey" />
+                  Log In
+                </Button>
+              </NavLink>
             </Menu.Item>
           </Menu>
         </Grid.Column>
