@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Icon, Segment } from "semantic-ui-react";
 import { roundComma, convertMc } from "../number/NumberChanger";
 import { connect } from "react-redux";
-import { getMarket, coinSelect, modalInfo } from "../actions";
+import { getMarket, coinSelect, modalInfo, getFavorites } from "../actions";
 import Title from "./Title";
 import SearchNotFound from "./SearchNotFound";
 import CoinModal from "./CoinModal";
@@ -14,6 +14,7 @@ const Market = (props) => {
   useEffect(() => {
     props.getMarket();
     props.modalInfo();
+    props.getFavorites();
   }, []);
 
   const onTermSubmit = (term) => {
@@ -114,6 +115,8 @@ const Market = (props) => {
         setOpen={setOpen}
         info={props.info}
         selectedCoin={props.selectedCoin}
+        postFavorite={props.postFavorite}
+        favorites={props.favorites}
       />
     </Segment>
   );
@@ -124,9 +127,10 @@ const mapStateToProps = (state) => {
     market: state.market,
     selectedCoin: state.selectedCoin,
     info: state.info,
+    favorites: state.favorites
   };
 };
 
-export default connect(mapStateToProps, { getMarket, coinSelect, modalInfo })(
+export default connect(mapStateToProps, { getMarket, coinSelect, modalInfo, getFavorites })(
   Market
 );

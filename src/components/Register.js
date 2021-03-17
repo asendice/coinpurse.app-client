@@ -20,7 +20,7 @@ let Signup = () => {
     <>
       <Container>
         <Grid columns={2} stackable>
-          <Grid.Column width={10}>
+          <Grid.Column computer={10} tablet={16}>
             <Segment padded="very">
               <Segment basic textAlign="center">
                 <Header as="h1">Join Now -- It's Free & Easy!</Header>
@@ -55,7 +55,7 @@ let Signup = () => {
               </Segment>
             </Segment>
           </Grid.Column>
-          <Grid.Column width={6}>
+          <Grid.Column computer={6} tablet={16}>
             <Segment basic>
               <Card centered fluid>
                 <Card.Content>
@@ -80,17 +80,17 @@ let Signup = () => {
                     <Header as="h2">Your Portfolio</Header>
                   </div>
                 <Card.Meta>
-                  YOU
+                  THIS COULD BE YOU
                 </Card.Meta>
                 <Card.Description>
-                  <Header>$23,678</Header>
+                  <Header>$235,678</Header>
                 </Card.Description>
                 <Card.Content>
                   <Card.Meta className="right floated">To the Moon!  <Icon name="rocket"/></Card.Meta>
                 </Card.Content>
                 </Card.Content>
               </Card>
-              <Card link="/" centered fluid>
+              <Card link href="/market" centered fluid>
                 <Card.Content><Header as="h3">Market</Header></Card.Content>
                 <Image src={CosmoPic}/>
               </Card>

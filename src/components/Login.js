@@ -17,13 +17,10 @@ let Login = () => {
     <Container>
       <Segment basic textAlign="center">
         <Header as="h1">
-          <a style={{ color: "black" }} href="/">
-            <Icon name="exchange" />
-          </a>
-          /login
+          <Icon name="exchange"/>
+          coinpurse.app
         </Header>
       </Segment>
-
       <Card centered>
         <Card.Content>
           <form className="ui form">

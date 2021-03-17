@@ -1,16 +1,73 @@
-import React from 'react';
-import Title from './Title';
-import {Segment} from 'semantic-ui-react';
+import React, { useEffect } from "react";
+import Title from "./Title";
+import Favorites from "./Favorites";
+import { copyRight } from "../number/NumberChanger";
+import { Grid, Segment, Container, Header, Statistic } from "semantic-ui-react";
+import { getFavorites } from "../actions";
+import { connect } from "react-redux";
 
-const Portfolio = () => {
+const Portfolio = (props) => {
 
-  return(
-    <Segment padded raised>
-      <Title label="portfolio" />
-    </Segment>
-  )
+  useEffect(() => {
+    props.getFavorites()
+  },[])
+
+  return (
+    <>
+      <Container>
+        <Segment padded raised>
+          <Title label="portfolio" />
+          <Grid stackable>
+            <Grid.Row columns={2}>
+              <Grid.Column>
+                <Segment>
+                  <Header as="h2">Username's Portfolio</Header>
+                  <Segment basic textAlign="center">
+                    <Statistic>
+                      <Statistic.Value>$23,648</Statistic.Value>
+                      <Statistic.Label>Portfolio Total</Statistic.Label>
+                    </Statistic>
+                  </Segment>
+                </Segment>
+              </Grid.Column>
+              <Grid.Column>
+                <Favorites favorites={props.favorites} header="Favorites" />
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row columns={1}>
+              <Grid.Column>
+                <Segment textAlign="center">
+                  <Header as="h2">Portfolio List</Header>
+                </Segment>
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row columns={1}>
+              <Grid.Column>
+                <Segment textAlign="center">
+                  <Header as="h2">Recent Transactions</Header>
+                </Segment>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Segment>
+        <Segment basic textAlign="center">
+          {copyRight()}
+        </Segment>
+      </Container>
+    </>
+  );
+};
 
 
+const mapStateToProps = (state) => {
+  return {
+    favorites: state.favorites
+  }
 }
 
-export default Portfolio;
+const mapDispatchToProps = {
+  getFavorites: () => getFavorites(),
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Portfolio);
+

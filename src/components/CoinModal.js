@@ -12,12 +12,13 @@ import {
   Popup,
   Divider,
 } from "semantic-ui-react";
-import TransactionForm from './TransactionForm';
+import TransactionForm from "./TransactionForm";
+
 import { roundComma } from "../number/NumberChanger";
 
 const CoinModal = (props) => {
-  const[activeIndex, setActiveIndex] = useState(1);
-  const[index] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(1);
+  const [index] = useState(0);
 
   const values = [
     `$${roundComma(props.selectedCoin.current_price)}`,
@@ -32,12 +33,41 @@ const CoinModal = (props) => {
       : "Not Available",
   ];
 
-  const handleClick= (e) => {
-    console.log('Add Transactions')
+  const accordionClick = () => {
+    console.log("Add Transactions");
     const newIndex = activeIndex === index ? -1 : index;
-    console.log('newIdex ', newIndex)
+    console.log("newIdex ", newIndex);
     setActiveIndex(newIndex);
-  }
+  };
+
+  const favoriteClick = (coin) => {
+    console.log(coin.name)
+    // if (!props.favorites.favorites) {
+    //   console.log("s");
+    // } else {
+    //   props.favorites.favorites.map((fav) => {
+    //     console.log(fav);
+    //     if (fav.includes(coin.name)) {
+    //       console.log("Already Favorited");
+    //     } else {
+    //       props.postFavorite(coin);
+    //     }
+    //   });
+    // }
+
+    // props.favorites.favorites.map(fav => {
+    //   console.log(fav)
+    // })
+
+    // console.log("favorites.favorites", props.favorites.favorites);
+    // for (var i = 0; i < props.favorites.favorites.length; i++) {
+    //   if (props.favorites.favorites[i] === (coin.name)) {
+    //     return;
+    //   } else {
+    //     return coin;
+    //   }
+    // }
+  };
 
   const renderLabel = () => {
     const join = _.zip(values, props.info);
@@ -57,7 +87,7 @@ const CoinModal = (props) => {
             <Segment>
               <Header as="h5">{stat[0]}</Header>
             </Segment>
-            <Divider hidden/>
+            <Divider hidden />
           </Grid.Column>
         );
       });
@@ -81,7 +111,14 @@ const CoinModal = (props) => {
         <span style={{ float: "right" }}>
           <Popup
             content="Add to Favorites?"
-            trigger={<Icon name="heart outline" color="red" />}
+            trigger={
+              <Icon
+                link
+                name="heart outline"
+                color="red"
+                onClick={() => favoriteClick(props.selectedCoin)}
+              />
+            }
           />
         </span>
       </Modal.Header>
@@ -93,13 +130,22 @@ const CoinModal = (props) => {
       <Modal.Content>
         <Accordion>
           <Accordion.Title
-          onClick={() => handleClick()}
-          index={index}
-          active={activeIndex === 0}
-          icon={<Icon name={activeIndex === 0 ? "minus" : "plus"}/>}
-          content={<Label size="large" color="grey">{activeIndex === 0 ? `Enter Transaction Information for ${props.selectedCoin.name}` : "Add Transactions?"}</Label>}
+            onClick={() => accordionClick()}
+            index={index}
+            active={activeIndex === 0}
+            icon={<Icon name={activeIndex === 0 ? "minus" : "plus"} />}
+            content={
+              <Label size="large" color="grey">
+                {activeIndex === 0
+                  ? `Enter Transaction Information for ${props.selectedCoin.name}`
+                  : "Add Transactions?"}
+              </Label>
+            }
           />
-        <Accordion.Content active={activeIndex === 0} content={<TransactionForm coin={props.selectedCoin} />} />
+          <Accordion.Content
+            active={activeIndex === 0}
+            content={<TransactionForm coin={props.selectedCoin} />}
+          />
         </Accordion>
       </Modal.Content>
     </Modal>

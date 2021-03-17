@@ -49,7 +49,7 @@ const VerticalHeader = (props) => {
         <Menu borderless vertical fluid style={mobileMenuStyle}>
           <Menu.Item link>
             <NavLink exact to={`/${props.menuProps.itemOne}`}>
-              <Header as="h3">
+              <Header as="h3" onClick={handleToggle}>
                 <Icon name="chart line" />
                 <Header.Content>{props.menuProps.itemOne}</Header.Content>
               </Header>
@@ -57,7 +57,7 @@ const VerticalHeader = (props) => {
           </Menu.Item>
           <Menu.Item link>
             <NavLink exact to={`${props.menuProps.itemTwo}`}>
-              <Header as="h3">
+              <Header as="h3" onClick={handleToggle}>
                 <Icon name="folder" />
                 <Header.Content>{props.menuProps.itemTwo}</Header.Content>
               </Header>
@@ -65,7 +65,7 @@ const VerticalHeader = (props) => {
           </Menu.Item>
           <Menu.Item>
             <NavLink to="/register">
-              <Button>
+              <Button onClick={handleToggle}>
                 <Icon name="signup" size="large" color="grey" />
                 Sign Up
               </Button>
@@ -73,7 +73,7 @@ const VerticalHeader = (props) => {
           </Menu.Item>
           <Menu.Item>
             <NavLink to="/login">
-              <Button>
+              <Button onClick={handleToggle}>
                 <Icon name="sign in" size="large" color="grey" />
                 Log In
               </Button>

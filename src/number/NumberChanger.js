@@ -33,7 +33,7 @@ const copyRight = () => {
    return (
      <div>
        <a href="/" style={{ color: "black" }}>
-         coinpurse.app <Icon name="copyright outline" />
+         coinpurse.app <Icon name="copyright outline" /> 2021
        </a>
      </div>
    );
