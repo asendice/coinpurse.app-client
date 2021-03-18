@@ -6,8 +6,7 @@ const favoriteReducer = (state = { favorites: [] }, action) => {
       const favorite = action.payload;
       return { ...state, favorites: state.favorites.concat(favorite) };
     case "DELETE_FAVORITE":
-      console.log("fReducer state.favorites", state.favorites);
-      return {favorites: state.favorites.filter((fav) => fav.symbol !== action.payload)};
+      return {...state.favorites, favorites: state.favorites.filter((fav) => fav.id !== action.payload)};
     default:
       return state;
   }

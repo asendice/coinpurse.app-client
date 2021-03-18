@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Icon, Segment } from "semantic-ui-react";
-import { roundComma, convertMc } from "../number/NumberChanger";
+import { roundComma, convertMc, renderArrow } from "../number/NumberChanger";
 import { connect } from "react-redux";
 import { getMarket, coinSelect, modalInfo, getFavorites } from "../actions";
 import Title from "./Title";
@@ -47,9 +47,7 @@ const Market = (props) => {
     }
   };
 
-  const renderArrow = (num) => {
-    return <Icon className={num >= 0 ? "arrow up" : "arrow down"} />;
-  };
+ 
 
   const renderMarket = () => {
     return filterMarket.map((coin) => {

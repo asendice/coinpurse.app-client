@@ -36,12 +36,16 @@ export const addFavorites = (coins) => {
   };
 };
 
-export const deleteFavorite = (coinId) => {
-  return{
-    type: "DELETE_FAVORITE",
-    payload: coinId
-  }
-}
+export const deleteFavorite = (id) => (dispatch) => {
+  localHost.delete(`/favorites/${id}`)
+  .then(response=> {console.log(response)})
+  .then((fav) =>
+    dispatch({
+      type: "DELETE_FAVORITE",
+      payload: id,
+    })
+  );
+};
 
 export const getFavorites = () => {
   return async (dispatch) => {
@@ -85,6 +89,5 @@ export const postFavorite = (coin) => {
       });
   };
 };
-
 
 //<-----> END OF ACTION CREATOR FOR FAVORITE <----->

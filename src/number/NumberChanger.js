@@ -38,7 +38,11 @@ const copyRight = () => {
      </div>
    );
  };
+
+ const renderArrow = (num) => {
+  return <Icon className={num >= 0 ? "arrow up" : "arrow down"} />;
+};
  
 
 
-export { roundComma, convertMc, date, time, copyRight};
+export { roundComma, convertMc, date, time, copyRight, renderArrow};
