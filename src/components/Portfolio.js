@@ -3,13 +3,14 @@ import Title from "./Title";
 import Favorites from "./Favorites";
 import { copyRight } from "../number/NumberChanger";
 import { Grid, Segment, Container, Header, Statistic } from "semantic-ui-react";
-import { getFavorites } from "../actions";
+import { getFavorites, getMarket, deleteFavorite } from "../actions";
 import { connect } from "react-redux";
 
 const Portfolio = (props) => {
 
   useEffect(() => {
-    props.getFavorites()
+    props.getFavorites();
+    props.getMarket()
   },[])
 
   return (
@@ -31,7 +32,7 @@ const Portfolio = (props) => {
                 </Segment>
               </Grid.Column>
               <Grid.Column>
-                <Favorites favorites={props.favorites} header="Favorites" />
+                <Favorites favorites={props.favorites} market={props.market} deleteFavorite={props.deleteFavorite} header="Favorites" />
               </Grid.Column>
             </Grid.Row>
             <Grid.Row columns={1}>
@@ -61,12 +62,15 @@ const Portfolio = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    favorites: state.favorites
+    favorites: state.favorites,
+    market: state.market
   }
 }
 
 const mapDispatchToProps = {
   getFavorites: () => getFavorites(),
+  getMarket: () => getMarket(),
+  deleteFavorite: coinId => (deleteFavorite(coinId))
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Portfolio);

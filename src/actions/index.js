@@ -8,6 +8,12 @@ export const getMarket = () => {
     dispatch({ type: "FETCH_MARKET", payload: response.data });
   };
 };
+export const modalInfo = () => {
+  return async (dispatch) => {
+    const response = await localHost.get("/modalInfo");
+    dispatch({ type: "MODAL_INFO", payload: response.data });
+  };
+};
 
 export const coinSelect = (coin) => {
   return {
@@ -16,6 +22,7 @@ export const coinSelect = (coin) => {
   };
 };
 
+//<-----> BEGINNING OF ACTION CREATOR FOR FAVORITE <----->
 export const addFavorite = (coin) => {
   return {
     type: "ADD_FAVORITE",
@@ -29,9 +36,16 @@ export const addFavorites = (coins) => {
   };
 };
 
+export const deleteFavorite = (coinId) => {
+  return{
+    type: "DELETE_FAVORITE",
+    payload: coinId
+  }
+}
+
 export const getFavorites = () => {
   return async (dispatch) => {
-    const response = await localHost
+    await localHost
       .get("/favorites")
       .then((response) => {
         if (response) {
@@ -49,16 +63,10 @@ export const getFavorites = () => {
 };
 
 export const postFavorite = (coin) => {
-  const favorite = {
-    name: coin.name,
-    image: coin.image,
-    price: coin.current_price,
-    pricePercent: coin.price_change_percentage_24h,
-  };
   return (dispatch) => {
     localHost
       .post("/favorites", {
-        coin: favorite,
+        coin: coin,
       })
       .then((response) => {
         if (response) {
@@ -71,16 +79,12 @@ export const postFavorite = (coin) => {
           throw error;
         }
       })
-      .then((response) => dispatch(addFavorite(response)))
+      .then((response) => dispatch(addFavorite(response.data)))
       .catch((error) => {
         console.log("postFavorite", error.message);
       });
   };
 };
 
-export const modalInfo = () => {
-  return async (dispatch) => {
-    const response = await localHost.get("/modalInfo");
-    dispatch({ type: "MODAL_INFO", payload: response.data });
-  };
-};
+
+//<-----> END OF ACTION CREATOR FOR FAVORITE <----->

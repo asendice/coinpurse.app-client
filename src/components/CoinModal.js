@@ -20,6 +20,7 @@ const CoinModal = (props) => {
   const [activeIndex, setActiveIndex] = useState(1);
   const [index] = useState(0);
 
+
   const values = [
     `$${roundComma(props.selectedCoin.current_price)}`,
     `${roundComma(props.selectedCoin.price_change_percentage_24h)}%`,
@@ -34,39 +35,27 @@ const CoinModal = (props) => {
   ];
 
   const accordionClick = () => {
-    console.log("Add Transactions");
     const newIndex = activeIndex === index ? -1 : index;
-    console.log("newIdex ", newIndex);
     setActiveIndex(newIndex);
   };
 
+  const heart = props.favorites.favorites.map((fav) => {
+    return fav.coin.includes(props.selectedCoin.symbol);
+  });
+
   const favoriteClick = (coin) => {
-    console.log(coin.name)
-    // if (!props.favorites.favorites) {
-    //   console.log("s");
-    // } else {
-    //   props.favorites.favorites.map((fav) => {
-    //     console.log(fav);
-    //     if (fav.includes(coin.name)) {
-    //       console.log("Already Favorited");
-    //     } else {
-    //       props.postFavorite(coin);
-    //     }
-    //   });
-    // }
-
-    // props.favorites.favorites.map(fav => {
-    //   console.log(fav)
-    // })
-
-    // console.log("favorites.favorites", props.favorites.favorites);
-    // for (var i = 0; i < props.favorites.favorites.length; i++) {
-    //   if (props.favorites.favorites[i] === (coin.name)) {
-    //     return;
-    //   } else {
-    //     return coin;
-    //   }
-    // }
+    const mapFav = props.favorites.favorites.map((fav) => {
+      if (fav.coin === coin.symbol) {
+        return false;
+      } else {
+        return true;
+      }
+    });
+    if (!mapFav.includes(false)) {
+      props.postFavorite(coin.symbol);
+    } else {
+      return;
+    }
   };
 
   const renderLabel = () => {
@@ -110,11 +99,11 @@ const CoinModal = (props) => {
         <span style={{ color: "grey" }}> {props.selectedCoin.symbol}</span>
         <span style={{ float: "right" }}>
           <Popup
-            content="Add to Favorites?"
+            content={heart.includes(true) ? "Favorited" : "Add to Favorites?"}
             trigger={
               <Icon
                 link
-                name="heart outline"
+                name={heart.includes(true) ? "heart" : "heart outline"}
                 color="red"
                 onClick={() => favoriteClick(props.selectedCoin)}
               />

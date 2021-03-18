@@ -1,29 +1,40 @@
 import React from "react";
 import { roundComma } from "../number/NumberChanger";
-import { Segment, Header } from "semantic-ui-react";
+import { Segment, Header, Icon } from "semantic-ui-react";
 
 const Favorites = (props) => {
-  console.log(props.favorites.favorites);
+  console.log('props.favorites', props.favorites);
   const renderTableRow = () => {
-    if (props.favorites.favorites[1]) {
-      return props.favorites.favorites.map((fav) => {
+    const mapFavorites = props.favorites.favorites.map((fav) => {
+      return fav.coin;
+    });
+
+    const filterMarket = props.market.filter((coin) => {
+      if (mapFavorites.includes(coin.symbol)) {
+        return coin;
+      }
+    });
+
+    if (props.favorites.favorites) {
+      return filterMarket.map((fav) => {
         return (
-          <tr>
+          <tr key={fav.id}>
             <td>
               <img
                 className="ui image avatar"
-                src={fav.coin.image}
-                alt={fav.coin.image}
+                src={fav.image}
+                alt={fav.image}
               />
             </td>
-            <td>{fav.coin.name}</td>
-            <td>{`$${roundComma(fav.coin.price)}`}</td>
-            <td>{`${roundComma(fav.coin.pricePercent)}%`}</td>
+            <td>{fav.name}</td>
+            <td>{`$${roundComma(fav.current_price)}`}</td>
+            <td>{`${roundComma(fav.price_change_percentage_24h)}%`}</td>
+            <td><Icon style={{color: "grey"}} name="x" onClick={() => props.deleteFavorite(fav.symbol)}/></td>
           </tr>
         );
       });
     } else {
-      return <div>Nada</div>;
+      return <td>Nada</td>;
     }
   };
 
@@ -32,7 +43,7 @@ const Favorites = (props) => {
       <Segment size="large">
         <Header as="h2">{props.header}</Header>
         <Segment basic style={{ overflow: "auto", maxHeight: 500 }}>
-          <table className="ui table">
+          <table className="ui table unstackabale">
             <tbody>{renderTableRow()}</tbody>
           </table>
         </Segment>

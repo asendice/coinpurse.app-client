@@ -185,7 +185,7 @@ const VerticalHeader = (props) => {
             </Menu.Item>
             <Menu.Item>
               <NavLink to="/login">
-                <Button fluid>
+                <Button fluid >
                   <Icon name="sign in" size="large" color="grey" />
                   Log In
                 </Button>

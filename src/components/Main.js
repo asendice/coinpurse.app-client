@@ -16,6 +16,7 @@ const Main = (props) => {
     itemOne: "market",
     itemTwo: "portfolio",
   };
+  
 
   useEffect(() => {
     props.getFavorites();
