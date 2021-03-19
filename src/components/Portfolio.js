@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import Title from "./Title";
 import Favorites from "./Favorites";
+import RecentTransactions from "./RecentTransactions";
+import PortfolioList from "./PortfolioList";
 import { copyRight } from "../number/NumberChanger";
 import { Grid, Segment, Container, Header, Statistic } from "semantic-ui-react";
-import { getFavorites, getMarket, deleteFavorite } from "../actions";
+import { getFavorites, getMarket, deleteFavorite, getTransactions } from "../actions";
 import { connect } from "react-redux";
 
 const Portfolio = (props) => {
@@ -11,6 +13,7 @@ const Portfolio = (props) => {
   useEffect(() => {
     props.getFavorites();
     props.getMarket()
+    props.getTransactions();
   },[])
 
   return (
@@ -37,16 +40,12 @@ const Portfolio = (props) => {
             </Grid.Row>
             <Grid.Row columns={1}>
               <Grid.Column>
-                <Segment textAlign="center">
-                  <Header as="h2">Portfolio List</Header>
-                </Segment>
+                <PortfolioList market={props.market} transactions={props.transactions} />
               </Grid.Column>
             </Grid.Row>
             <Grid.Row columns={1}>
               <Grid.Column>
-                <Segment textAlign="center">
-                  <Header as="h2">Recent Transactions</Header>
-                </Segment>
+                <RecentTransactions transactions={props.transactions}/>
               </Grid.Column>
             </Grid.Row>
           </Grid>
@@ -63,12 +62,14 @@ const Portfolio = (props) => {
 const mapStateToProps = (state) => {
   return {
     favorites: state.favorites,
+    transactions: state.transactions,
     market: state.market
   }
 }
 
 const mapDispatchToProps = {
   getFavorites: () => getFavorites(),
+  getTransactions: () => getTransactions(),
   getMarket: () => getMarket(),
   deleteFavorite: coinId => (deleteFavorite(coinId))
 }

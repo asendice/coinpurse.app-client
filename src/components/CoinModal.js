@@ -13,13 +13,14 @@ import {
   Divider,
 } from "semantic-ui-react";
 import TransactionForm from "./TransactionForm";
-
-import { roundComma } from "../number/NumberChanger";
+import { connect } from "react-redux";
+import { deleteFavorite, postTransaction } from "../actions";
+import { roundComma, date, time } from "../number/NumberChanger";
 
 const CoinModal = (props) => {
   const [activeIndex, setActiveIndex] = useState(1);
   const [index] = useState(0);
-
+  const [buy, setBuy] = useState(false);
 
   const values = [
     `$${roundComma(props.selectedCoin.current_price)}`,
@@ -44,6 +45,10 @@ const CoinModal = (props) => {
   });
 
   const favoriteClick = (coin) => {
+    const filterFav = props.favorites.favorites.filter(
+      (fav) => fav.coin === coin.symbol
+    );
+
     const mapFav = props.favorites.favorites.map((fav) => {
       if (fav.coin === coin.symbol) {
         return false;
@@ -54,8 +59,27 @@ const CoinModal = (props) => {
     if (!mapFav.includes(false)) {
       props.postFavorite(coin.symbol);
     } else {
-      return;
+      props.deleteFavorite(filterFav[0].id);
     }
+  };
+
+  const onFormSubmit = (values) => {
+    alert("Transaction Submitted");
+    values.name = props.selectedCoin.name;
+    values.buy = buy;
+    values.image = props.selectedCoin.image;
+    values.price = Number(props.selectedCoin.current_price);
+    values.date = { date };
+    values.time = { time };
+    props.postTransaction(values)
+    props.setOpen(false);
+  };
+
+  const onBuyClick = () => {
+    setBuy(true);
+  };
+  const onSellClick = () => {
+    setBuy(false);
   };
 
   const renderLabel = () => {
@@ -133,7 +157,14 @@ const CoinModal = (props) => {
           />
           <Accordion.Content
             active={activeIndex === 0}
-            content={<TransactionForm coin={props.selectedCoin} />}
+            content={
+              <TransactionForm
+                coin={props.selectedCoin}
+                onFormSubmit={onFormSubmit}
+                onBuyClick={onBuyClick}
+                onSellClick={onSellClick}
+              />
+            }
           />
         </Accordion>
       </Modal.Content>
@@ -141,4 +172,9 @@ const CoinModal = (props) => {
   );
 };
 
-export default CoinModal;
+const mapDispatchToProps = {
+  deleteFavorite: (coinId) => deleteFavorite(coinId),
+  postTransaction: (values) => postTransaction(values),
+};
+
+export default connect(null, mapDispatchToProps)(CoinModal);

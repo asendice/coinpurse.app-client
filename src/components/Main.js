@@ -50,7 +50,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   getFavorites: () => getFavorites(),
-  postFavorite: (name, price, pricePercent) => (postFavorite(name, price, pricePercent))
+  postFavorite: (symbol) => (postFavorite(symbol))
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

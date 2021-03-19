@@ -20,10 +20,8 @@ const Favorites = (props) => {
         return coin;
       }
     });
-    console.log(props.favorites.favorites.length);
     if (props.favorites.favorites.length > 0) {
       return filterMarket.map((fav) => {
-        console.log(fav.id);
         return (
           <tr key={fav.id}>
             <td>
@@ -39,7 +37,10 @@ const Favorites = (props) => {
               style={{
                 color: fav.price_change_percentage_24h >= 0 ? "green" : "red",
               }}
-            >{renderArrow(fav.price_change_percentage_24h)}{`${roundComma(fav.price_change_percentage_24h)}%`}</td>
+            >
+              {renderArrow(fav.price_change_percentage_24h)}
+              {`${roundComma(fav.price_change_percentage_24h)}%`}
+            </td>
             <td>
               <Icon
                 className="tb"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Icon, Segment } from "semantic-ui-react";
+import { Segment } from "semantic-ui-react";
 import { roundComma, convertMc, renderArrow } from "../number/NumberChanger";
 import { connect } from "react-redux";
 import { getMarket, coinSelect, modalInfo, getFavorites } from "../actions";
