@@ -72,7 +72,7 @@ TransactionForm = reduxForm({
 
 const selector = formValueSelector("transaction");
 TransactionForm = connect((state) => {
-  const values = selector(state, "amt", "note", "time", "date");
+  const values = selector(state, "amt", "note");
   return {
     values,
   };

@@ -1,6 +1,5 @@
 import coinGeckoApi from "../apis/coinGeckoApi";
 import localHost from "../apis/localHost";
-import {reset} from 'redux-form';
 //Actions
 //Asynchronous Action Creator to retrieve market data from api
 export const getMarket = () => {

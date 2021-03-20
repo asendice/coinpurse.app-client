@@ -14,7 +14,6 @@ const Favorites = (props) => {
     const mapFavorites = props.favorites.favorites.map((fav) => {
       return fav.coin;
     });
-
     const filterMarket = props.market.filter((coin) => {
       if (mapFavorites.includes(coin.symbol)) {
         return coin;
@@ -69,7 +68,7 @@ const Favorites = (props) => {
       <Segment size="large">
         <Header as="h2">{props.header}</Header>
         <Segment basic style={{ overflow: "auto", maxHeight: 500 }}>
-          <table className="ui table unstackabale">
+          <table className="ui unstackable table">
             <tbody>{renderTableRow()}</tbody>
           </table>
         </Segment>

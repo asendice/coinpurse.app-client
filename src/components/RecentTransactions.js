@@ -1,5 +1,5 @@
 import React from "react";
-import { Segment, Header, Label } from "semantic-ui-react";
+import { Segment, Header, Label, Popup, Icon } from "semantic-ui-react";
 import { roundComma } from "../number/NumberChanger";
 
 const RecentTransactions = (props) => {
@@ -16,7 +16,7 @@ const RecentTransactions = (props) => {
           <td>
             <img className="ui image avatar" src={trans.trans.image} />
           </td>
-          <td>{trans.trans.name}</td>
+          <td className="td-dis">{trans.trans.name}</td>
           <td>
             {trans.trans.buy ? (
               <Label color="green">Buy</Label>
@@ -26,9 +26,15 @@ const RecentTransactions = (props) => {
           </td>
           <td>{trans.trans.amt}</td>
           <td>{`$${roundComma(trans.trans.price)}`}</td>
-          <td>{`$${roundComma(
+          <td className="td-dis">{`$${roundComma(
             Number(trans.trans.amt * trans.trans.price)
           )}`}</td>
+          <td>{trans.trans.note ? 
+          <Popup
+            content={trans.trans.note}
+            position="top right"
+            trigger={<Icon name="clipboard" style={{color: "grey"}} />} />
+          : <Icon />}</td>
         </tr>
       );
     });
@@ -36,18 +42,20 @@ const RecentTransactions = (props) => {
 
   return (
     <>
+    {/* style={{ overflow: "auto", maxHeight: 600 }} */}
       <Segment>
         <Header as="h2">Recent Transactions</Header>
-        <table className="ui table basic">
+        <table className="ui unstackable table">
           <thead>
             <tr>
               <th className="two wide">Date / Time</th>
               <th className="one wide"></th>
               <th className="td-dis">Name</th>
               <th className=""></th>
-              <th className=" ">Qty</th>
+              <th className="">Qty</th>
               <th className="">Price</th>
-              <th>Total</th>
+              <th className="td-dis">Total</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>{renderTransactions()}</tbody>

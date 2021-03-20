@@ -15,7 +15,7 @@ import {
 import TransactionForm from "./TransactionForm";
 import { connect } from "react-redux";
 import { deleteFavorite, postTransaction } from "../actions";
-import { roundComma, date, time } from "../number/NumberChanger";
+import { roundComma } from "../number/NumberChanger";
 
 const CoinModal = (props) => {
   const [activeIndex, setActiveIndex] = useState(1);
@@ -64,14 +64,19 @@ const CoinModal = (props) => {
   };
 
   const onFormSubmit = (values) => {
-    alert("Transaction Submitted");
+    alert(`${buy ? 'Buy' : 'Sell' } Transaction Submitted For ${props.selectedCoin.name}`);
+    const today = new Date();
+    const date =
+      today.getMonth() + 1 + "-" + today.getDate() + "-" + today.getFullYear();
+    const time =
+      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     values.name = props.selectedCoin.name;
     values.buy = buy;
     values.image = props.selectedCoin.image;
     values.price = Number(props.selectedCoin.current_price);
     values.date = { date };
     values.time = { time };
-    props.postTransaction(values)
+    props.postTransaction(values);
     props.setOpen(false);
   };
 
