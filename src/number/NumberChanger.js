@@ -40,7 +40,7 @@ const copyRight = () => {
  };
 
  const renderArrow = (num) => {
-  return <Icon className={num >= 0 ? "arrow up" : "arrow down"} />;
+  return <Icon name={num === 0 ? "minus" : num >= 0 ? "arrow up" : "arrow down"} />;
 };
  
 

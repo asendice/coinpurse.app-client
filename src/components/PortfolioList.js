@@ -1,18 +1,25 @@
 import React from "react";
 import _ from "lodash";
-import { Segment, Header, Card } from "semantic-ui-react";
+import { roundComma, renderArrow } from "../number/NumberChanger";
+import {
+  Segment,
+  Header,
+  Card,
+  Grid,
+  Divider,
+  Image,
+  Icon,
+} from "semantic-ui-react";
 
 const PortfolioList = (props) => {
   const mapTransactions = props.transactions.transactions.map((trans) => {
     return {
-      // id: trans.id,
       name: trans.trans.name,
       amt: trans.trans.buy
         ? Number(trans.trans.amt)
         : -Math.abs(trans.trans.amt),
-      buy: trans.trans.buy,
       total: trans.trans.buy
-        ? trans.trans.amt * trans.trans.price
+        ? Number(trans.trans.amt * trans.trans.price)
         : -Math.abs(trans.trans.amt * trans.trans.price),
     };
   });
@@ -20,58 +27,118 @@ const PortfolioList = (props) => {
   const mapNameTrans = mapTransactions.map((coin) => {
     return coin.name;
   });
-  // const mapNameTrans = mapTransactions.map((coin) => {
-  //   if(coin.name === coin.name){
-  //     return coin
-  //   }
-  // });
-  // console.log(mapNameTrans);
-  // console.log(mapNameTrans);
 
-  // Contains updated portfolio list (market filtered by transaction names)
+  const addAmts = Array.from(
+    mapTransactions.reduce(
+      (m, { name, amt }) => m.set(name, (m.get(name) || 0) + amt),
+      new Map()
+    ),
+    ([name, amt]) => ({ name, amt })
+  );
+
+  const addTotals = Array.from(
+    mapTransactions.reduce(
+      (m, { name, total }) => m.set(name, (m.get(name) || 0) + total),
+      new Map()
+    ),
+    ([name, total]) => ({ name, total })
+  );
+
+  console.log("addTotals", addTotals);
+
   const filterMarket = props.market.filter((coin) => {
     if (mapNameTrans.includes(coin.name)) {
       return coin;
     }
   });
-  const join = mapTransactions.concat(filterMarket);
-  console.log("join", join);
 
-  const counts = _.countBy(mapTransactions, "name");
-  console.log(_.filter(mapTransactions, (x) => counts[x.name] > 1));
+  const mergeByName = (arr1, arr2, arr3) =>
+    arr1.map((itm) => ({
+      ...arr2.find((item) => item.name === itm.name && item),
+      ...arr3.find((item) => item.name === itm.name && item),
+      ...itm,
+    }));
 
+  const portfolio = mergeByName(addAmts, filterMarket, addTotals);
 
-const result = join.reduce((prev, item) => {
-    const newItem = prev.find((i) => {
-        return i.name === item.name; 
+  if (portfolio.length >0) {
+    
+    const filterPortfolio = portfolio.map((coin) => {
+      return coin.amt * coin.current_price;
     });
-    console.log('newItem', newItem);
-    if (newItem) {
-        Object.assign(newItem, item);
+    const filterTotal = addTotals.map((coin) => {
+      return coin.total;
+    });
+    const origTotal = filterTotal.reduce((a, b) => {
+      return a + b;
+    });
+
+    const portfolioTotal = filterPortfolio.reduce((a, b) => {
+      return a + b;
+    }, 0);
+    props.setPortTotal(portfolioTotal);
+    props.setPortGain(portfolioTotal - origTotal);
+  }
+
+
+  const renderCard = () => {
+    if (portfolio.length > 0) {
+      return portfolio.map((coin) => {
+        const dollarGain = coin.amt * coin.current_price - coin.total;
+        return (
+          <>
+            <Grid.Column stackable>
+              <Card>
+                <Card.Content>
+                  <Image floated="right" size="avatar" src={coin.image} />
+                  <Card.Header>{coin.name}</Card.Header>
+                  <Card.Meta>{coin.symbol}</Card.Meta>
+                  <Card.Description>
+                    <div>{coin.amt}</div>
+                    <div>{`$${roundComma(coin.amt * coin.current_price)}`}</div>
+                    <span
+                      style={{
+                        color:
+                          dollarGain === 0
+                            ? "grey"
+                            : dollarGain > 0
+                            ? "green"
+                            : "red",
+                      }}
+                    >
+                      {renderArrow(dollarGain)}${`${roundComma(dollarGain)}`}
+                    </span>
+                  </Card.Description>
+                </Card.Content>
+              </Card>
+              <Divider hidden />
+            </Grid.Column>
+          </>
+        );
+      });
     } else {
-        prev.push(item);
+      return (
+        <Segment basic>
+          <Segment>
+            <span style={{ color: "grey" }}>
+              {" "}
+              {`Username currently has ${portfolio.length} coins, go to `}{" "}
+              <a href="/market">Market</a> to add some transactions{" "}
+              <Icon name="cart" />
+            </span>
+          </Segment>
+        </Segment>
+      );
     }
-    return prev;
-}, []);
-
-console.log('result',result);
-
-  // const hmm = Object.assign(mapTransactions, filterMarket);
-  // console.log('hmm', hmm)
-  // const merge = { ...filterMarket, ...mapTransactions };
-  // console.log("merge", merge);
-
-  // console.log("original", props.transactions.transactions);
-  // console.log("mapped", mapTransactions);
-  // console.log("filterMarket", filterMarket);
-
-  const renderCard = () => {};
+  };
   return (
     <>
-      <Segment>
+      <Segment >
         <Header as="h2">Portfolio List</Header>
+        <Grid>
+          <Grid.Row columns={4}>{renderCard()}</Grid.Row>
+        </Grid>
       </Segment>
-      <Segment basic>{renderCard()}</Segment>
     </>
   );
 };

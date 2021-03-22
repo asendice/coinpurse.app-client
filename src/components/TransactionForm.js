@@ -14,17 +14,28 @@ const renderTextArea = ({ input }) => {
   );
 };
 
+const renderAmt = ({ input, label, meta: { touched, error, warning } }) => (
+  <div>
+    <input {...input} placeholder={label} />
+    {touched &&
+      ((error && <span>{error}</span>) || (warning && <span>{warning}</span>))}
+  </div>
+);
 
-const renderAmt = ({ input }) => {
-  return <input {...(input)} />;
-};
-
-const required = (v) => {
-  if (!v || v === "") {
-    return <Label>"This field is required"</Label>;
+const required = (num) => {
+  if (!num || num === "") {
+    return <span style={{ color: "red" }}>*required</span>;
   }
   return undefined;
 };
+const number = (value) =>
+  value && isNaN(Number(value)) ? (
+    <span style={{ color: "red" }}>*number</span>
+  ) : undefined;
+const notZero = (value) =>
+  value && value === "0" ? (
+    <span style={{ color: "red" }}>*not zero</span>
+  ) : undefined;
 
 let TransactionForm = (props) => {
   return (
@@ -35,10 +46,12 @@ let TransactionForm = (props) => {
       <Divider hidden />
       <Label>Amount of {props.coin.name}</Label>
       <Field
+        type="number"
         name="amt"
         component={renderAmt}
         placeholder="qty"
-        validate={required}
+        validate={[required, number, notZero]}
+        warning="Must be a number"
       />
       <Divider hidden />
       <Label>Notes about trade</Label>

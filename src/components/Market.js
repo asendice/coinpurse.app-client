@@ -101,7 +101,7 @@ const Market = (props) => {
   };
 
   return (
-    <Segment padded raised>
+    <Segment raised padded>
       <Title term={term} onTermSubmit={onTermSubmit} label="market" />
       <Table className="ui unstackable table">
         <Table.Header>

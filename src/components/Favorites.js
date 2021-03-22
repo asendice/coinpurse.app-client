@@ -1,6 +1,6 @@
 import React from "react";
 import { roundComma, renderArrow } from "../number/NumberChanger";
-import { Segment, Header, Icon } from "semantic-ui-react";
+import { Segment, Header, Icon, Divider } from "semantic-ui-react";
 
 const Favorites = (props) => {
   const handleDeleteClick = (symbol) => {
@@ -65,9 +65,13 @@ const Favorites = (props) => {
 
   return (
     <>
-      <Segment size="large">
+      <Segment>
         <Header as="h2">{props.header}</Header>
-        <Segment basic style={{ overflow: "auto", maxHeight: 500 }}>
+        <Divider />
+        <Segment
+          basic
+          style={{ overflow: "auto", maxHeight: 300, minHeight: 300 }}
+        >
           <table className="ui unstackable table">
             <tbody>{renderTableRow()}</tbody>
           </table>

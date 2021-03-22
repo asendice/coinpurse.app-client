@@ -6,7 +6,7 @@ const RecentTransactions = (props) => {
   const renderTransactions = () => {
     return props.transactions.transactions.map((trans) => {
       return (
-        <tr key={trans.trans.id}>
+        <tr key={trans.id}>
           <td>
             <Label>
               <div>{trans.trans.date.date}</div>
@@ -42,7 +42,7 @@ const RecentTransactions = (props) => {
 
   return (
     <>
-    {/* style={{ overflow: "auto", maxHeight: 600 }} */}
+    {/* style={{ overflow: "auto", maxHeight: 600 }} <--- Might add this type of styling  */}
       <Segment>
         <Header as="h2">Recent Transactions</Header>
         <table className="ui unstackable table">
