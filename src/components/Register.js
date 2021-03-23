@@ -18,7 +18,7 @@ import { Field, reduxForm } from "redux-form";
 let Signup = () => {
   return (
     <>
-      <Container>
+      <Container fluid style={{minHeight: "100vh"}}>
         <Grid columns={2} stackable>
           <Grid.Column computer={10} tablet={16}>
             <Segment padded="very">

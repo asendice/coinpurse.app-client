@@ -14,7 +14,7 @@ import {
 } from "semantic-ui-react";
 import TransactionForm from "./TransactionForm";
 import { connect } from "react-redux";
-import { deleteFavorite, postTransaction } from "../actions";
+import { deleteFavorite, postTransaction, postFavorite } from "../actions";
 import { roundComma } from "../number/NumberChanger";
 
 const CoinModal = (props) => {
@@ -64,7 +64,11 @@ const CoinModal = (props) => {
   };
 
   const onFormSubmit = (values) => {
-    alert(`${buy ? 'Buy' : 'Sell' } Transaction Submitted For ${props.selectedCoin.name}`);
+    alert(
+      `${buy ? "Buy" : "Sell"} Transaction Submitted For ${
+        props.selectedCoin.name
+      }`
+    );
     const today = new Date();
     const date =
       today.getMonth() + 1 + "-" + today.getDate() + "-" + today.getFullYear();
@@ -114,6 +118,38 @@ const CoinModal = (props) => {
     }
   };
 
+  const renderPortData = () => {
+    if (props.portList.list.length > 0) {
+      const filterPortList = props.portList.list.filter((coin) => {
+        if (coin.name === props.selectedCoin.name) {
+          return coin;
+        } else {
+          return null;
+        }
+      });
+      return filterPortList.map((coin) => {
+        return (
+          <>
+            <Grid.Column key={coin.id}>
+              <Label color="grey">Amount Owned</Label>
+              <Segment>
+                <Header as="h5">{coin.amt}</Header>
+              </Segment>
+            </Grid.Column>
+            <Grid.Column key={coin.name}>
+              <Label color="grey">Total</Label>
+              <Segment>
+                <Header as="h5">
+                  ${roundComma(coin.amt * coin.current_price)}
+                </Header>
+              </Segment>
+            </Grid.Column>
+          </>
+        );
+      });
+    }
+  };
+
   return (
     <Modal
       onClose={() => props.setOpen(false)}
@@ -143,6 +179,7 @@ const CoinModal = (props) => {
       <Modal.Content>
         <Grid container columns={4} stackable>
           <Grid.Row>{renderLabel()}</Grid.Row>
+          <Grid.Row>{renderPortData()}</Grid.Row>
         </Grid>
       </Modal.Content>
       <Modal.Content>
@@ -168,6 +205,7 @@ const CoinModal = (props) => {
                 onFormSubmit={onFormSubmit}
                 onBuyClick={onBuyClick}
                 onSellClick={onSellClick}
+                portList={props.portList}
               />
             }
           />
@@ -180,6 +218,7 @@ const CoinModal = (props) => {
 const mapDispatchToProps = {
   deleteFavorite: (coinId) => deleteFavorite(coinId),
   postTransaction: (values) => postTransaction(values),
+  postFavorite: (coin) => postFavorite(coin),
 };
 
 export default connect(null, mapDispatchToProps)(CoinModal);

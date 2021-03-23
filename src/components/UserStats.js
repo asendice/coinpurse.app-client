@@ -1,14 +1,15 @@
 import React from "react";
-import { roundComma, renderArrow } from "../number/NumberChanger";
+import { roundComma } from "../number/NumberChanger";
 import { Header, Segment, Divider, Statistic } from "semantic-ui-react";
 
-const UserState = (props) => {
+const UserStats = (props) => {
   return (
     <>
-      <Segment>
+      <Segment basic>
         <Header as="h2">{props.header}</Header>
         <Divider />
         <Segment
+          basic
           textAlign="center"
           style={{ overflow: "auto", maxHeight: 300, minHeight: 300 }}
         >
@@ -30,4 +31,4 @@ const UserState = (props) => {
   );
 };
 
-export default UserState;
+export default UserStats;

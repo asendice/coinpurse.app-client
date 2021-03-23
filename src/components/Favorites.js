@@ -1,6 +1,6 @@
 import React from "react";
 import { roundComma, renderArrow } from "../number/NumberChanger";
-import { Segment, Header, Icon, Divider } from "semantic-ui-react";
+import { Segment, Header, Icon, Divider, Table } from "semantic-ui-react";
 
 const Favorites = (props) => {
   const handleDeleteClick = (symbol) => {
@@ -17,6 +17,8 @@ const Favorites = (props) => {
     const filterMarket = props.market.filter((coin) => {
       if (mapFavorites.includes(coin.symbol)) {
         return coin;
+      }else{
+        return null;
       }
     });
     if (props.favorites.favorites.length > 0) {
@@ -27,7 +29,7 @@ const Favorites = (props) => {
               <img
                 className="ui image avatar"
                 src={fav.image}
-                alt={fav.image}
+                alt={fav.id}
               />
             </td>
             <td>{fav.name}</td>
@@ -65,16 +67,16 @@ const Favorites = (props) => {
 
   return (
     <>
-      <Segment>
+      <Segment basic>
         <Header as="h2">{props.header}</Header>
         <Divider />
         <Segment
           basic
           style={{ overflow: "auto", maxHeight: 300, minHeight: 300 }}
         >
-          <table className="ui unstackable table">
+          <Table basic="very" unstackable>
             <tbody>{renderTableRow()}</tbody>
-          </table>
+          </Table>
         </Segment>
       </Segment>
     </>

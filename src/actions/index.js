@@ -22,6 +22,12 @@ export const coinSelect = (coin) => {
     payload: coin,
   };
 };
+export const addPortList = (list) => {
+  return {
+    type: "ADD_PORTLIST",
+    payload: list,
+  };
+};
 
 //<-----> BEGINNING OF ACTION CREATORS FOR FAVORITE <----->
 export const addFavorite = (coin) => {

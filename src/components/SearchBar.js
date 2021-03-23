@@ -1,4 +1,5 @@
 import React from "react";
+import { Input, Divider } from "semantic-ui-react";
 
 const SearchBar = (props) => {
   const onInputChange = (e) => {
@@ -9,9 +10,9 @@ const SearchBar = (props) => {
     <div className="ui action input">
       <form className="ui form">
         <div className="field">
-          <label>{props.label}</label>
-          <input
-            placeholder="search..."
+          <Input
+            icon="search"
+            placeholder={props.label}
             value={props.searched}
             onChange={onInputChange}
             type="text"

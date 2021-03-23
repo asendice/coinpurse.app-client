@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Segment, Table, Icon } from "semantic-ui-react";
 import { roundComma, convertMc, renderArrow } from "../number/NumberChanger";
 import { connect } from "react-redux";
-import { getMarket, coinSelect, modalInfo, getFavorites } from "../actions";
+import {
+  getMarket,
+  coinSelect,
+  modalInfo,
+  getFavorites,
+  addPortList,
+} from "../actions";
 import Title from "./Title";
 import SearchNotFound from "./SearchNotFound";
 import CoinModal from "./CoinModal";
@@ -15,6 +21,8 @@ const Market = (props) => {
     props.getMarket();
     props.modalInfo();
     props.getFavorites();
+    console.log(props.portList)
+    console.log(props.portList)
   }, []);
 
   const onTermSubmit = (term) => {
@@ -32,6 +40,8 @@ const Market = (props) => {
       coin.symbol.toLowerCase().includes(term.toLowerCase())
     ) {
       return coin;
+    } else {
+      return null;
     }
   });
 
@@ -43,7 +53,7 @@ const Market = (props) => {
         </div>
       );
     } else {
-      return;
+      return null;
     }
   };
 
@@ -51,7 +61,6 @@ const Market = (props) => {
     const mapFavs = props.favorites.favorites.map((fav) => {
       return fav.coin;
     });
-    console.log(mapFavs);
     return filterMarket.map((coin) => {
       return (
         <Table.Row
@@ -101,9 +110,9 @@ const Market = (props) => {
   };
 
   return (
-    <Segment raised padded>
-      <Title term={term} onTermSubmit={onTermSubmit} label="market" />
-      <Table className="ui unstackable table">
+    <Segment basic>
+      <Title term={term} onTermSubmit={onTermSubmit} label="Market" />
+      <Table unstackable basic="very">
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell className="td-dis">Rank</Table.HeaderCell>
@@ -127,6 +136,7 @@ const Market = (props) => {
         selectedCoin={props.selectedCoin}
         postFavorite={props.postFavorite}
         favorites={props.favorites}
+        portList={props.portList}
       />
     </Segment>
   );
@@ -138,12 +148,16 @@ const mapStateToProps = (state) => {
     selectedCoin: state.selectedCoin,
     info: state.info,
     favorites: state.favorites,
+    portList: state.portList,
   };
 };
 
-export default connect(mapStateToProps, {
-  getMarket,
-  coinSelect,
-  modalInfo,
-  getFavorites,
-})(Market);
+const mapDispatchToProps = {
+  getFavorites: () => getFavorites(),
+  coinSelect: (coin) => coinSelect(coin),
+  addPortList: (list) => addPortList(list),
+  modalInfo: () => modalInfo(),
+  getMarket: () => getMarket(),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Market);

@@ -1,15 +1,6 @@
-import React from "react";
-import _ from "lodash";
+import React, { useEffect } from "react";
 import { roundComma, renderArrow } from "../number/NumberChanger";
-import {
-  Segment,
-  Header,
-  Card,
-  Grid,
-  Divider,
-  Image,
-  Icon,
-} from "semantic-ui-react";
+import { Segment, Header, Card, Image, Icon, Divider } from "semantic-ui-react";
 
 const PortfolioList = (props) => {
   const mapTransactions = props.transactions.transactions.map((trans) => {
@@ -44,11 +35,11 @@ const PortfolioList = (props) => {
     ([name, total]) => ({ name, total })
   );
 
-  console.log("addTotals", addTotals);
-
   const filterMarket = props.market.filter((coin) => {
     if (mapNameTrans.includes(coin.name)) {
       return coin;
+    } else {
+      return null;
     }
   });
 
@@ -60,86 +51,92 @@ const PortfolioList = (props) => {
     }));
 
   const portfolio = mergeByName(addAmts, filterMarket, addTotals);
-
-  if (portfolio.length >0) {
-    
-    const filterPortfolio = portfolio.map((coin) => {
+  const portSorted = portfolio.sort((a, b) => {
+    return b.total - a.total;
+  });
+  if (portfolio.length > 0) {
+    const mapPortfolioTotal = portfolio.map((coin) => {
       return coin.amt * coin.current_price;
     });
-    const filterTotal = addTotals.map((coin) => {
+    const mapTotal = addTotals.map((coin) => {
       return coin.total;
     });
-    const origTotal = filterTotal.reduce((a, b) => {
+    const origTotal = mapTotal.reduce((a, b) => {
       return a + b;
     });
 
-    const portfolioTotal = filterPortfolio.reduce((a, b) => {
+    const portfolioTotal = mapPortfolioTotal.reduce((a, b) => {
       return a + b;
     }, 0);
     props.setPortTotal(portfolioTotal);
     props.setPortGain(portfolioTotal - origTotal);
   }
 
+  const onCoinClick = (coin) => {
+    props.setOpen(true);
+    props.coinSelect(coin);
+  };
+
+  useEffect(() => {
+    if (portfolio.length > 0) {
+      props.addPortList(portfolio);
+      console.log(portfolio);
+    }
+  }, [props.portTotal]);
 
   const renderCard = () => {
     if (portfolio.length > 0) {
-      return portfolio.map((coin) => {
+      return portSorted.map((coin) => {
         const dollarGain = coin.amt * coin.current_price - coin.total;
-        return (
-          <>
-            <Grid.Column stackable>
-              <Card>
-                <Card.Content>
-                  <Image floated="right" size="avatar" src={coin.image} />
-                  <Card.Header>{coin.name}</Card.Header>
-                  <Card.Meta>{coin.symbol}</Card.Meta>
-                  <Card.Description>
-                    <div>{coin.amt}</div>
-                    <div>{`$${roundComma(coin.amt * coin.current_price)}`}</div>
-                    <span
-                      style={{
-                        color:
-                          dollarGain === 0
-                            ? "grey"
-                            : dollarGain > 0
-                            ? "green"
-                            : "red",
-                      }}
-                    >
-                      {renderArrow(dollarGain)}${`${roundComma(dollarGain)}`}
-                    </span>
-                  </Card.Description>
-                </Card.Content>
-              </Card>
-              <Divider hidden />
-            </Grid.Column>
-          </>
-        );
+        if (coin.amt === 0) {
+          return null;
+        } else {
+          return (
+            <Card onClick={() => onCoinClick(coin)} key={coin.id} raised>
+              <Card.Content key={coin.id}>
+                <Image floated="right" avatar src={coin.image} />
+                <Card.Header>{coin.name}</Card.Header>
+                <Card.Meta>{coin.symbol}</Card.Meta>
+                <Card.Description>
+                  <div>{coin.amt}</div>
+                  <div>{`$${roundComma(coin.amt * coin.current_price)}`}</div>
+                  <span
+                    style={{
+                      color:
+                        dollarGain === 0
+                          ? "grey"
+                          : dollarGain > 0
+                          ? "green"
+                          : "red",
+                    }}
+                  >
+                    {renderArrow(dollarGain)}${`${roundComma(dollarGain)}`}
+                  </span>
+                </Card.Description>
+              </Card.Content>
+            </Card>
+          );
+        }
       });
     } else {
       return (
-        <Segment basic>
-          <Segment>
-            <span style={{ color: "grey" }}>
-              {" "}
-              {`Username currently has ${portfolio.length} coins, go to `}{" "}
-              <a href="/market">Market</a> to add some transactions{" "}
-              <Icon name="cart" />
-            </span>
-          </Segment>
+        <Segment>
+          <span style={{ color: "grey" }}>
+            {" "}
+            {`Username currently has ${portfolio.length} coins, go to `}{" "}
+            <a href="/market">Market</a> to add some transactions{" "}
+            <Icon name="cart" />
+          </span>
         </Segment>
       );
     }
   };
   return (
-    <>
-      <Segment >
-        <Header as="h2">Portfolio List</Header>
-        <Grid>
-          <Grid.Row columns={4}>{renderCard()}</Grid.Row>
-        </Grid>
-      </Segment>
-    </>
+    <Segment basic>
+      <Header as="h2">Portfolio List</Header>
+      <Divider />
+      <Card.Group centered>{renderCard()}</Card.Group>
+    </Segment>
   );
 };
 

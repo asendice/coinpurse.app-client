@@ -8,18 +8,19 @@ const Title = (props) => {
       <Grid columns={2}>
         <Grid.Row>
           <Grid.Column>
-            <Header as="h2">coinpurse.app/{props.label}</Header>
+            <Header as="h2">{props.label}</Header>
           </Grid.Column>
-          <Divider />
           <Grid.Column textAlign="right">
             <SearchBar
-              label={` search ${props.label}`}
+              label={` Search ${props.label}...`}
               term={props.term}
               onTermSubmit={props.onTermSubmit}
             />
           </Grid.Column>
         </Grid.Row>
       </Grid>
+      <Divider />
+
     </Segment>
   );
 };

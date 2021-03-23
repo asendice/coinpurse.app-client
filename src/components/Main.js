@@ -23,7 +23,7 @@ const Main = (props) => {
   },[])
 
   return (
-    <Container fluid>
+    <Container fluid className="bkg">
       <BrowserRouter>
         <VerticalHeader menuProps={menuProps} />
         <Grid>

@@ -1,4 +1,4 @@
-const coinSelectedReducer = (state = {}, action) => {
+const selectedCoinReducer = (state = {}, action) => {
   switch (action.type) {
     case "COIN_SELECTED":
       return action.payload;
@@ -7,4 +7,4 @@ const coinSelectedReducer = (state = {}, action) => {
   }
 };
 
-export default coinSelectedReducer;
+export default selectedCoinReducer;

@@ -146,7 +146,7 @@ const VerticalHeader = (props) => {
             vertical
             borderless
             fixed="top"
-            style={{ height: "100vh", backgroundColor: "#fff" }}
+            style={{ height: "100vh", background: "#fff" }}
           >
             <Menu.Item link>
               <NavLink exact to="/">
