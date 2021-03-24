@@ -22,12 +22,6 @@ export const coinSelect = (coin) => {
     payload: coin,
   };
 };
-export const addPortList = (list) => {
-  return {
-    type: "ADD_PORTLIST",
-    payload: list,
-  };
-};
 
 //<-----> BEGINNING OF ACTION CREATORS FOR FAVORITE <----->
 export const addFavorite = (coin) => {
@@ -36,6 +30,7 @@ export const addFavorite = (coin) => {
     payload: coin,
   };
 };
+
 export const addFavorites = (coins) => {
   return {
     type: "ADD_FAVORITES",
@@ -101,7 +96,7 @@ export const postFavorite = (coin) => {
 };
 
 //<-----> END OF ACTION CREATORS FOR FAVORITE <----->
-///////////////////////////////////////////////////////////////
+
 //<-----> BEGINNING OF ACTION CREATORS FOR TRANSACTIONS <----->
 
 export const postTransaction = (trans) => {
@@ -160,4 +155,61 @@ export const addTransaction = (trans) => {
 };
 
 //<-----> END OF ACTION CREATORS FOR TRANSACTION <----->
-///////////////////////////////////////////////////////////////
+
+//<-----> BEGINNING OF ACTION CREATORS FOR PORT LIST <----->
+
+export const addPortList = (list) => {
+  return {
+    type: "ADD_PORTLIST",
+    payload: list,
+  };
+};
+export const addPortLists = (list) => {
+  return {
+    type: "ADD_PORTLISTS",
+    payload: list,
+  };
+};
+
+export const postPortList = (list) => {
+  return (dispatch) => {
+    localHost
+      .post("/portfolioList", {
+        list,
+      })
+      .then((response) => {
+        if (response) {
+          return response;
+        } else {
+          const error = new Error(
+            `Error ${response.status}: ${response.statusText}`
+          );
+          error.response = response;
+          throw error;
+        }
+      })
+      .then((response) => dispatch(addPortList(response.data)))
+      .catch((error) => {
+        console.log("postPortList", error.message);
+      });
+  };
+};
+export const getPortList = () => {
+  return async (dispatch) => {
+    await localHost
+      .get("/portfolioList")
+      .then((response) => {
+        if (response) {
+          return response.data;
+        } else {
+          const error = new Error(
+            `Error ${response.status}: ${response.statusText}`
+          );
+          error.response = response;
+          throw error;
+        }
+      })
+      .then((lists) => dispatch(addPortLists(lists)));
+  };
+};
+//<-----> END OF ACTION CREATORS FOR PORT LIST <----->

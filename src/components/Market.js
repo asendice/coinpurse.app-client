@@ -7,6 +7,7 @@ import {
   coinSelect,
   modalInfo,
   getFavorites,
+  getTransactions,
   addPortList,
 } from "../actions";
 import Title from "./Title";
@@ -17,14 +18,6 @@ const Market = (props) => {
   const [term, setTerm] = useState("");
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    props.getMarket();
-    props.modalInfo();
-    props.getFavorites();
-    console.log(props.portList)
-    console.log(props.portList)
-  }, []);
-
   const onTermSubmit = (term) => {
     setTerm(term);
   };
@@ -34,7 +27,64 @@ const Market = (props) => {
     props.coinSelect(coin);
   };
 
+  const mapTransactions = props.transactions.transactions.map((trans) => {
+    return {
+      name: trans.trans.name,
+      amt: trans.trans.buy
+        ? Number(trans.trans.amt)
+        : -Math.abs(trans.trans.amt),
+      total: trans.trans.buy
+        ? Number(trans.trans.amt * trans.trans.price)
+        : -Math.abs(trans.trans.amt * trans.trans.price),
+    };
+  });
+
+  const mapNameTrans = mapTransactions.map((coin) => {
+    return coin.name;
+  });
+
+  const addAmts = Array.from(
+    mapTransactions.reduce(
+      (m, { name, amt }) => m.set(name, (m.get(name) || 0) + amt),
+      new Map()
+    ),
+    ([name, amt]) => ({ name, amt })
+  );
+
+  const addTotals = Array.from(
+    mapTransactions.reduce(
+      (m, { name, total }) => m.set(name, (m.get(name) || 0) + total),
+      new Map()
+    ),
+    ([name, total]) => ({ name, total })
+  );
+
   const filterMarket = props.market.filter((coin) => {
+    if (mapNameTrans.includes(coin.name)) {
+      return coin;
+    } else {
+      return null;
+    }
+  });
+
+  const mergeByName = (arr1, arr2, arr3) =>
+    arr1.map((itm) => ({
+      ...arr2.find((item) => item.name === itm.name && item),
+      ...arr3.find((item) => item.name === itm.name && item),
+      ...itm,
+    }));
+
+  const portfolio = mergeByName(addAmts, filterMarket, addTotals);
+
+  useEffect(() => {
+    props.getMarket();
+    props.modalInfo();
+    props.getFavorites();
+    props.getTransactions();
+    props.addPortList(portfolio);
+  }, [open]);
+
+  const filterMarketForTerm = props.market.filter((coin) => {
     if (
       coin.name.toLowerCase().includes(term.toLowerCase()) ||
       coin.symbol.toLowerCase().includes(term.toLowerCase())
@@ -46,7 +96,7 @@ const Market = (props) => {
   });
 
   const renderNotFound = () => {
-    if (filterMarket.length === 0) {
+    if (filterMarketForTerm.length === 0) {
       return (
         <div>
           <SearchNotFound term={term} nf="Zero Results Found..." />
@@ -61,7 +111,7 @@ const Market = (props) => {
     const mapFavs = props.favorites.favorites.map((fav) => {
       return fav.coin;
     });
-    return filterMarket.map((coin) => {
+    return filterMarketForTerm.map((coin) => {
       return (
         <Table.Row
           key={coin.id}
@@ -149,6 +199,7 @@ const mapStateToProps = (state) => {
     info: state.info,
     favorites: state.favorites,
     portList: state.portList,
+    transactions: state.transactions,
   };
 };
 
@@ -158,6 +209,7 @@ const mapDispatchToProps = {
   addPortList: (list) => addPortList(list),
   modalInfo: () => modalInfo(),
   getMarket: () => getMarket(),
+  getTransactions: () => getTransactions(),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Market);

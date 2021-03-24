@@ -1,0 +1,32 @@
+
+-----Tasks TO DO ----------------------------------------------------------
+
+)Search Portfolio input set focus to all (fav, portList, transHistory) coins 
+
+)Fix key error
+
+)Display Top DollarGain Coin and Top Percent Gain Coin
+
+)UserStats and Favorites stack on top of each other at an earlier vp
+
+)Transaction History pagination / Search / mobile
+
+)Landing Page 
+---------------------------------------------------------------------------
+
+
+
+
+
+-----Tasks COMPLETED ------------------------------------------------------
+
+)Prevent the user from being able to sell more of a coin then they have 
+
+)Popups for Amount Owned and Total in CoinModal
+
+)where addPortList(portfolio) is located in a nested component,
+    it does't call until the user clicks on portfolio which prevents coinModal from
+    displaying amt when clicked on from the market component
+
+
+---------------------------------------------------------------------------

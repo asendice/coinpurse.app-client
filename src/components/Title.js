@@ -1,6 +1,6 @@
 import React from "react";
 import SearchBar from "./SearchBar";
-import { Header, Segment, Grid, Divider } from "semantic-ui-react";
+import { Header, Segment, Grid, Divider, Label } from "semantic-ui-react";
 
 const Title = (props) => {
   return (
@@ -8,7 +8,7 @@ const Title = (props) => {
       <Grid columns={2}>
         <Grid.Row>
           <Grid.Column>
-            <Header as="h2">{props.label}</Header>
+            <Label size="large"><Header as="h2">{props.label}</Header></Label>
           </Grid.Column>
           <Grid.Column textAlign="right">
             <SearchBar
@@ -19,7 +19,8 @@ const Title = (props) => {
           </Grid.Column>
         </Grid.Row>
       </Grid>
-      <Divider />
+      <Divider hidden />
+      <Divider hidden />
 
     </Segment>
   );

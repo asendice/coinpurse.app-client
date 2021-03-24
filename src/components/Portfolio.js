@@ -35,16 +35,16 @@ const Portfolio = (props) => {
       <Container fluid>
         <Segment basic>
           <Title label="Portfolio" />
-          <Grid stackable>
+          <Grid>
             <Grid.Row columns={2}>
-              <Grid.Column>
+              <Grid.Column computer={8} tablet={16}>
                 <UserStats
-                  header="UserName Portfolio"
+                  header="Balance"
                   portTotal={portTotal}
                   portGain={portGain}
                 />
               </Grid.Column>
-              <Grid.Column>
+              <Grid.Column computer={8} tablet={16}>
                 <Favorites
                   favorites={props.favorites}
                   market={props.market}
@@ -64,6 +64,7 @@ const Portfolio = (props) => {
                   addPortList={props.addPortList}
                   coinSelect={props.coinSelect}
                   setOpen={setOpen}
+                  open={open}
                 />
               </Grid.Column>
             </Grid.Row>

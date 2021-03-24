@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Divider } from "semantic-ui-react";
+import { Input } from "semantic-ui-react";
 
 const SearchBar = (props) => {
   const onInputChange = (e) => {

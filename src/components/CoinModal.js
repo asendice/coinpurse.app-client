@@ -15,7 +15,7 @@ import {
 import TransactionForm from "./TransactionForm";
 import { connect } from "react-redux";
 import { deleteFavorite, postTransaction, postFavorite } from "../actions";
-import { roundComma } from "../number/NumberChanger";
+import { roundComma, renderArrow } from "../number/NumberChanger";
 
 const CoinModal = (props) => {
   const [activeIndex, setActiveIndex] = useState(1);
@@ -63,25 +63,48 @@ const CoinModal = (props) => {
     }
   };
 
+  const filterPortList = props.portList.list.filter((coin) => {
+    if (coin.name === props.selectedCoin.name) {
+      return coin;
+    } else {
+      return null;
+    }
+  });
+
   const onFormSubmit = (values) => {
-    alert(
-      `${buy ? "Buy" : "Sell"} Transaction Submitted For ${
-        props.selectedCoin.name
-      }`
-    );
-    const today = new Date();
-    const date =
-      today.getMonth() + 1 + "-" + today.getDate() + "-" + today.getFullYear();
-    const time =
-      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    values.name = props.selectedCoin.name;
-    values.buy = buy;
-    values.image = props.selectedCoin.image;
-    values.price = Number(props.selectedCoin.current_price);
-    values.date = { date };
-    values.time = { time };
-    props.postTransaction(values);
-    props.setOpen(false);
+    const coinAmt = filterPortList.map((coin) => {
+      return coin.amt;
+    });
+    console.log("values.amt", values.amt);
+    if (coinAmt[0] < values.amt && buy === false) {
+      return alert(
+        `Transaction Canceled: You cannot sell more ${props.selectedCoin.name} then you own.`
+      );
+    } else {
+      alert(
+        `${buy ? "Buy" : "Sell"} Transaction Submitted For ${
+          props.selectedCoin.name
+        }`
+      );
+      const today = new Date();
+      const date =
+        today.getMonth() +
+        1 +
+        "-" +
+        today.getDate() +
+        "-" +
+        today.getFullYear();
+      const time =
+        today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      values.name = props.selectedCoin.name;
+      values.buy = buy;
+      values.image = props.selectedCoin.image;
+      values.price = Number(props.selectedCoin.current_price);
+      values.date = { date };
+      values.time = { time };
+      props.postTransaction(values);
+      props.setOpen(false);
+    }
   };
 
   const onBuyClick = () => {
@@ -120,32 +143,74 @@ const CoinModal = (props) => {
 
   const renderPortData = () => {
     if (props.portList.list.length > 0) {
-      const filterPortList = props.portList.list.filter((coin) => {
-        if (coin.name === props.selectedCoin.name) {
-          return coin;
+      return filterPortList.map((coin) => {
+        const dollarGain = coin.amt * coin.current_price - coin.total;
+        if (coin.amt > 0) {
+          return (
+            <>
+              <Grid.Column>
+                <Popup
+                  content={`Your remaing amount of ${coin.name} after all transactions, buys and sells, have been calculated.`}
+                  position="right center"
+                  trigger={
+                    <Label style={{ cursor: "default" }} color="grey">
+                      Amount of {coin.name} owned
+                    </Label>
+                  }
+                />
+                <Segment>
+                  <Header as="h5">{coin.amt}</Header>
+                </Segment>
+              </Grid.Column>
+              <Grid.Column key={coin.name}>
+                <Popup
+                  content={`Estimated overall value of your ${coin.name}. Amount of ${coin.name} x Current Price.`}
+                  position="right center"
+                  trigger={
+                    <Label style={{ cursor: "default" }} color="grey">
+                      Estimated Value
+                    </Label>
+                  }
+                />
+                <Segment>
+                  <Header as="h5">
+                    ${roundComma(coin.amt * coin.current_price)}
+                  </Header>
+                </Segment>
+              </Grid.Column>
+              <Grid.Column>
+                <Popup
+                  content={`USD increase/decrease of the total cost of your investment to what your investment is currently worth.`}
+                  position="right center"
+                  trigger={
+                    <Label style={{ cursor: "default" }} color="grey">
+                      Gain
+                    </Label>
+                  }
+                />
+                <Segment>
+                  <Header as="h5">{`$${roundComma(dollarGain)}`}</Header>
+                </Segment>
+              </Grid.Column>
+              <Grid.Column>
+                <Popup
+                  content={`Total USD invested after all buys and sells have been calculated for ${coin.name}`}
+                  position="right center"
+                  trigger={
+                    <Label style={{ cursor: "default" }} color="grey">
+                      Total Investment
+                    </Label>
+                  }
+                />
+                <Segment>
+                  <Header as="h5">${roundComma(coin.total)}</Header>
+                </Segment>
+              </Grid.Column>
+            </>
+          );
         } else {
           return null;
         }
-      });
-      return filterPortList.map((coin) => {
-        return (
-          <>
-            <Grid.Column key={coin.id}>
-              <Label color="grey">Amount Owned</Label>
-              <Segment>
-                <Header as="h5">{coin.amt}</Header>
-              </Segment>
-            </Grid.Column>
-            <Grid.Column key={coin.name}>
-              <Label color="grey">Total</Label>
-              <Segment>
-                <Header as="h5">
-                  ${roundComma(coin.amt * coin.current_price)}
-                </Header>
-              </Segment>
-            </Grid.Column>
-          </>
-        );
       });
     }
   };
@@ -179,6 +244,7 @@ const CoinModal = (props) => {
       <Modal.Content>
         <Grid container columns={4} stackable>
           <Grid.Row>{renderLabel()}</Grid.Row>
+          <Divider />
           <Grid.Row>{renderPortData()}</Grid.Row>
         </Grid>
       </Modal.Content>

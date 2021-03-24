@@ -24,17 +24,17 @@ const renderAmt = ({ input, label, meta: { touched, error, warning } }) => (
 
 const required = (num) => {
   if (!num || num === "") {
-    return <span style={{ color: "red" }}>*required</span>;
+    return <span style={{ color: "red" }}>*This field is required in order to submit a transaction.</span>;
   }
   return undefined;
 };
 const number = (value) =>
   value && isNaN(Number(value)) ? (
-    <span style={{ color: "red" }}>*number</span>
+    <span style={{ color: "red" }}>*This field must contain a number.</span>
   ) : undefined;
 const notZero = (value) =>
   value && value === "0" ? (
-    <span style={{ color: "red" }}>*not zero</span>
+    <span style={{ color: "red" }}>*This field cannot be equal to 0.</span>
   ) : undefined;
 
 let TransactionForm = (props) => {

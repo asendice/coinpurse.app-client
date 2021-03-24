@@ -82,7 +82,7 @@ const PortfolioList = (props) => {
       props.addPortList(portfolio);
       console.log(portfolio);
     }
-  }, [props.portTotal]);
+  }, [props.open]);
 
   const renderCard = () => {
     if (portfolio.length > 0) {
@@ -92,7 +92,13 @@ const PortfolioList = (props) => {
           return null;
         } else {
           return (
-            <Card onClick={() => onCoinClick(coin)} key={coin.id} raised>
+            <Card
+              onClick={() => onCoinClick(coin)}
+              key={coin.id}
+              raised
+              centered
+              style={{ margin: "10px" }}
+            >
               <Card.Content key={coin.id}>
                 <Image floated="right" avatar src={coin.image} />
                 <Card.Header>{coin.name}</Card.Header>
@@ -120,11 +126,11 @@ const PortfolioList = (props) => {
       });
     } else {
       return (
-        <Segment>
+        <Segment basic>
           <span style={{ color: "grey" }}>
             {" "}
-            {`Username currently has ${portfolio.length} coins, go to `}{" "}
-            <a href="/market">Market</a> to add some transactions{" "}
+            {`Username currently has ${portfolio.length} coins. Go to `}{" "}
+            <a href="/market">Market</a> to add some transactions!{" "}
             <Icon name="cart" />
           </span>
         </Segment>
