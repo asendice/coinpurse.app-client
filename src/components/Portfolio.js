@@ -30,6 +30,8 @@ const Portfolio = (props) => {
     props.modalInfo();
   }, []);
 
+
+
   return (
     <>
       <Container fluid>
@@ -42,6 +44,7 @@ const Portfolio = (props) => {
                   header="Balance"
                   portTotal={portTotal}
                   portGain={portGain}
+                  portList={props.portList}
                 />
               </Grid.Column>
               <Grid.Column computer={8} tablet={16}>
@@ -56,6 +59,7 @@ const Portfolio = (props) => {
             <Grid.Row columns={1}>
               <Grid.Column>
                 <PortfolioList
+                  header="Coin List"
                   market={props.market}
                   transactions={props.transactions}
                   portTotal={portTotal}

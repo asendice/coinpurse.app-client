@@ -33,8 +33,8 @@ const number = (value) =>
     <span style={{ color: "red" }}>*This field must contain a number.</span>
   ) : undefined;
 const notZero = (value) =>
-  value && value === "0" ? (
-    <span style={{ color: "red" }}>*This field cannot be equal to 0.</span>
+  value && value <= 0 ? (
+    <span style={{ color: "red" }}>*This field cannot be less than or equal to 0.</span>
   ) : undefined;
 
 let TransactionForm = (props) => {

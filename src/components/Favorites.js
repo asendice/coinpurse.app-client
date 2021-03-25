@@ -17,7 +17,7 @@ const Favorites = (props) => {
     const filterMarket = props.market.filter((coin) => {
       if (mapFavorites.includes(coin.symbol)) {
         return coin;
-      }else{
+      } else {
         return null;
       }
     });
@@ -26,11 +26,7 @@ const Favorites = (props) => {
         return (
           <tr key={fav.id}>
             <td>
-              <img
-                className="ui image avatar"
-                src={fav.image}
-                alt={fav.id}
-              />
+              <img className="ui image avatar" src={fav.image} alt={fav.id} />
             </td>
             <td>{fav.name}</td>
             <td>{`$${roundComma(fav.current_price)}`}</td>
@@ -67,9 +63,9 @@ const Favorites = (props) => {
 
   return (
     <>
+      <Header as="h2">{props.header}</Header>
+      <Divider />
       <Segment basic>
-        <Header as="h2">{props.header}</Header>
-        <Divider />
         <Segment
           basic
           style={{ overflow: "auto", maxHeight: 300, minHeight: 300 }}

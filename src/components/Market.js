@@ -32,10 +32,10 @@ const Market = (props) => {
       name: trans.trans.name,
       amt: trans.trans.buy
         ? Number(trans.trans.amt)
-        : -Math.abs(trans.trans.amt),
+        : Number(-Math.abs(trans.trans.amt)),
       total: trans.trans.buy
         ? Number(trans.trans.amt * trans.trans.price)
-        : -Math.abs(trans.trans.amt * trans.trans.price),
+        : Number(-Math.abs(trans.trans.amt * trans.trans.price)),
     };
   });
 
@@ -50,6 +50,7 @@ const Market = (props) => {
     ),
     ([name, amt]) => ({ name, amt })
   );
+  console.log("addAmts", addAmts);
 
   const addTotals = Array.from(
     mapTransactions.reduce(

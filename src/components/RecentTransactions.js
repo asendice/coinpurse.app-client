@@ -1,14 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { Segment, Label, Popup, Icon } from "semantic-ui-react";
 import Title from "./Title";
+import SearchNotFound from "./SearchNotFound";
 import { roundComma } from "../number/NumberChanger";
 
 const RecentTransactions = (props) => {
-  console.log(props.transactions.transactions.length);
+  const [term, setTerm] = useState("");
+
+  const onTermSubmit = (term) => {
+    setTerm(term);
+  };
+
+  const filterTransactionsByTerm = props.transactions.transactions.filter(
+    (trans) => {
+      if (
+        trans.trans.name.toLowerCase().includes(term) ||
+        trans.trans.symbol.toLowerCase().includes(term) ||
+        trans.trans.date.date.includes(term)
+      ) {
+        return trans;
+      } else {
+        return null;
+      }
+    }
+  );
+
+  const renderNotFound = () => {
+    if (filterTransactionsByTerm.length === 0) {
+      return (
+        <div>
+          <SearchNotFound term={term} nf="Zero Transactions Found..." />
+        </div>
+      );
+    } else {
+      return null;
+    }
+  };
 
   const renderTransactions = () => {
     if (props.transactions.transactions.length > 0) {
-      return props.transactions.transactions.map((trans) => {
+      return filterTransactionsByTerm.map((trans) => {
         return (
           <tr key={trans.id}>
             <td>
@@ -52,11 +83,7 @@ const RecentTransactions = (props) => {
         );
       });
     } else {
-      return (
-        <span
-          style={{ color: "grey" }}
-        >{`There are currently ${props.transactions.transactions.length} transactions recorded.`}</span>
-      );
+      return null;
     }
   };
 
@@ -64,13 +91,17 @@ const RecentTransactions = (props) => {
     <>
       {/* style={{ overflow: "auto", maxHeight: 600 }} <--- Might add this type of styling  */}
       <Segment basic>
-        <Title label="Transaction History" />
+        <Title
+          term={term}
+          onTermSubmit={onTermSubmit}
+          label="Transaction History"
+        />
         <table className="ui unstackable table">
           <thead>
             <tr>
               <th className="two wide">Date / Time</th>
               <th className="one wide"></th>
-              <th className="td-dis">Name</th>
+              <th className="td-dis one-wide">Name</th>
               <th className=""></th>
               <th className="">Qty</th>
               <th className="">Price</th>
@@ -80,6 +111,7 @@ const RecentTransactions = (props) => {
           </thead>
           <tbody>{renderTransactions()}</tbody>
         </table>
+        {renderNotFound()}
       </Segment>
     </>
   );

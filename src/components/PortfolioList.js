@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { roundComma, renderArrow } from "../number/NumberChanger";
+import { roundComma, renderArrow, rounder, ifNegative } from "../number/NumberChanger";
 import { Segment, Header, Card, Image, Icon, Divider } from "semantic-ui-react";
 
 const PortfolioList = (props) => {
@@ -51,9 +51,11 @@ const PortfolioList = (props) => {
     }));
 
   const portfolio = mergeByName(addAmts, filterMarket, addTotals);
+
   const portSorted = portfolio.sort((a, b) => {
     return b.total - a.total;
   });
+
   if (portfolio.length > 0) {
     const mapPortfolioTotal = portfolio.map((coin) => {
       return coin.amt * coin.current_price;
@@ -104,7 +106,7 @@ const PortfolioList = (props) => {
                 <Card.Header>{coin.name}</Card.Header>
                 <Card.Meta>{coin.symbol}</Card.Meta>
                 <Card.Description>
-                  <div>{coin.amt}</div>
+                  <div>{rounder(coin.amt)}</div>
                   <div>{`$${roundComma(coin.amt * coin.current_price)}`}</div>
                   <span
                     style={{
@@ -116,7 +118,7 @@ const PortfolioList = (props) => {
                           : "red",
                     }}
                   >
-                    {renderArrow(dollarGain)}${`${roundComma(dollarGain)}`}
+                    {renderArrow(dollarGain)}{`${ifNegative(roundComma(dollarGain))}`}
                   </span>
                 </Card.Description>
               </Card.Content>
@@ -139,7 +141,7 @@ const PortfolioList = (props) => {
   };
   return (
     <Segment basic>
-      <Header as="h2">Portfolio List</Header>
+      <Header as="h2">{props.header}</Header>
       <Divider />
       <Card.Group centered>{renderCard()}</Card.Group>
     </Segment>

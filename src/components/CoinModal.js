@@ -15,7 +15,7 @@ import {
 import TransactionForm from "./TransactionForm";
 import { connect } from "react-redux";
 import { deleteFavorite, postTransaction, postFavorite } from "../actions";
-import { roundComma, renderArrow } from "../number/NumberChanger";
+import { roundComma, rounder, ifNegative } from "../number/NumberChanger";
 
 const CoinModal = (props) => {
   const [activeIndex, setActiveIndex] = useState(1);
@@ -75,28 +75,17 @@ const CoinModal = (props) => {
     const coinAmt = filterPortList.map((coin) => {
       return coin.amt;
     });
-    console.log("values.amt", values.amt);
-    if (coinAmt[0] < values.amt && buy === false) {
-      return alert(
-        `Transaction Canceled: You cannot sell more ${props.selectedCoin.name} then you own.`
-      );
-    } else {
+    const today = new Date();
+    const date =
+      today.getMonth() + 1 + "-" + today.getDate() + "-" + today.getFullYear();
+    const time =
+      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    if (buy) {
       alert(
-        `${buy ? "Buy" : "Sell"} Transaction Submitted For ${
-          props.selectedCoin.name
-        }`
+        `Buy Transaction Submitted For ${values.amt} ${props.selectedCoin.name}`
       );
-      const today = new Date();
-      const date =
-        today.getMonth() +
-        1 +
-        "-" +
-        today.getDate() +
-        "-" +
-        today.getFullYear();
-      const time =
-        today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
       values.name = props.selectedCoin.name;
+      values.symbol = props.selectedCoin.symbol;
       values.buy = buy;
       values.image = props.selectedCoin.image;
       values.price = Number(props.selectedCoin.current_price);
@@ -104,6 +93,23 @@ const CoinModal = (props) => {
       values.time = { time };
       props.postTransaction(values);
       props.setOpen(false);
+    } else if (filterPortList[0] && coinAmt[0] > values.amt) {
+      alert(
+        `Sell Transaction Submitted For ${values.amt} ${props.selectedCoin.name}`
+      );
+      values.name = props.selectedCoin.name;
+      values.symbol = props.selectedCoin.symbol;
+      values.buy = buy;
+      values.image = props.selectedCoin.image;
+      values.price = Number(props.selectedCoin.current_price);
+      values.date = { date };
+      values.time = { time };
+      props.postTransaction(values);
+      props.setOpen(false);
+    } else {
+      alert(
+        `Transaction cancelled of ${props.selectedCoin.name} due to not having a sufficent amount.`
+      );
     }
   };
 
@@ -142,7 +148,7 @@ const CoinModal = (props) => {
   };
 
   const renderPortData = () => {
-    if (props.portList.list.length > 0) {
+    if (filterPortList) {
       return filterPortList.map((coin) => {
         const dollarGain = coin.amt * coin.current_price - coin.total;
         if (coin.amt > 0) {
@@ -159,7 +165,7 @@ const CoinModal = (props) => {
                   }
                 />
                 <Segment>
-                  <Header as="h5">{coin.amt}</Header>
+                  <Header as="h5">{rounder(coin.amt)}</Header>
                 </Segment>
               </Grid.Column>
               <Grid.Column key={coin.name}>
@@ -189,7 +195,7 @@ const CoinModal = (props) => {
                   }
                 />
                 <Segment>
-                  <Header as="h5">{`$${roundComma(dollarGain)}`}</Header>
+                  <Header as="h5">{ifNegative(roundComma(dollarGain))}</Header>
                 </Segment>
               </Grid.Column>
               <Grid.Column>

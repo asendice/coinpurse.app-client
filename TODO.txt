@@ -3,7 +3,9 @@
 
 )Search Portfolio input set focus to all (fav, portList, transHistory) coins 
 
-)Fix key error
+
+
+)Fix key error/Fix PortfoLiolist.js error
 
 )Display Top DollarGain Coin and Top Percent Gain Coin
 
@@ -12,7 +14,23 @@
 )Transaction History pagination / Search / mobile
 
 )Landing Page 
+
+)Register page -- needs to be mobile, figure out what to do with the market img
 ---------------------------------------------------------------------------
+
+
+
+
+
+-----TEMP FIX ------------------------------------------------------
+) ((where addPortList(portfolio) is located in a nested component,
+    it does't call until the user clicks on portfolio which prevents coinModal from
+    displaying amt when clicked on from the market component))
+
+
+---------------------------------------------------------------------------
+
+
 
 
 
@@ -20,13 +38,12 @@
 
 -----Tasks COMPLETED ------------------------------------------------------
 
+)Fixed decimal problem in portList and in coinmodal 
+
 )Prevent the user from being able to sell more of a coin then they have 
 
-)Popups for Amount Owned and Total in CoinModal
+)Popups for new label in CoinModal
 
-)where addPortList(portfolio) is located in a nested component,
-    it does't call until the user clicks on portfolio which prevents coinModal from
-    displaying amt when clicked on from the market component
+)Search Transaction History ---> filter through transaction list to display coins by term (.include) and by date
 
-
----------------------------------------------------------------------------
+-----Tasks COMPLETED ------------------------------------------------------

@@ -11,7 +11,6 @@ const SearchBar = (props) => {
       <form className="ui form">
         <div className="field">
           <Input
-            icon="search"
             placeholder={props.label}
             value={props.searched}
             onChange={onInputChange}

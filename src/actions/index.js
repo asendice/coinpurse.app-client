@@ -164,52 +164,52 @@ export const addPortList = (list) => {
     payload: list,
   };
 };
-export const addPortLists = (list) => {
-  return {
-    type: "ADD_PORTLISTS",
-    payload: list,
-  };
-};
+// export const addPortLists = (list) => {
+//   return {
+//     type: "ADD_PORTLISTS",
+//     payload: list,
+//   };
+// };
 
-export const postPortList = (list) => {
-  return (dispatch) => {
-    localHost
-      .post("/portfolioList", {
-        list,
-      })
-      .then((response) => {
-        if (response) {
-          return response;
-        } else {
-          const error = new Error(
-            `Error ${response.status}: ${response.statusText}`
-          );
-          error.response = response;
-          throw error;
-        }
-      })
-      .then((response) => dispatch(addPortList(response.data)))
-      .catch((error) => {
-        console.log("postPortList", error.message);
-      });
-  };
-};
-export const getPortList = () => {
-  return async (dispatch) => {
-    await localHost
-      .get("/portfolioList")
-      .then((response) => {
-        if (response) {
-          return response.data;
-        } else {
-          const error = new Error(
-            `Error ${response.status}: ${response.statusText}`
-          );
-          error.response = response;
-          throw error;
-        }
-      })
-      .then((lists) => dispatch(addPortLists(lists)));
-  };
-};
+// export const postPortList = (list) => {
+//   return (dispatch) => {
+//     localHost
+//       .post("/portfolioList", {
+//         list,
+//       })
+//       .then((response) => {
+//         if (response) {
+//           return response;
+//         } else {
+//           const error = new Error(
+//             `Error ${response.status}: ${response.statusText}`
+//           );
+//           error.response = response;
+//           throw error;
+//         }
+//       })
+//       .then((response) => dispatch(addPortList(response.data)))
+//       .catch((error) => {
+//         console.log("postPortList", error.message);
+//       });
+//   };
+// };
+// export const getPortList = () => {
+//   return async (dispatch) => {
+//     await localHost
+//       .get("/portfolioList")
+//       .then((response) => {
+//         if (response) {
+//           return response.data;
+//         } else {
+//           const error = new Error(
+//             `Error ${response.status}: ${response.statusText}`
+//           );
+//           error.response = response;
+//           throw error;
+//         }
+//       })
+//       .then((lists) => dispatch(addPortLists(lists)));
+//   };
+// };
 //<-----> END OF ACTION CREATORS FOR PORT LIST <----->
