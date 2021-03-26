@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Segment, Table, Icon } from "semantic-ui-react";
 import { roundComma, convertMc, renderArrow } from "../number/NumberChanger";
 import { connect } from "react-redux";
-import { getMarket, coinSelect, getFavorites } from "../actions";
+import { getMarket, coinSelect, getFavorites, addPortList, getTransactions } from "../actions";
 import Title from "../components/Title";
 import SearchNotFound from "../components/SearchNotFound";
 import CoinModal from "./CoinModal";
@@ -12,8 +12,58 @@ const Market = (props) => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    const mapTransactions = props.transactions.transactions.map((trans) => {
+      return {
+        name: trans.trans.name,
+        amt: trans.trans.buy
+          ? Number(trans.trans.amt)
+          : -Math.abs(trans.trans.amt),
+        total: trans.trans.buy
+          ? Number(trans.trans.amt * trans.trans.price)
+          : -Math.abs(trans.trans.amt * trans.trans.price),
+      };
+    });
+
+    const mapNameTrans = mapTransactions.map((coin) => {
+      return coin.name;
+    });
+
+    const addAmts = Array.from(
+      mapTransactions.reduce(
+        (m, { name, amt }) => m.set(name, (m.get(name) || 0) + amt),
+        new Map()
+      ),
+      ([name, amt]) => ({ name, amt })
+    );
+
+    const addTotals = Array.from(
+      mapTransactions.reduce(
+        (m, { name, total }) => m.set(name, (m.get(name) || 0) + total),
+        new Map()
+      ),
+      ([name, total]) => ({ name, total })
+    );
+
+    const filterMarket = props.market.filter((coin) => {
+      if (mapNameTrans.includes(coin.name)) {
+        return coin;
+      } else {
+        return null;
+      }
+    });
+
+    const mergeByName = (arr1, arr2, arr3) =>
+      arr1.map((itm) => ({
+        ...arr2.find((item) => item.name === itm.name && item),
+        ...arr3.find((item) => item.name === itm.name && item),
+        ...itm,
+      }));
+
+    const portfolio = mergeByName(addAmts, filterMarket, addTotals);
     props.getMarket();
     props.getFavorites();
+    props.getTransactions();
+    props.addPortList(portfolio);
   }, [open]);
 
   const onTermSubmit = (term) => {
@@ -130,6 +180,7 @@ const mapStateToProps = (state) => {
     market: state.market,
     favorites: state.favorites,
     portList: state.portList,
+    transactions: state.transactions
   };
 };
 
@@ -137,6 +188,8 @@ const mapDispatchToProps = {
   getFavorites: () => getFavorites(),
   coinSelect: (coin) => coinSelect(coin),
   getMarket: () => getMarket(),
+  getTransactions: () => getTransactions(),
+  addPortList: (list) => addPortList(list),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Market);

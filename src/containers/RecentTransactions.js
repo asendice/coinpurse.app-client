@@ -11,8 +11,11 @@ const RecentTransactions = (props) => {
   const onTermSubmit = (term) => {
     setTerm(term);
   };
-  const reversed = props.transactions.transactions.reverse();
-  const filterTransactionsByTerm = reversed.filter(
+
+  const sortByDate = props.transactions.transactions.sort((a, b) => {
+    return b.date - a.date;
+  });
+  const filterTransactionsByTerm = sortByDate.filter(
     (trans) => {
       if (
         trans.trans.name.toLowerCase().includes(term) ||

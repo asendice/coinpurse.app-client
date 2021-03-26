@@ -33,7 +33,7 @@ const UserStats = (props) => {
               <Image avatar src={top.image} />
               {top.symbol}
             </Statistic.Label>
-            <Statistic.Value style={{ color: top.gain > 0 ? "green" : "red" }}>
+            <Statistic.Value style={{ color: top.gain === 0 ?  "grey" : top.gain > 0 ? "green" : "red" }}>
               {ifNegative(roundComma(top.gain))}
             </Statistic.Value>
             <Statistic.Label style={{ color: "grey" }}>
