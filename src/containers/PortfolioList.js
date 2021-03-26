@@ -1,8 +1,19 @@
 import React, { useEffect } from "react";
-import { roundComma, renderArrow, rounder, ifNegative } from "../number/NumberChanger";
+import {
+  roundComma,
+  renderArrow,
+  rounder,
+  ifNegative,
+} from "../number/NumberChanger";
 import { Segment, Header, Card, Image, Icon, Divider } from "semantic-ui-react";
+import { getMarket, coinSelect, getTransactions, addPortList } from "../actions";
+import { connect } from "react-redux";
 
 const PortfolioList = (props) => {
+  const onCoinClick = (coin) => {
+    props.setOpen(true);
+    props.coinSelect(coin);
+  };
   const mapTransactions = props.transactions.transactions.map((trans) => {
     return {
       name: trans.trans.name,
@@ -74,12 +85,9 @@ const PortfolioList = (props) => {
     props.setPortGain(portfolioTotal - origTotal);
   }
 
-  const onCoinClick = (coin) => {
-    props.setOpen(true);
-    props.coinSelect(coin);
-  };
-
   useEffect(() => {
+    props.getMarket();
+    props.getTransactions();
     if (portfolio.length > 0) {
       props.addPortList(portfolio);
       console.log(portfolio);
@@ -118,7 +126,8 @@ const PortfolioList = (props) => {
                           : "red",
                     }}
                   >
-                    {renderArrow(dollarGain)}{`${ifNegative(roundComma(dollarGain))}`}
+                    {renderArrow(dollarGain)}
+                    {`${ifNegative(roundComma(dollarGain))}`}
                   </span>
                 </Card.Description>
               </Card.Content>
@@ -148,4 +157,20 @@ const PortfolioList = (props) => {
   );
 };
 
-export default PortfolioList;
+
+const mapStateToProps = (state) => {
+  return {
+    market: state.market,
+    transactions: state.transactions,
+    portList: state.portList,
+  };
+};
+
+const mapDispatchToProps = {
+  getTransactions: () => getTransactions(),
+  coinSelect: (coin) => coinSelect(coin),
+  getMarket: () => getMarket(),
+  addPortList: (list) => addPortList(list),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PortfolioList);

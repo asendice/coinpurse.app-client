@@ -2,21 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Segment, Table, Icon } from "semantic-ui-react";
 import { roundComma, convertMc, renderArrow } from "../number/NumberChanger";
 import { connect } from "react-redux";
-import {
-  getMarket,
-  coinSelect,
-  modalInfo,
-  getFavorites,
-  getTransactions,
-  addPortList,
-} from "../actions";
-import Title from "./Title";
-import SearchNotFound from "./SearchNotFound";
+import { getMarket, coinSelect, getFavorites } from "../actions";
+import Title from "../components/Title";
+import SearchNotFound from "../components/SearchNotFound";
 import CoinModal from "./CoinModal";
 
 const Market = (props) => {
   const [term, setTerm] = useState("");
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    props.getMarket();
+    props.getFavorites();
+  }, [open]);
 
   const onTermSubmit = (term) => {
     setTerm(term);
@@ -26,64 +24,6 @@ const Market = (props) => {
     setOpen(true);
     props.coinSelect(coin);
   };
-
-  const mapTransactions = props.transactions.transactions.map((trans) => {
-    return {
-      name: trans.trans.name,
-      amt: trans.trans.buy
-        ? Number(trans.trans.amt)
-        : Number(-Math.abs(trans.trans.amt)),
-      total: trans.trans.buy
-        ? Number(trans.trans.amt * trans.trans.price)
-        : Number(-Math.abs(trans.trans.amt * trans.trans.price)),
-    };
-  });
-
-  const mapNameTrans = mapTransactions.map((coin) => {
-    return coin.name;
-  });
-
-  const addAmts = Array.from(
-    mapTransactions.reduce(
-      (m, { name, amt }) => m.set(name, (m.get(name) || 0) + amt),
-      new Map()
-    ),
-    ([name, amt]) => ({ name, amt })
-  );
-  console.log("addAmts", addAmts);
-
-  const addTotals = Array.from(
-    mapTransactions.reduce(
-      (m, { name, total }) => m.set(name, (m.get(name) || 0) + total),
-      new Map()
-    ),
-    ([name, total]) => ({ name, total })
-  );
-
-  const filterMarket = props.market.filter((coin) => {
-    if (mapNameTrans.includes(coin.name)) {
-      return coin;
-    } else {
-      return null;
-    }
-  });
-
-  const mergeByName = (arr1, arr2, arr3) =>
-    arr1.map((itm) => ({
-      ...arr2.find((item) => item.name === itm.name && item),
-      ...arr3.find((item) => item.name === itm.name && item),
-      ...itm,
-    }));
-
-  const portfolio = mergeByName(addAmts, filterMarket, addTotals);
-
-  useEffect(() => {
-    props.getMarket();
-    props.modalInfo();
-    props.getFavorites();
-    props.getTransactions();
-    props.addPortList(portfolio);
-  }, [open]);
 
   const filterMarketForTerm = props.market.filter((coin) => {
     if (
@@ -180,15 +120,7 @@ const Market = (props) => {
         <Table.Body className="tb">{renderMarket()}</Table.Body>
       </Table>
       {renderNotFound()}
-      <CoinModal
-        open={open}
-        setOpen={setOpen}
-        info={props.info}
-        selectedCoin={props.selectedCoin}
-        postFavorite={props.postFavorite}
-        favorites={props.favorites}
-        portList={props.portList}
-      />
+      <CoinModal open={open} setOpen={setOpen} />
     </Segment>
   );
 };
@@ -196,21 +128,15 @@ const Market = (props) => {
 const mapStateToProps = (state) => {
   return {
     market: state.market,
-    selectedCoin: state.selectedCoin,
-    info: state.info,
     favorites: state.favorites,
     portList: state.portList,
-    transactions: state.transactions,
   };
 };
 
 const mapDispatchToProps = {
   getFavorites: () => getFavorites(),
   coinSelect: (coin) => coinSelect(coin),
-  addPortList: (list) => addPortList(list),
-  modalInfo: () => modalInfo(),
   getMarket: () => getMarket(),
-  getTransactions: () => getTransactions(),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Market);

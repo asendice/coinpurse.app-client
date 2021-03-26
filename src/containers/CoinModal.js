@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import _ from "lodash";
 import {
   Modal,
@@ -14,13 +14,18 @@ import {
 } from "semantic-ui-react";
 import TransactionForm from "./TransactionForm";
 import { connect } from "react-redux";
-import { deleteFavorite, postTransaction, postFavorite } from "../actions";
+import { deleteFavorite, postFavorite, getFavorites, modalInfo, postTransaction } from "../actions";
 import { roundComma, rounder, ifNegative } from "../number/NumberChanger";
 
 const CoinModal = (props) => {
   const [activeIndex, setActiveIndex] = useState(1);
   const [index] = useState(0);
   const [buy, setBuy] = useState(false);
+
+  useEffect(() => {
+    props.getFavorites();
+    props.modalInfo();
+  }, []);
 
   const values = [
     `$${roundComma(props.selectedCoin.current_price)}`,
@@ -154,7 +159,7 @@ const CoinModal = (props) => {
         if (coin.amt > 0) {
           return (
             <>
-              <Grid.Column>
+              <Grid.Column key={coin.id}>
                 <Popup
                   content={`Your remaing amount of ${coin.name} after all transactions, buys and sells, have been calculated.`}
                   position="right center"
@@ -277,7 +282,6 @@ const CoinModal = (props) => {
                 onFormSubmit={onFormSubmit}
                 onBuyClick={onBuyClick}
                 onSellClick={onSellClick}
-                portList={props.portList}
               />
             }
           />
@@ -287,10 +291,21 @@ const CoinModal = (props) => {
   );
 };
 
-const mapDispatchToProps = {
-  deleteFavorite: (coinId) => deleteFavorite(coinId),
-  postTransaction: (values) => postTransaction(values),
-  postFavorite: (coin) => postFavorite(coin),
+const mapStateToProps = (state) => {
+  return {
+    selectedCoin: state.selectedCoin,
+    info: state.info,
+    favorites: state.favorites,
+    portList: state.portList,
+  };
 };
 
-export default connect(null, mapDispatchToProps)(CoinModal);
+const mapDispatchToProps = {
+  getFavorites: () => getFavorites(),
+  modalInfo: () => modalInfo(),
+  deleteFavorite: (coinId) => deleteFavorite(coinId),
+  postFavorite: (coin) => postFavorite(coin),
+  postTransaction: (trans) => postTransaction(trans),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(CoinModal);

@@ -9,6 +9,7 @@ import {
   Icon,
   Image,
 } from "semantic-ui-react";
+import { connect } from "react-redux";
 
 const UserStats = (props) => {
   const renderTopGain = () => {
@@ -122,4 +123,10 @@ const UserStats = (props) => {
   );
 };
 
-export default UserStats;
+const mapStateToProps = (state) => {
+  return {
+    portList: state.portList,
+  };
+};
+
+export default connect(mapStateToProps)(UserStats);

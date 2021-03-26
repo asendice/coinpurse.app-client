@@ -3,11 +3,8 @@
 
 )Search Portfolio input set focus to all (fav, portList, transHistory) coins 
 
-
-
 )Fix key error/Fix PortfoLiolist.js error
 
-)Display Top DollarGain Coin and Top Percent Gain Coin
 
 )UserStats and Favorites stack on top of each other at an earlier vp
 
@@ -37,6 +34,10 @@
 
 
 -----Tasks COMPLETED ------------------------------------------------------
+
+)Form validation for negative numbers
+
+)Display Top DollarGain Coin and Top Percent Gain Coin
 
 )Fixed decimal problem in portList and in coinmodal 
 

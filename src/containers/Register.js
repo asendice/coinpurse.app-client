@@ -12,13 +12,13 @@ import {
   Image,
   Label,
 } from "semantic-ui-react";
-import CosmoPic from './img/regPic.png';
+import CosmoPic from "../img/regPic.png";
 import { copyRight } from "../number/NumberChanger";
 import { Field, reduxForm } from "redux-form";
 let Signup = () => {
   return (
     <>
-      <Container fluid style={{minHeight: "100vh"}}>
+      <Container fluid style={{ minHeight: "100vh" }}>
         <Grid columns={2} stackable>
           <Grid.Column computer={10} tablet={16}>
             <Segment padded="very">
@@ -79,20 +79,22 @@ let Signup = () => {
                     <Icon name="exchange" className="right floated large" />
                     <Header as="h2">Your Portfolio</Header>
                   </div>
-                <Card.Meta>
-                  THIS COULD BE YOU
-                </Card.Meta>
-                <Card.Description>
-                  <Header>$235,678</Header>
-                </Card.Description>
-                <Card.Content>
-                  <Card.Meta className="right floated">To the Moon!  <Icon name="rocket"/></Card.Meta>
-                </Card.Content>
+                  <Card.Meta>THIS COULD BE YOU</Card.Meta>
+                  <Card.Description>
+                    <Header>$235,678</Header>
+                  </Card.Description>
+                  <Card.Content>
+                    <Card.Meta className="right floated">
+                      To the Moon! <Icon name="rocket" />
+                    </Card.Meta>
+                  </Card.Content>
                 </Card.Content>
               </Card>
               <Card link href="/market" centered fluid>
-                <Card.Content><Header as="h3">Market</Header></Card.Content>
-                <Image src={CosmoPic}/>
+                <Card.Content>
+                  <Header as="h3">Market</Header>
+                </Card.Content>
+                <Image src={CosmoPic} />
               </Card>
             </Segment>
           </Grid.Column>

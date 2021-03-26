@@ -28,15 +28,15 @@ const VerticalHeader = (props) => {
     <>
       {/* menu display for mobile vp only  */}
       <Grid className="mobile only" style={{ marginTop: "1px" }}>
-        <Menu borderless fluid>
-          <Menu.Item link>
-            <NavLink exact to="/">
+        <Menu borderless fluid activeIndex>
+          <NavLink exact to="/">
+            <Menu.Item link>
               <Header as="h2">
                 <Icon name="exchange" size="mini" />
                 <Header.Content>{props.menuProps.name}</Header.Content>
               </Header>
-            </NavLink>
-          </Menu.Item>
+            </Menu.Item>
+          </NavLink>
           <Menu.Menu position="right">
             <Menu.Item>
               <Divider />
@@ -46,39 +46,40 @@ const VerticalHeader = (props) => {
             </Menu.Item>
           </Menu.Menu>
         </Menu>
-        <Menu borderless vertical fluid style={mobileMenuStyle}>
-          <Menu.Item link>
-            <NavLink exact to={`/${props.menuProps.itemOne}`}>
+
+        <Menu borderless vertical fluid style={mobileMenuStyle} activeIndex>
+          <NavLink exact to={`/${props.menuProps.itemOne}`}>
+            <Menu.Item link>
               <Header as="h3" onClick={handleToggle}>
                 <Icon name="chart line" />
                 <Header.Content>{props.menuProps.itemOne}</Header.Content>
               </Header>
-            </NavLink>
-          </Menu.Item>
-          <Menu.Item link>
-            <NavLink exact to={`${props.menuProps.itemTwo}`}>
+            </Menu.Item>
+          </NavLink>
+          <NavLink exact to={`${props.menuProps.itemTwo}`}>
+            <Menu.Item link>
               <Header as="h3" onClick={handleToggle}>
                 <Icon name="folder" />
                 <Header.Content>{props.menuProps.itemTwo}</Header.Content>
               </Header>
-            </NavLink>
-          </Menu.Item>
-          <Menu.Item>
-            <NavLink to="/register">
+            </Menu.Item>
+          </NavLink>
+          <NavLink to="/register">
+            <Menu.Item>
               <Button onClick={handleToggle}>
                 <Icon name="signup" size="large" color="grey" />
                 Sign Up
               </Button>
-            </NavLink>
-          </Menu.Item>
-          <Menu.Item>
-            <NavLink to="/login">
+            </Menu.Item>
+          </NavLink>
+          <NavLink to="/login">
+            <Menu.Item>
               <Button onClick={handleToggle}>
                 <Icon name="sign in" size="large" color="grey" />
                 Log In
               </Button>
-            </NavLink>
-          </Menu.Item>
+            </Menu.Item>
+          </NavLink>
         </Menu>
       </Grid>
       {/* ^^ menu display for movile vp only  */}
@@ -93,45 +94,46 @@ const VerticalHeader = (props) => {
             style={{ height: "100vh", backgroundColor: "#fff" }}
             compact
           >
-            <Menu.Item>
-              <NavLink exact to="/">
+            <NavLink exact to="/">
+              <Menu.Item>
                 <Header as="h3">
                   <Icon name="exchange" size="large" />
                 </Header>
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item>
-              <NavLink exact to="/market">
+              </Menu.Item>
+            </NavLink>
+            <NavLink exact to="/market">
+              <Menu.Item>
                 <Header>
                   <Icon name="chart line" size="large" />
                 </Header>
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item>
-              <NavLink exact to="/portfolio">
+              </Menu.Item>
+            </NavLink>
+            <NavLink exact to="/portfolio">
+              <Menu.Item>
                 <Header>
                   <Icon name="folder" size="large" />
                 </Header>
-              </NavLink>
-            </Menu.Item>
+              </Menu.Item>
+            </NavLink>
+
             <Divider hidden />
             <Divider hidden />
             <Divider hidden />
             <Divider hidden />
-            <Menu.Item>
-              <NavLink exact to="/register">
+            <NavLink exact to="/register">
+              <Menu.Item>
                 <Header>
                   <Icon name="signup" size="large" color="grey" />
                 </Header>
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item>
-              <NavLink exact to="/login">
+              </Menu.Item>
+            </NavLink>
+            <NavLink exact to="/login">
+              <Menu.Item>
                 <Header>
                   <Icon name="sign in" size="large" color="grey" />
                 </Header>
-              </NavLink>
-            </Menu.Item>
+              </Menu.Item>
+            </NavLink>
           </Menu>
         </Grid.Column>
       </Grid>
@@ -141,6 +143,7 @@ const VerticalHeader = (props) => {
       <Grid className="computer only">
         <Grid.Column>
           <Menu
+            activeIndex
             size="small"
             attached
             vertical
@@ -148,49 +151,50 @@ const VerticalHeader = (props) => {
             fixed="top"
             style={{ height: "100vh", background: "#fff" }}
           >
-            <Menu.Item link>
-              <NavLink exact to="/">
+            <NavLink exact to="/">
+              <Menu.Item link>
                 <Header as="h3">
                   <Header.Content>{props.menuProps.name}</Header.Content>
                 </Header>
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item link>
-              <NavLink exact to={`/${props.menuProps.itemOne}`}>
+              </Menu.Item>
+            </NavLink>
+            <NavLink exact to={`/${props.menuProps.itemOne}`}>
+              <Menu.Item link>
                 <Header as="h3">
                   <Icon name="chart line" />
                   <Header.Content>{props.menuProps.itemOne}</Header.Content>
                 </Header>
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item link>
-              <NavLink exact to={`/${props.menuProps.itemTwo}`}>
+              </Menu.Item>
+            </NavLink>
+            <NavLink exact to={`/${props.menuProps.itemTwo}`}>
+              <Menu.Item link>
                 <Header as="h3">
                   <Icon name="folder" />
                   <Header.Content>{props.menuProps.itemTwo}</Header.Content>
                 </Header>
-              </NavLink>
-            </Menu.Item>
+              </Menu.Item>
+            </NavLink>
+
             <Divider hidden />
             <Divider hidden />
             <Divider hidden />
             <Divider hidden />
-            <Menu.Item floated="right">
-              <NavLink to="/register">
+            <NavLink to="/register">
+              <Menu.Item floated="right">
                 <Button fluid>
                   <Icon name="signup" size="large" color="grey" />
                   Sign Up
                 </Button>
-              </NavLink>
-            </Menu.Item>
-            <Menu.Item>
-              <NavLink to="/login">
-                <Button fluid >
+              </Menu.Item>
+            </NavLink>
+            <NavLink to="/login">
+              <Menu.Item>
+                <Button fluid>
                   <Icon name="sign in" size="large" color="grey" />
                   Log In
                 </Button>
-              </NavLink>
-            </Menu.Item>
+              </Menu.Item>
+            </NavLink>
           </Menu>
         </Grid.Column>
       </Grid>

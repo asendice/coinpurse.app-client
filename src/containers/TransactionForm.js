@@ -30,7 +30,7 @@ const required = (num) => {
 };
 const number = (value) =>
   value && isNaN(Number(value)) ? (
-    <span style={{ color: "red" }}>*This field must contain a number.</span>
+    <span style={{ color: "red" }}>*This field must only contain numbers.</span>
   ) : undefined;
 const notZero = (value) =>
   value && value <= 0 ? (

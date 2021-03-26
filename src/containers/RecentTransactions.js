@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Segment, Label, Popup, Icon } from "semantic-ui-react";
-import Title from "./Title";
-import SearchNotFound from "./SearchNotFound";
+import Title from "../components/Title";
+import SearchNotFound from "../components/SearchNotFound";
 import { roundComma } from "../number/NumberChanger";
+import { connect } from "react-redux";
 
 const RecentTransactions = (props) => {
   const [term, setTerm] = useState("");
@@ -10,8 +11,8 @@ const RecentTransactions = (props) => {
   const onTermSubmit = (term) => {
     setTerm(term);
   };
-
-  const filterTransactionsByTerm = props.transactions.transactions.filter(
+  const reversed = props.transactions.transactions.reverse();
+  const filterTransactionsByTerm = reversed.filter(
     (trans) => {
       if (
         trans.trans.name.toLowerCase().includes(term) ||
@@ -90,7 +91,7 @@ const RecentTransactions = (props) => {
   return (
     <>
       {/* style={{ overflow: "auto", maxHeight: 600 }} <--- Might add this type of styling  */}
-      <Segment basic>
+      <Segment basic style={{ minHeight: 900 }}>
         <Title
           term={term}
           onTermSubmit={onTermSubmit}
@@ -116,5 +117,10 @@ const RecentTransactions = (props) => {
     </>
   );
 };
+const mapStateToProps = (state) => {
+  return {
+    transactions: state.transactions,
+  };
+};
 
-export default RecentTransactions;
+export default connect(mapStateToProps)(RecentTransactions);

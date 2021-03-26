@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { roundComma, renderArrow } from "../number/NumberChanger";
 import { Segment, Header, Icon, Divider, Table } from "semantic-ui-react";
+import { deleteFavorite, getFavorites, getMarket } from "../actions";
+import { connect } from "react-redux";
 
 const Favorites = (props) => {
+  useEffect(() => {
+    props.getFavorites();
+    props.getMarket();
+  }, []);
+
   const handleDeleteClick = (symbol) => {
     const filterFav = props.favorites.favorites.filter(
       (coin) => coin.coin === symbol
@@ -79,4 +86,17 @@ const Favorites = (props) => {
   );
 };
 
-export default Favorites;
+const mapStateToProps = (state) => {
+  return {
+    favorites: state.favorites,
+    market: state.market,
+  };
+};
+
+const mapDispatchToProps = {
+  getFavorites: () => getFavorites(),
+  getMarket: () => getMarket(),
+  deleteFavorite: (coinId) => deleteFavorite(coinId),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Favorites);
