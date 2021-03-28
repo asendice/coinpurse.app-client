@@ -4,27 +4,51 @@ import { Divider, Segment, Form, TextArea, Label } from "semantic-ui-react";
 import { Field, reduxForm, formValueSelector } from "redux-form";
 import { connect } from "react-redux";
 
-const renderTextArea = ({ input }) => {
+const renderTextArea = ({
+  input,
+  label,
+  type,
+  meta: { touched, error, warning },
+}) => {
   return (
-    <TextArea
-      {...input}
-      style={{ maxHeight: 60, minHeight: 60 }}
-      placeholder="I bought 50,000 Dogecoin because I read on reddit.com that Dogecoin is going to the moon! HEY, does this app have GME?"
-    />
+    <div>
+      <TextArea
+        {...input}
+        style={{ maxHeight: 60, minHeight: 60 }}
+        placeholder="Enter Notes..."
+      />
+      {touched &&
+        ((error && <span>{error}</span>) ||
+          (warning && <span>{warning}</span>))}
+    </div>
   );
 };
 
-const renderAmt = ({ input, label, meta: { touched, error, warning } }) => (
-  <div>
-    <input {...input} placeholder={label} />
-    {touched &&
-      ((error && <span>{error}</span>) || (warning && <span>{warning}</span>))}
-  </div>
-);
+const renderAmt = ({ input, label, meta: { touched, error, warning } }) => {
+  return (
+    <div>
+      <input {...input} placeholder={label} />
+      {touched &&
+        ((error && <span>{error}</span>) ||
+          (warning && <span>{warning}</span>))}
+    </div>
+  );
+};
+
+const maxLength = (value) =>
+  value && value.length > 100 ? (
+    <span style={{ color: "red" }}>
+      {`*This field must contain no more than 240 characters.`}
+    </span>
+  ) : undefined;
 
 const required = (num) => {
   if (!num || num === "") {
-    return <span style={{ color: "red" }}>*This field is required in order to submit a transaction.</span>;
+    return (
+      <span style={{ color: "red" }}>
+        *This field is required in order to submit a transaction.
+      </span>
+    );
   }
   return undefined;
 };
@@ -34,12 +58,14 @@ const number = (value) =>
   ) : undefined;
 const notZero = (value) =>
   value && value <= 0 ? (
-    <span style={{ color: "red" }}>*This field cannot be less than or equal to 0.</span>
+    <span style={{ color: "red" }}>
+      *This field cannot be less than or equal to 0.
+    </span>
   ) : undefined;
 
 let TransactionForm = (props) => {
   return (
-    <Form className="ui form" onSubmit={props.handleSubmit(props.onFormSubmit)}>
+    <Form onSubmit={props.handleSubmit(props.onFormSubmit)}>
       <Label>Date of trade: {date} </Label>
       <Divider hidden />
       <Label>Time of trade: {time}</Label>
@@ -55,7 +81,12 @@ let TransactionForm = (props) => {
       />
       <Divider hidden />
       <Label>Notes about trade</Label>
-      <Field name="note" component={renderTextArea} type="text" />
+      <Field
+        name="note"
+        component={renderTextArea}
+        type="text"
+        validate={[maxLength]}
+      />
       <Divider hidden />
       <Segment basic textAlign="center">
         <button

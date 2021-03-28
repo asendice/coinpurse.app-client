@@ -40,6 +40,9 @@ let Login = () => {
           </Segment>
         </Card.Content>
       </Card>
+      <Divider hidden />
+      <Divider hidden/>
+      <Divider />
       <Segment basic textAlign="center">{copyRight()}</Segment>
     </Container>
   );

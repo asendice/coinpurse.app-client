@@ -14,7 +14,59 @@ import {
 } from "semantic-ui-react";
 import CosmoPic from "../img/regPic.png";
 import { copyRight } from "../number/NumberChanger";
-import { Field, reduxForm } from "redux-form";
+import { connect } from "react-redux";
+import { Field, reduxForm, formValueSelector } from "redux-form";
+
+const renderInput = ({ input, label, type, meta: { touched, error, warning } }) => {
+  return (
+    <div>
+      <input {...input} placeholder={label} type={type} />
+      {touched &&
+        ((error && <span>{error}</span>) ||
+          (warning && <span>{warning}</span>))}
+    </div>
+  );
+};
+
+const required = (x) => {
+  if (!x || x === "") {
+    return (
+      <span style={{ color: "red" }}>
+        *This field is required to create your account.
+      </span>
+    );
+  }
+  return undefined;
+};
+
+const email = (value) =>
+  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? (
+    <span style={{ color: "red" }}>*Invalid Email address.</span>
+  ) : undefined;
+
+const alphaNumeric = (value) =>
+  value && /[^a-zA-Z0-9 ]/i.test(value)
+    ? "Only alphanumeric characters"
+    : undefined;
+
+const length = (value) =>
+  value && value.length < 4 ? (
+    <span style={{ color: "red" }}>
+      {`*This field must contain more than 4 characters.`}
+    </span>
+  ) : undefined;
+const maxLength = (value) =>
+  value && value.length > 11 ? (
+    <span style={{ color: "red" }}>
+      {`*This field must contain no more than 12 characters.`}
+    </span>
+  ) : undefined;
+
+const userNameVal = (value) =>
+  value && value.includes(" ") ? (
+    <span style={{ color: "red" }}>*This field cannot include spaces.</span>
+  ) : undefined;
+
 let Signup = () => {
   return (
     <>
@@ -27,13 +79,29 @@ let Signup = () => {
               </Segment>
               <Form textAlign="left">
                 <Label>Username</Label>
-                <Field name="username" component="input" type="text" />
+                <Field
+                  type="text"
+                  name="username"
+                  component={renderInput}
+                  placeholder="username"
+                  validate={[length, userNameVal, maxLength, required, alphaNumeric]}
+                />
                 <Divider hidden />
                 <Label>Email</Label>
-                <Field name="email" component="input" type="text" />
+                <Field
+                  name="email"
+                  component={renderInput}
+                  type="email"
+                  validate={[email, required]}
+                />
                 <Divider hidden />
                 <Label>Password</Label>
-                <Field name="password" component="input" type="text" />
+                <Field
+                  name="password"
+                  component={renderInput}
+                  type="password"
+                  validate={[length, required]}
+                />
                 <Divider hidden />
                 <Label>Crypto Knowledge </Label>
                 <Field name="skill" component="select">
@@ -50,7 +118,7 @@ let Signup = () => {
               </Form>
               <Segment basic textAlign="center">
                 <Header as="h4">
-                  Have an Account? <a href="/login">Log In! Let's Go!</a>
+                  Already Have An Account? <a href="/login">Log In! Let's Go!</a>
                 </Header>
               </Segment>
             </Segment>
@@ -99,6 +167,9 @@ let Signup = () => {
             </Segment>
           </Grid.Column>
         </Grid>
+        <Divider hidden/>
+        <Divider hidden/>
+        <Divider />
         <Segment basic textAlign="center">
           {copyRight()}
         </Segment>
@@ -109,6 +180,14 @@ let Signup = () => {
 
 Signup = reduxForm({
   form: "signup",
+})(Signup);
+
+const selector = formValueSelector("signup");
+Signup = connect((state) => {
+  const values = selector(state, "username", "email", "password", "skill");
+  return {
+    values,
+  };
 })(Signup);
 
 export default Signup;

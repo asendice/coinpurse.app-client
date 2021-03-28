@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from "react";
-import Title from "../components/Title";
-import Favorites from "./Favorites";
-import RecentTransactions from "./RecentTransactions";
-import PortfolioList from "./PortfolioList";
-import UserStats from "./UserStats";
-import CoinModal from "./CoinModal";
+import Title from "./Title";
+import Favorites from "../containers/Favorites";
+import RecentTransactions from "../containers/RecentTransactions";
+import PortfolioList from "../containers/PortfolioList";
+import UserStats from "../containers/UserStats";
+import CoinModal from "../containers/CoinModal";
 import { copyRight } from "../number/NumberChanger";
-import { Grid, Segment, Container } from "semantic-ui-react";
-import { getMarket, getTransactions, addPortList } from "../actions";
+import { Grid, Segment, Container, Divider } from "semantic-ui-react";
+import { getMarket, getTransactions } from "../actions";
 import { connect } from "react-redux";
 
 const Portfolio = (props) => {
   const [open, setOpen] = useState(false);
+
   const [portTotal, setPortTotal] = useState(0);
   const [portGain, setPortGain] = useState(0);
 
-  console.log("props.portList.list", props.portList.list);
-
-  
+  useEffect(() => {
+    props.getMarket();
+    props.getTransactions();
+  }, []);
 
   return (
     <>
@@ -25,12 +27,14 @@ const Portfolio = (props) => {
         <Segment basic>
           <Title label="Portfolio" />
           <Grid>
-            <Grid.Row columns={2}>
+            <Grid.Row>
               <Grid.Column computer={8} tablet={16}>
                 <UserStats
                   header="Balance"
                   portTotal={portTotal}
                   portGain={portGain}
+                  setPortTotal={setPortTotal}
+                  setPortGain={setPortGain}
                 />
               </Grid.Column>
               <Grid.Column computer={8} tablet={16}>
@@ -56,6 +60,7 @@ const Portfolio = (props) => {
             </Grid.Row>
           </Grid>
         </Segment>
+        <Divider />
         <Segment basic textAlign="center">
           {copyRight()}
         </Segment>
@@ -65,18 +70,9 @@ const Portfolio = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    market: state.market,
-    transactions: state.transactions,
-    portList: state.portList,
-  };
-};
-
 const mapDispatchToProps = {
   getTransactions: () => getTransactions(),
   getMarket: () => getMarket(),
-  addPortList: (list) => addPortList(list),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Portfolio);
+export default connect(null, mapDispatchToProps)(Portfolio);

@@ -35,7 +35,7 @@ const Favorites = (props) => {
             <td>
               <img className="ui image avatar" src={fav.image} alt={fav.id} />
             </td>
-            <td>{fav.name}</td>
+            <td className="td-dis">{fav.name}</td>
             <td>{`$${roundComma(fav.current_price)}`}</td>
             <td
               style={{
@@ -75,7 +75,7 @@ const Favorites = (props) => {
       <Segment basic>
         <Segment
           basic
-          style={{ overflow: "auto", maxHeight: 300, minHeight: 300 }}
+          style={{ overflow: "auto", maxHeight: 300, minHeight: 300}}
         >
           <Table basic="very" unstackable>
             <tbody>{renderTableRow()}</tbody>

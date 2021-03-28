@@ -28,7 +28,7 @@ const VerticalHeader = (props) => {
     <>
       {/* menu display for mobile vp only  */}
       <Grid className="mobile only" style={{ marginTop: "1px" }}>
-        <Menu borderless fluid activeIndex>
+        <Menu borderless fluid >
           <NavLink exact to="/">
             <Menu.Item link>
               <Header as="h2">
@@ -47,7 +47,7 @@ const VerticalHeader = (props) => {
           </Menu.Menu>
         </Menu>
 
-        <Menu borderless vertical fluid style={mobileMenuStyle} activeIndex>
+        <Menu borderless vertical fluid style={mobileMenuStyle} >
           <NavLink exact to={`/${props.menuProps.itemOne}`}>
             <Menu.Item link>
               <Header as="h3" onClick={handleToggle}>
@@ -143,7 +143,7 @@ const VerticalHeader = (props) => {
       <Grid className="computer only">
         <Grid.Column>
           <Menu
-            activeIndex
+            
             size="small"
             attached
             vertical

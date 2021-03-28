@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { roundComma, ifNegative } from "../number/NumberChanger";
 import {
   Header,
@@ -10,12 +10,108 @@ import {
   Image,
 } from "semantic-ui-react";
 import { connect } from "react-redux";
+import { getMarket, getTransactions } from "../actions";
 
 const UserStats = (props) => {
+  useEffect(() => {
+    props.getMarket();
+    props.getTransactions();
+  }, []);
+
+  const mapTransactions = props.transactions.transactions.map((trans) => {
+    return {
+      name: trans.trans.name,
+      amt: trans.trans.buy
+        ? Number(trans.trans.amt)
+        : -Math.abs(trans.trans.amt),
+      total: trans.trans.buy
+        ? Number(trans.trans.amt * trans.trans.price)
+        : -Math.abs(trans.trans.amt * trans.trans.price),
+    };
+  });
+
+  const mapNameTrans = mapTransactions.map((coin) => {
+    return coin.name;
+  });
+
+  const addAmts = Array.from(
+    mapTransactions.reduce(
+      (m, { name, amt }) => m.set(name, (m.get(name) || 0) + amt),
+      new Map()
+    ),
+    ([name, amt]) => ({ name, amt })
+  );
+
+  const addTotals = Array.from(
+    mapTransactions.reduce(
+      (m, { name, total }) => m.set(name, (m.get(name) || 0) + total),
+      new Map()
+    ),
+    ([name, total]) => ({ name, total })
+  );
+
+  const filterMarket = props.market.filter((coin) => {
+    if (mapNameTrans.includes(coin.name)) {
+      return coin;
+    } else {
+      return null;
+    }
+  });
+
+  const mergeByName = (arr1, arr2, arr3) =>
+    arr1.map((itm) => ({
+      ...arr2.find((item) => item.name === itm.name && item),
+      ...arr3.find((item) => item.name === itm.name && item),
+      ...itm,
+    }));
+
+  const portfolio = mergeByName(addAmts, filterMarket, addTotals);
+
+  const mapPortfolioTotal = portfolio.map((coin) => {
+    return coin.amt * coin.current_price;
+  });
+  const mapTotal = addTotals.map((coin) => {
+    return coin.total;
+  });
+  const origTotal = mapTotal.reduce((a, b) => {
+    return a + b;
+  }, 0);
+
+  const portfolioTotal = mapPortfolioTotal.reduce((a, b) => {
+    return a + b;
+  }, 0);
+
+  const renderPortTotal = () => {
+    return (
+      <Statistic>
+        <Statistic.Value>{`$${roundComma(portfolioTotal)}`}</Statistic.Value>
+        <Statistic.Label style={{ color: "grey" }}>
+          Estimated Total
+        </Statistic.Label>
+      </Statistic>
+    );
+  };
+  const renderPortGain = () => {
+    const portGain = portfolioTotal - origTotal;
+    return (
+      <Statistic size="small">
+        <Statistic.Value
+          style={{
+            color: portGain === 0 ? "grey" : portGain > 0 ? "green" : "red",
+          }}
+        >
+          {ifNegative(roundComma(portGain))}
+        </Statistic.Value>
+        <Statistic.Label style={{ color: "grey" }}>
+          Estimated Gain
+        </Statistic.Label>
+      </Statistic>
+    );
+  };
+
   const renderTopGain = () => {
-    if (props.portList.list.length > 0) {
-      const portListMap = props.portList.list.map((coin) => {
-        console.log("coin1", coin);
+    if (portfolio.length > 0) {
+      const portListMap = portfolio.map((coin) => {
         return {
           name: coin.name,
           image: coin.image,
@@ -33,7 +129,11 @@ const UserStats = (props) => {
               <Image avatar src={top.image} />
               {top.symbol}
             </Statistic.Label>
-            <Statistic.Value style={{ color: top.gain === 0 ?  "grey" : top.gain > 0 ? "green" : "red" }}>
+            <Statistic.Value
+              style={{
+                color: top.gain === 0 ? "grey" : top.gain > 0 ? "green" : "red",
+              }}
+            >
               {ifNegative(roundComma(top.gain))}
             </Statistic.Value>
             <Statistic.Label style={{ color: "grey" }}>
@@ -46,9 +146,8 @@ const UserStats = (props) => {
     }
   };
   const renderWorstGain = () => {
-    if (props.portList.list.length > 0) {
-      const portListMap = props.portList.list.map((coin) => {
-        console.log("coin1", coin);
+    if (portfolio.length > 0) {
+      const portListMap = portfolio.map((coin) => {
         return {
           name: coin.name,
           image: coin.image,
@@ -59,7 +158,6 @@ const UserStats = (props) => {
       const bot = portListMap.reduce((prev, current) => {
         return prev.gain < current.gain ? prev : current;
       });
-      console.log("top", bot);
       return (
         <>
           <Statistic size="mini">
@@ -67,7 +165,11 @@ const UserStats = (props) => {
               <Image avatar src={bot.image} />
               {bot.symbol}
             </Statistic.Label>
-            <Statistic.Value style={{ color: bot.gain > 0 ? "green" : "red" }}>
+            <Statistic.Value
+              style={{
+                color: bot.gain === 0 ? "grey" : bot.gain > 0 ? "green" : "red",
+              }}
+            >
               {" "}
               {ifNegative(roundComma(bot.gain))}
             </Statistic.Value>
@@ -88,30 +190,10 @@ const UserStats = (props) => {
       <Segment basic textAlign="center">
         <Grid>
           <Grid.Row>
-            <Grid.Column>
-              <Statistic size="small">
-                <Statistic.Value>{`$${roundComma(
-                  props.portTotal
-                )}`}</Statistic.Value>
-                <Statistic.Label style={{ color: "grey" }}>
-                  Estimated Total
-                </Statistic.Label>
-              </Statistic>
-            </Grid.Column>
+            <Grid.Column>{renderPortTotal()}</Grid.Column>
           </Grid.Row>
           <Grid.Row>
-            <Grid.Column>
-              <Statistic size="tiny">
-                <Statistic.Value
-                  style={{ color: props.portGain > 0 ? "green" : "red" }}
-                >
-                  {ifNegative(roundComma(props.portGain))}
-                </Statistic.Value>
-                <Statistic.Label style={{ color: "grey" }}>
-                  Estimated Gain
-                </Statistic.Label>
-              </Statistic>
-            </Grid.Column>
+            <Grid.Column>{renderPortGain()}</Grid.Column>
           </Grid.Row>
           <Grid.Row columns={2}>
             <Grid.Column>{renderTopGain()}</Grid.Column>
@@ -125,8 +207,14 @@ const UserStats = (props) => {
 
 const mapStateToProps = (state) => {
   return {
-    portList: state.portList,
+    market: state.market,
+    transactions: state.transactions,
   };
 };
 
-export default connect(mapStateToProps)(UserStats);
+const mapDispatchToProps = {
+  getTransactions: () => getTransactions(),
+  getMarket: () => getMarket(),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserStats);

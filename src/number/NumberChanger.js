@@ -18,7 +18,11 @@ const ifNegative = (num) => {
 };
 
 const rounder = (num) => {
-  return Math.round(num * 100) / 100;
+  if (num.toString().length > 7) {
+    return Math.round(num * 10000) / 10000;
+  } else {
+    return Math.round(num * 100) / 100;
+  }
 };
 
 const convertMc = (num) => {

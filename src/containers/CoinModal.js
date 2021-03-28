@@ -14,18 +14,28 @@ import {
 } from "semantic-ui-react";
 import TransactionForm from "./TransactionForm";
 import { connect } from "react-redux";
-import { deleteFavorite, postFavorite, getFavorites, modalInfo, postTransaction } from "../actions";
+import {
+  deleteFavorite,
+  postFavorite,
+  getFavorites,
+  modalInfo,
+  postTransaction,
+  getTransactions,
+  getMarket,
+} from "../actions";
 import { roundComma, rounder, ifNegative } from "../number/NumberChanger";
 
 const CoinModal = (props) => {
   const [activeIndex, setActiveIndex] = useState(1);
   const [index] = useState(0);
   const [buy, setBuy] = useState(false);
-
   useEffect(() => {
+    setActiveIndex(1);
     props.getFavorites();
     props.modalInfo();
-  }, []);
+    props.getMarket();
+    props.getTransactions();
+  }, [props.open]);
 
   const values = [
     `$${roundComma(props.selectedCoin.current_price)}`,
@@ -67,8 +77,54 @@ const CoinModal = (props) => {
       props.deleteFavorite(filterFav[0].id);
     }
   };
+  const mapTransactions = props.transactions.transactions.map((trans) => {
+    return {
+      name: trans.trans.name,
+      amt: trans.trans.buy
+        ? Number(trans.trans.amt)
+        : -Math.abs(trans.trans.amt),
+      total: trans.trans.buy
+        ? Number(trans.trans.amt * trans.trans.price)
+        : -Math.abs(trans.trans.amt * trans.trans.price),
+    };
+  });
+  const mapNameTrans = mapTransactions.map((coin) => {
+    return coin.name;
+  });
 
-  const filterPortList = props.portList.list.filter((coin) => {
+  const addAmts = Array.from(
+    mapTransactions.reduce(
+      (m, { name, amt }) => m.set(name, (m.get(name) || 0) + amt),
+      new Map()
+    ),
+    ([name, amt]) => ({ name, amt })
+  );
+
+  const addTotals = Array.from(
+    mapTransactions.reduce(
+      (m, { name, total }) => m.set(name, (m.get(name) || 0) + total),
+      new Map()
+    ),
+    ([name, total]) => ({ name, total })
+  );
+
+  const filterMarket = props.market.filter((coin) => {
+    if (mapNameTrans.includes(coin.name)) {
+      return coin;
+    } else {
+      return null;
+    }
+  });
+  const mergeByName = (arr1, arr2, arr3) =>
+    arr1.map((itm) => ({
+      ...arr2.find((item) => item.name === itm.name && item),
+      ...arr3.find((item) => item.name === itm.name && item),
+      ...itm,
+    }));
+
+  const portfolio = mergeByName(addAmts, filterMarket, addTotals);
+
+  const filterPortList = portfolio.filter((coin) => {
     if (coin.name === props.selectedCoin.name) {
       return coin;
     } else {
@@ -76,41 +132,54 @@ const CoinModal = (props) => {
     }
   });
 
+  console.log("filterPortList[0]", filterPortList[0]);
+
   const onFormSubmit = (values) => {
     const coinAmt = filterPortList.map((coin) => {
       return coin.amt;
     });
+    console.log(coinAmt, "coinAMt");
     const today = new Date();
     const date =
       today.getMonth() + 1 + "-" + today.getDate() + "-" + today.getFullYear();
     const time =
-      today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      today.getHours() +
+      ":" +
+      (today.getMinutes() < 10 ? "0" : "") +
+      today.getMinutes() +
+      ":" +
+      (today.getSeconds() < 10 ? "0" : "") +
+      today.getSeconds();
+    console.log(time);
     if (buy) {
+      values.name = props.selectedCoin.name;
+      values.symbol = props.selectedCoin.symbol;
+      values.buy = buy;
+      values.amt = Number(values.amt);
+      values.image = props.selectedCoin.image;
+      values.price = Number(props.selectedCoin.current_price);
+      values.date = date;
+      values.time = time;
+      props.postTransaction(values);
+
+      props.setOpen(false);
       alert(
         `Buy Transaction Submitted For ${values.amt} ${props.selectedCoin.name}`
       );
+    } else if (coinAmt >= Number(values.amt)) {
       values.name = props.selectedCoin.name;
       values.symbol = props.selectedCoin.symbol;
       values.buy = buy;
+      values.amt = Number(values.amt);
       values.image = props.selectedCoin.image;
       values.price = Number(props.selectedCoin.current_price);
-      values.date = { date };
-      values.time = { time };
+      values.date = date;
+      values.time = time;
       props.postTransaction(values);
       props.setOpen(false);
-    } else if (filterPortList[0] && coinAmt[0] > values.amt) {
       alert(
         `Sell Transaction Submitted For ${values.amt} ${props.selectedCoin.name}`
       );
-      values.name = props.selectedCoin.name;
-      values.symbol = props.selectedCoin.symbol;
-      values.buy = buy;
-      values.image = props.selectedCoin.image;
-      values.price = Number(props.selectedCoin.current_price);
-      values.date = { date };
-      values.time = { time };
-      props.postTransaction(values);
-      props.setOpen(false);
     } else {
       alert(
         `Transaction cancelled of ${props.selectedCoin.name} due to not having a sufficent amount.`
@@ -158,8 +227,8 @@ const CoinModal = (props) => {
         const dollarGain = coin.amt * coin.current_price - coin.total;
         if (coin.amt > 0) {
           return (
-            <>
-              <Grid.Column key={coin.id}>
+            <React.Fragment key={coin.name}>
+              <Grid.Column>
                 <Popup
                   content={`Your remaing amount of ${coin.name} after all transactions, buys and sells, have been calculated.`}
                   position="right center"
@@ -173,7 +242,7 @@ const CoinModal = (props) => {
                   <Header as="h5">{rounder(coin.amt)}</Header>
                 </Segment>
               </Grid.Column>
-              <Grid.Column key={coin.name}>
+              <Grid.Column>
                 <Popup
                   content={`Estimated overall value of your ${coin.name}. Amount of ${coin.name} x Current Price.`}
                   position="right center"
@@ -217,7 +286,7 @@ const CoinModal = (props) => {
                   <Header as="h5">${roundComma(coin.total)}</Header>
                 </Segment>
               </Grid.Column>
-            </>
+            </React.Fragment>
           );
         } else {
           return null;
@@ -237,8 +306,10 @@ const CoinModal = (props) => {
       <Modal.Header>
         <Image avatar src={props.selectedCoin.image} />
         {props.selectedCoin.name}
-        <span style={{ color: "grey" }}> {props.selectedCoin.symbol}</span>
-        <span style={{ float: "right" }}>
+        <span style={{ color: "grey" }}>
+          {" " + props.selectedCoin.symbol + " "}
+        </span>
+        <span>
           <Popup
             content={heart.includes(true) ? "Favorited" : "Add to Favorites?"}
             trigger={
@@ -247,6 +318,21 @@ const CoinModal = (props) => {
                 name={heart.includes(true) ? "heart" : "heart outline"}
                 color="red"
                 onClick={() => favoriteClick(props.selectedCoin)}
+              />
+            }
+          />
+        </span>
+        <span basic style={{ float: "right" }}>
+          <Popup
+            content="Close window."
+            trigger={
+              <Icon
+                style={{ cursor: "pointer" }}
+                floated="right"
+                size="small"
+                float="right"
+                name="x"
+                onClick={() => props.setOpen(false)}
               />
             }
           />
@@ -296,7 +382,8 @@ const mapStateToProps = (state) => {
     selectedCoin: state.selectedCoin,
     info: state.info,
     favorites: state.favorites,
-    portList: state.portList,
+    market: state.market,
+    transactions: state.transactions,
   };
 };
 
@@ -306,6 +393,8 @@ const mapDispatchToProps = {
   deleteFavorite: (coinId) => deleteFavorite(coinId),
   postFavorite: (coin) => postFavorite(coin),
   postTransaction: (trans) => postTransaction(trans),
+  getTransactions: () => getTransactions(),
+  getMarket: () => getMarket(),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CoinModal);

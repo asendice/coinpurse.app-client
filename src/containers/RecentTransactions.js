@@ -1,33 +1,43 @@
-import React, { useState } from "react";
-import { Segment, Label, Popup, Icon } from "semantic-ui-react";
+import React, { useState, useEffect } from "react";
+import { Segment, Label, Popup, Icon, Header } from "semantic-ui-react";
 import Title from "../components/Title";
 import SearchNotFound from "../components/SearchNotFound";
-import { roundComma } from "../number/NumberChanger";
+import { roundComma, rounder } from "../number/NumberChanger";
+import { getTransactions } from "../actions";
 import { connect } from "react-redux";
 
 const RecentTransactions = (props) => {
   const [term, setTerm] = useState("");
 
+  const GetTransData = () => {
+    const { getTransactions } = props;
+    useEffect(() => {
+      getTransactions();
+    }, [getTransactions]);
+  };
+  GetTransData();
+
   const onTermSubmit = (term) => {
     setTerm(term);
   };
 
-  const sortByDate = props.transactions.transactions.sort((a, b) => {
-    return b.date - a.date;
-  });
-  const filterTransactionsByTerm = sortByDate.filter(
-    (trans) => {
-      if (
-        trans.trans.name.toLowerCase().includes(term) ||
-        trans.trans.symbol.toLowerCase().includes(term) ||
-        trans.trans.date.date.includes(term)
-      ) {
-        return trans;
-      } else {
-        return null;
-      }
-    }
+  const sortTrans = props.transactions.transactions.sort(
+    (a, b) =>
+      b.trans.date.localeCompare(a.trans.date) ||
+      b.trans.time.localeCompare(a.trans.time)
   );
+
+  const filterTransactionsByTerm = sortTrans.filter((trans) => {
+    if (
+      trans.trans.name.toLowerCase().includes(term) ||
+      trans.trans.symbol.toLowerCase().includes(term) ||
+      trans.trans.date.includes(term)
+    ) {
+      return trans;
+    } else {
+      return null;
+    }
+  });
 
   const renderNotFound = () => {
     if (filterTransactionsByTerm.length === 0) {
@@ -48,8 +58,8 @@ const RecentTransactions = (props) => {
           <tr key={trans.id}>
             <td>
               <Label>
-                <div>{trans.trans.date.date}</div>
-                <div>{trans.trans.time.time}</div>
+                <div>{trans.trans.date}</div>
+                <div>{trans.trans.time}</div>
               </Label>
             </td>
             <td>
@@ -62,12 +72,11 @@ const RecentTransactions = (props) => {
             <td className="td-dis">{trans.trans.name}</td>
             <td>
               {trans.trans.buy ? (
-                <Label color="green">Buy</Label>
+                <Header as ="h4"  style={{color:"green"}}>{(trans.trans.amt)}</Header>
               ) : (
-                <Label color="red">Sell</Label>
+                <Header as ="h4"  style={{color:"red"}}>{(trans.trans.amt)}</Header>
               )}
             </td>
-            <td>{trans.trans.amt}</td>
             <td>{`$${roundComma(trans.trans.price)}`}</td>
             <td className="td-dis">{`$${roundComma(
               Number(trans.trans.amt * trans.trans.price)
@@ -76,7 +85,7 @@ const RecentTransactions = (props) => {
               {trans.trans.note ? (
                 <Popup
                   content={trans.trans.note}
-                  position="top right"
+                  position="top center"
                   trigger={<Icon name="clipboard" style={{ color: "grey" }} />}
                 />
               ) : (
@@ -105,12 +114,11 @@ const RecentTransactions = (props) => {
             <tr>
               <th className="two wide">Date / Time</th>
               <th className="one wide"></th>
-              <th className="td-dis one-wide">Name</th>
-              <th className=""></th>
-              <th className="">Qty</th>
-              <th className="">Price</th>
-              <th className="td-dis">Total</th>
-              <th></th>
+              <th className="td-dis two-wide">Name</th>
+              <th className="two-wide">Qty</th>
+              <th className="two-wide">Price</th>
+              <th className="td-dis two-wide">Total</th>
+              <th className="one-wide">Notes</th>
             </tr>
           </thead>
           <tbody>{renderTransactions()}</tbody>
@@ -126,4 +134,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(RecentTransactions);
+const mapDispatchToProps = {
+  getTransactions: () => getTransactions(),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(RecentTransactions);
