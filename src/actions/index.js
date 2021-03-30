@@ -1,5 +1,6 @@
 import coinGeckoApi from "../apis/coinGeckoApi";
 import localHost from "../apis/localHost";
+import backendApi from "../apis/backendApi";
 //Actions
 //Asynchronous Action Creator to retrieve market data from api
 export const getMarket = () => {
@@ -116,7 +117,7 @@ export const postTransaction = (trans) => {
           throw error;
         }
       })
-      .then((response) => dispatch(addTransaction(response.data)))
+      .then((response) => dispatch(addTransaction(response)))
       .catch((error) => {
         console.log("postTransaction", error.message);
       });
@@ -137,7 +138,12 @@ export const getTransactions = () => {
           throw error;
         }
       })
-      .then((transactions) => dispatch(addTransactions(transactions)));
+      .then((transactions) =>
+        dispatch(
+          addTransactions(transactions),
+          dispatch(createPortList(transactions))
+        )
+      );
   };
 };
 
@@ -158,59 +164,91 @@ export const addTransaction = (trans) => {
 
 //<-----> BEGINNING OF ACTION CREATORS FOR PORT LIST <----->
 
-export const addPortList = (list) => {
-  console.log(list)
+export const createPortList = (transList) => {
+  console.log(transList);
   return {
-    type: "ADD_PORTLIST",
-    payload: list,
+    type: "CREATE_PORTLIST",
+    payload: transList,
   };
 };
-// export const addPortLists = (list) => {
-//   return {
-//     type: "ADD_PORTLISTS",
-//     payload: list,
-//   };
-// };
-
-// export const postPortList = (list) => {
-//   return (dispatch) => {
-//     localHost
-//       .post("/portfolioList", {
-//         list,
-//       })
-//       .then((response) => {
-//         if (response) {
-//           return response;
-//         } else {
-//           const error = new Error(
-//             `Error ${response.status}: ${response.statusText}`
-//           );
-//           error.response = response;
-//           throw error;
-//         }
-//       })
-//       .then((response) => dispatch(addPortList(response.data)))
-//       .catch((error) => {
-//         console.log("postPortList", error.message);
-//       });
-//   };
-// };
-// export const getPortList = () => {
-//   return async (dispatch) => {
-//     await localHost
-//       .get("/portfolioList")
-//       .then((response) => {
-//         if (response) {
-//           return response.data;
-//         } else {
-//           const error = new Error(
-//             `Error ${response.status}: ${response.statusText}`
-//           );
-//           error.response = response;
-//           throw error;
-//         }
-//       })
-//       .then((lists) => dispatch(addPortLists(lists)));
-//   };
-// };
 //<-----> END OF ACTION CREATORS FOR PORT LIST <----->
+
+export const register = (formValues) => {
+  const json = JSON.stringify({
+    email: formValues.email,
+    name: formValues.username,
+    password: formValues.password,
+    password_confirmation: formValues.confirmPassword,
+    skill: formValues.skill,
+  });
+
+  return (dispatch) => {
+    backendApi
+      .post("/signup", json, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        if (response) {
+          return response;
+        } else {
+          const error = new Error(
+            `Error ${response.status}: ${response.statusText}`
+          );
+          console.log(error, "error");
+          console.log(error, "error");
+          error.response = JSON.stringify(response);
+        }
+      })
+      .then((response) => dispatch(registered(response)))
+      .catch((error) => {
+        dispatch(registered(error.response));
+      });
+  };
+};
+
+export const registered = (res) => {
+  return {
+    type: "REG_RESPONSE",
+    payload: res,
+  };
+};
+
+export const login = (formValues) => {
+  const json = JSON.stringify({
+    name: formValues.username,
+    password: formValues.password,
+  });
+  return (dispatch) => {
+    backendApi
+      .post("/signin", json, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        if (response) {
+          return response;
+        } else {
+          const error = new Error(
+            `Error ${response.status}: ${response.statusText}`
+          );
+          console.log(error, "error");
+          console.log(error, "error");
+          error.response = JSON.stringify(response);
+        }
+      })
+      .then((response) => dispatch(loggedin(response)))
+      .catch((error) => {
+        dispatch(loggedin(error.response));
+      });
+  };
+};
+
+export const loggedin = (res) => {
+  return {
+    type: "LOG_RESPONSE",
+    payload: res,
+  };
+};

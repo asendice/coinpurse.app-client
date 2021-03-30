@@ -1,55 +1,92 @@
-import React from "react";
-// import { Form } from "semantic-ui-react";
+import React, { useState } from "react";
 import {
   Card,
   Divider,
   Header,
   Icon,
-  Label,
   Segment,
   Container,
+  Modal,
 } from "semantic-ui-react";
 import { copyRight } from "../number/NumberChanger";
-import { Field, reduxForm } from "redux-form";
+import { Redirect } from "react-router";
+import { login } from "../actions";
+import LoginForm from "../containers/LoginForm";
+import { connect } from "react-redux";
+const Login = (props) => {
+  const [open, setOpen] = useState(false);
+  const onFormSubmit = (formValues) => {
+    props.login(formValues);
+    setOpen(true);
+  };
 
-let Login = () => {
+  console.log(props.userInfo, "data.errors");
+
+  const renderModal = () => {
+    if (props.userInfo.status && props.userInfo.status !== 200) {
+      const mapUserInfoError = props.userInfo.data.errors.map((errors) => {
+        return errors.user || errors.password;
+      });
+      console.log(mapUserInfoError, "mapped");
+      console.log(mapUserInfoError, "mapped");
+      return (
+        <Modal
+          onClose={() => setOpen(false)}
+          onOpen={() => setOpen(true)}
+          open={open}
+          size="small"
+          textAlign="center"
+        >
+          <Modal.Header>
+            Login failed: {mapUserInfoError}
+            <Icon name="x" style={{ float: "right" }} />
+          </Modal.Header>
+        </Modal>
+      );
+    } else if(props.userInfo.status === 200) {
+      return <Redirect to="/market" />;
+    }
+  };
+
   return (
-    <Container>
+    <>
+      <Container style={{ minHeight: 850 }}>
+        <Segment basic textAlign="center">
+          <Header as="h1">
+            <Icon name="exchange" />
+            coinpurse.app
+          </Header>
+        </Segment>
+        <Card centered>
+          <Card.Content>
+            <LoginForm onFormSubmit={onFormSubmit} />
+            <Divider />
+            <Segment basic textAlign="center">
+              <Header as="h4">
+                New? <a href="/register">Register it's FREE!</a>
+              </Header>
+            </Segment>
+          </Card.Content>
+        </Card>
+        <Divider hidden />
+        <Divider hidden />
+      </Container>
       <Segment basic textAlign="center">
-        <Header as="h1">
-          <Icon name="exchange"/>
-          coinpurse.app
-        </Header>
+        <Divider />
+        {copyRight()}
       </Segment>
-      <Card centered>
-        <Card.Content>
-          <form className="ui form">
-            <Label>Username</Label>
-            <Field name="username" component="input" type="text" />
-            <Divider hidden />
-            <Label>Password</Label>
-            <Field name="password" component="input" type="text" />
-            <Divider hidden />
-            <button className="ui button massive fluid ">Log In</button>
-          </form>
-          <Divider />
-          <Segment basic textAlign="center">
-            <Header as="h4">
-              New? <a href="/register">Register it's FREE!</a>
-            </Header>
-          </Segment>
-        </Card.Content>
-      </Card>
-      <Divider hidden />
-      <Divider hidden/>
-      <Divider />
-      <Segment basic textAlign="center">{copyRight()}</Segment>
-    </Container>
+      {renderModal()}
+    </>
   );
 };
+const mapStateToProps = (state) => {
+  return {
+    userInfo: state.userInfo,
+  };
+};
 
-Login = reduxForm({
-  form: "login",
-})(Login);
+const mapDispatchToProps = {
+  login: (formValues) => login(formValues),
+};
 
-export default Login;
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

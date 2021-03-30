@@ -6,14 +6,17 @@ import modalInfoReducer from "./modalInfoReducer";
 import favoriteReducer from "./favoriteReducer";
 import transactionReducer from "./transactionReducer";
 import portListReducer from "./portListReducer";
-// combines all of the reducers that are imported then exports default
-// still have to use {} when importing to react components
+import registerReducer from "./registerReducer";
+import loginReducer from "./loginReducer";
+
 export default combineReducers({
   market: marketReducer,
   selectedCoin: selectCoinReducer,
-  portList: portListReducer,
+  portfolio: portListReducer,
   info: modalInfoReducer,
   favorites: favoriteReducer,
   transactions: transactionReducer,
+  registerInfo: registerReducer,
+  userInfo: loginReducer,
   form: formReducer,
 });

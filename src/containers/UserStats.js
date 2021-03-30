@@ -10,40 +10,19 @@ import {
   Image,
 } from "semantic-ui-react";
 import { connect } from "react-redux";
-import { getMarket, getTransactions } from "../actions";
+import { getMarket } from "../actions";
 
 const UserStats = (props) => {
   useEffect(() => {
     props.getMarket();
-    props.getTransactions();
   }, []);
 
-  const mapTransactions = props.transactions.transactions.map((trans) => {
-    return {
-      name: trans.trans.name,
-      amt: trans.trans.buy
-        ? Number(trans.trans.amt)
-        : -Math.abs(trans.trans.amt),
-      total: trans.trans.buy
-        ? Number(trans.trans.amt * trans.trans.price)
-        : -Math.abs(trans.trans.amt * trans.trans.price),
-    };
-  });
-
-  const mapNameTrans = mapTransactions.map((coin) => {
+  const mapNameTrans = props.portfolio.map((coin) => {
     return coin.name;
   });
 
-  const addAmts = Array.from(
-    mapTransactions.reduce(
-      (m, { name, amt }) => m.set(name, (m.get(name) || 0) + amt),
-      new Map()
-    ),
-    ([name, amt]) => ({ name, amt })
-  );
-
   const addTotals = Array.from(
-    mapTransactions.reduce(
+    props.portfolio.reduce(
       (m, { name, total }) => m.set(name, (m.get(name) || 0) + total),
       new Map()
     ),
@@ -57,17 +36,15 @@ const UserStats = (props) => {
       return null;
     }
   });
-
-  const mergeByName = (arr1, arr2, arr3) =>
+  const mergeByName = (arr1, arr2) =>
     arr1.map((itm) => ({
       ...arr2.find((item) => item.name === itm.name && item),
-      ...arr3.find((item) => item.name === itm.name && item),
       ...itm,
     }));
 
-  const portfolio = mergeByName(addAmts, filterMarket, addTotals);
+  const upToDatePortfolio = mergeByName(filterMarket, props.portfolio);
 
-  const mapPortfolioTotal = portfolio.map((coin) => {
+  const mapPortfolioTotal = upToDatePortfolio.map((coin) => {
     return coin.amt * coin.current_price;
   });
   const mapTotal = addTotals.map((coin) => {
@@ -110,8 +87,8 @@ const UserStats = (props) => {
   };
 
   const renderTopGain = () => {
-    if (portfolio.length > 0) {
-      const portListMap = portfolio.map((coin) => {
+    if (upToDatePortfolio.length > 0) {
+      const portListMap = upToDatePortfolio.map((coin) => {
         return {
           name: coin.name,
           image: coin.image,
@@ -146,8 +123,8 @@ const UserStats = (props) => {
     }
   };
   const renderWorstGain = () => {
-    if (portfolio.length > 0) {
-      const portListMap = portfolio.map((coin) => {
+    if (upToDatePortfolio.length > 0) {
+      const portListMap = upToDatePortfolio.map((coin) => {
         return {
           name: coin.name,
           image: coin.image,
@@ -208,12 +185,11 @@ const UserStats = (props) => {
 const mapStateToProps = (state) => {
   return {
     market: state.market,
-    transactions: state.transactions,
+    portfolio: state.portfolio.list,
   };
 };
 
 const mapDispatchToProps = {
-  getTransactions: () => getTransactions(),
   getMarket: () => getMarket(),
 };
 

@@ -3,14 +3,11 @@
 
 )Search Portfolio input set focus to all (fav, portList, transHistory) coins 
 
-)Fix key error/Fix PortfoLiolist.js error
-
 
 )UserStats and Favorites stack on top of each other at an earlier vp
 
 )Transaction History pagination / Search / mobile
 
-)Landing Page 
 
 )Register page -- needs to be mobile, figure out what to do with the market img
 ---------------------------------------------------------------------------
@@ -20,11 +17,9 @@
 
 
 -----TEMP FIX ------------------------------------------------------
-) ((where addPortList(portfolio) is located in a nested component,
-    it does't call until the user clicks on portfolio which prevents coinModal from
-    displaying amt when clicked on from the market component))
 
 
+)Landing Page 
 ---------------------------------------------------------------------------
 
 
@@ -46,5 +41,11 @@
 )Popups for new label in CoinModal
 
 )Search Transaction History ---> filter through transaction list to display coins by term (.include) and by date
+
+)Fix key error/Fix PortfoLiolist.js error
+
+) ((where addPortList(portfolio) is located in a nested component,
+    it does't call until the user clicks on portfolio which prevents coinModal from
+    displaying amt when clicked on from the market component) FIX => creatPortfolio action creator)
 
 -----Tasks COMPLETED ------------------------------------------------------

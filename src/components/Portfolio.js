@@ -12,7 +12,6 @@ import { connect } from "react-redux";
 
 const Portfolio = (props) => {
   const [open, setOpen] = useState(false);
-
   const [portTotal, setPortTotal] = useState(0);
   const [portGain, setPortGain] = useState(0);
 
@@ -28,7 +27,7 @@ const Portfolio = (props) => {
           <Title label="Portfolio" />
           <Grid>
             <Grid.Row>
-              <Grid.Column computer={8} tablet={16}>
+              <Grid.Column>
                 <UserStats
                   header="Balance"
                   portTotal={portTotal}
@@ -37,11 +36,15 @@ const Portfolio = (props) => {
                   setPortGain={setPortGain}
                 />
               </Grid.Column>
-              <Grid.Column computer={8} tablet={16}>
+            </Grid.Row>
+            <Divider hidden/>
+            <Grid.Row>
+              <Grid.Column>
                 <Favorites header="Favorites" />
               </Grid.Column>
             </Grid.Row>
-            <Grid.Row columns={1}>
+            
+            <Grid.Row>
               <Grid.Column>
                 <PortfolioList
                   header="Coin List"

@@ -77,36 +77,10 @@ const CoinModal = (props) => {
       props.deleteFavorite(filterFav[0].id);
     }
   };
-  const mapTransactions = props.transactions.transactions.map((trans) => {
-    return {
-      name: trans.trans.name,
-      amt: trans.trans.buy
-        ? Number(trans.trans.amt)
-        : -Math.abs(trans.trans.amt),
-      total: trans.trans.buy
-        ? Number(trans.trans.amt * trans.trans.price)
-        : -Math.abs(trans.trans.amt * trans.trans.price),
-    };
-  });
-  const mapNameTrans = mapTransactions.map((coin) => {
+
+  const mapNameTrans = props.portfolio.map((coin) => {
     return coin.name;
   });
-
-  const addAmts = Array.from(
-    mapTransactions.reduce(
-      (m, { name, amt }) => m.set(name, (m.get(name) || 0) + amt),
-      new Map()
-    ),
-    ([name, amt]) => ({ name, amt })
-  );
-
-  const addTotals = Array.from(
-    mapTransactions.reduce(
-      (m, { name, total }) => m.set(name, (m.get(name) || 0) + total),
-      new Map()
-    ),
-    ([name, total]) => ({ name, total })
-  );
 
   const filterMarket = props.market.filter((coin) => {
     if (mapNameTrans.includes(coin.name)) {
@@ -115,16 +89,15 @@ const CoinModal = (props) => {
       return null;
     }
   });
-  const mergeByName = (arr1, arr2, arr3) =>
+  const mergeByName = (arr1, arr2) =>
     arr1.map((itm) => ({
       ...arr2.find((item) => item.name === itm.name && item),
-      ...arr3.find((item) => item.name === itm.name && item),
       ...itm,
     }));
 
-  const portfolio = mergeByName(addAmts, filterMarket, addTotals);
+  const upToDatePortfolio = mergeByName(filterMarket, props.portfolio);
 
-  const filterPortList = portfolio.filter((coin) => {
+  const filterPortList = upToDatePortfolio.filter((coin) => {
     if (coin.name === props.selectedCoin.name) {
       return coin;
     } else {
@@ -132,13 +105,10 @@ const CoinModal = (props) => {
     }
   });
 
-  console.log("filterPortList[0]", filterPortList[0]);
-
   const onFormSubmit = (values) => {
     const coinAmt = filterPortList.map((coin) => {
       return coin.amt;
     });
-    console.log(coinAmt, "coinAMt");
     const today = new Date();
     const date =
       today.getMonth() + 1 + "-" + today.getDate() + "-" + today.getFullYear();
@@ -150,23 +120,7 @@ const CoinModal = (props) => {
       ":" +
       (today.getSeconds() < 10 ? "0" : "") +
       today.getSeconds();
-    console.log(time);
-    if (buy) {
-      values.name = props.selectedCoin.name;
-      values.symbol = props.selectedCoin.symbol;
-      values.buy = buy;
-      values.amt = Number(values.amt);
-      values.image = props.selectedCoin.image;
-      values.price = Number(props.selectedCoin.current_price);
-      values.date = date;
-      values.time = time;
-      props.postTransaction(values);
-
-      props.setOpen(false);
-      alert(
-        `Buy Transaction Submitted For ${values.amt} ${props.selectedCoin.name}`
-      );
-    } else if (coinAmt >= Number(values.amt)) {
+    if (buy || coinAmt >= Number(values.amt)) {
       values.name = props.selectedCoin.name;
       values.symbol = props.selectedCoin.symbol;
       values.buy = buy;
@@ -178,7 +132,9 @@ const CoinModal = (props) => {
       props.postTransaction(values);
       props.setOpen(false);
       alert(
-        `Sell Transaction Submitted For ${values.amt} ${props.selectedCoin.name}`
+        buy
+          ? `Buy Transaction Submitted For ${values.amt} ${props.selectedCoin.name}`
+          : `Sell Transaction Submitted For ${values.amt} ${props.selectedCoin.name}`
       );
     } else {
       alert(
@@ -322,7 +278,7 @@ const CoinModal = (props) => {
             }
           />
         </span>
-        <span basic style={{ float: "right" }}>
+        <span style={{ float: "right" }}>
           <Popup
             content="Close window."
             trigger={
@@ -384,6 +340,7 @@ const mapStateToProps = (state) => {
     favorites: state.favorites,
     market: state.market,
     transactions: state.transactions,
+    portfolio: state.portfolio.list,
   };
 };
 

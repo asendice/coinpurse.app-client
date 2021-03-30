@@ -11,7 +11,6 @@ import {
   getMarket,
   coinSelect,
   getFavorites,
-  addPortList,
   getTransactions,
 } from "../actions";
 import Title from "../components/Title";
@@ -21,6 +20,8 @@ import CoinModal from "./CoinModal";
 const Market = (props) => {
   const [term, setTerm] = useState("");
   const [open, setOpen] = useState(false);
+
+  console.log(props.userInfo, "from market");
 
   useEffect(() => {
     props.getMarket();
@@ -113,32 +114,34 @@ const Market = (props) => {
   };
 
   return (
-    <Segment basic>
-      <Title term={term} onTermSubmit={onTermSubmit} label="Market" />
-      <Table unstackable basic="very">
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell className="td-dis">Rank</Table.HeaderCell>
-            <Table.HeaderCell className=""></Table.HeaderCell>
-            <Table.HeaderCell className="three wide">Name</Table.HeaderCell>
-            <Table.HeaderCell className="four wide">Price</Table.HeaderCell>
-            <Table.HeaderCell className="four wide">24hr</Table.HeaderCell>
-            <Table.HeaderCell className="three wide td-dis">
-              MarketCap
-            </Table.HeaderCell>
-            <Table.HeaderCell></Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body className="tb">{renderMarket()}</Table.Body>
-      </Table>
-      {renderNotFound()}
+    <>
+      <Segment basic style={{ minHeight: 850 }}>
+        <Title term={term} onTermSubmit={onTermSubmit} label="Market" />
+        <Table unstackable basic="very">
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell className="td-dis">Rank</Table.HeaderCell>
+              <Table.HeaderCell className=""></Table.HeaderCell>
+              <Table.HeaderCell className="three wide">Name</Table.HeaderCell>
+              <Table.HeaderCell className="four wide">Price</Table.HeaderCell>
+              <Table.HeaderCell className="four wide">24hr</Table.HeaderCell>
+              <Table.HeaderCell className="three wide td-dis">
+                MarketCap
+              </Table.HeaderCell>
+              <Table.HeaderCell></Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body className="tb">{renderMarket()}</Table.Body>
+        </Table>
+        {renderNotFound()}
+
+        <CoinModal open={open} setOpen={setOpen} />
+      </Segment>
       <Segment basic textAlign="center">
-      <Divider />
+        <Divider />
         {copyRight()}
       </Segment>
-
-      <CoinModal open={open} setOpen={setOpen} />
-    </Segment>
+    </>
   );
 };
 
@@ -146,8 +149,9 @@ const mapStateToProps = (state) => {
   return {
     market: state.market,
     favorites: state.favorites,
-    portList: state.portList,
+    portfolio: state.portfolio,
     transactions: state.transactions,
+    userInfo: state.userInfo,
   };
 };
 
@@ -156,7 +160,6 @@ const mapDispatchToProps = {
   coinSelect: (coin) => coinSelect(coin),
   getMarket: () => getMarket(),
   getTransactions: () => getTransactions(),
-  addPortList: (list) => addPortList(list),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Market);

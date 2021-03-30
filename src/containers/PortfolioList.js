@@ -6,7 +6,7 @@ import {
   ifNegative,
 } from "../number/NumberChanger";
 import { Segment, Header, Card, Image, Icon, Divider } from "semantic-ui-react";
-import { getMarket, coinSelect, getTransactions } from "../actions";
+import { coinSelect } from "../actions";
 import { connect } from "react-redux";
 
 const PortfolioList = (props) => {
@@ -16,36 +16,9 @@ const PortfolioList = (props) => {
   };
 
   const renderCard = () => {
-    const mapTransactions = props.transactions.transactions.map((trans) => {
-      return {
-        name: trans.trans.name,
-        amt: trans.trans.buy
-          ? Number(trans.trans.amt)
-          : -Math.abs(trans.trans.amt),
-        total: trans.trans.buy
-          ? Number(trans.trans.amt * trans.trans.price)
-          : -Math.abs(trans.trans.amt * trans.trans.price),
-      };
-    });
-    const mapNameTrans = mapTransactions.map((coin) => {
+    const mapNameTrans = props.portfolio.map((coin) => {
       return coin.name;
     });
-
-    const addAmts = Array.from(
-      mapTransactions.reduce(
-        (m, { name, amt }) => m.set(name, (m.get(name) || 0) + amt),
-        new Map()
-      ),
-      ([name, amt]) => ({ name, amt })
-    );
-
-    const addTotals = Array.from(
-      mapTransactions.reduce(
-        (m, { name, total }) => m.set(name, (m.get(name) || 0) + total),
-        new Map()
-      ),
-      ([name, total]) => ({ name, total })
-    );
 
     const filterMarket = props.market.filter((coin) => {
       if (mapNameTrans.includes(coin.name)) {
@@ -54,19 +27,21 @@ const PortfolioList = (props) => {
         return null;
       }
     });
-    const mergeByName = (arr1, arr2, arr3) =>
+    const mergeByName = (arr1, arr2) =>
       arr1.map((itm) => ({
         ...arr2.find((item) => item.name === itm.name && item),
-        ...arr3.find((item) => item.name === itm.name && item),
         ...itm,
       }));
 
-    const portfolio = mergeByName(addAmts, filterMarket, addTotals);
-    const portSorted = portfolio.sort((a, b) => {
+    const upToDatePortfolio = mergeByName(filterMarket, props.portfolio);
+
+    console.log(upToDatePortfolio);
+
+    const portSorted = upToDatePortfolio.sort((a, b) => {
       return b.total - a.total;
     });
 
-    if (portfolio.length > 0) {
+    if (props.portfolio.length > 0) {
       return portSorted.map((coin) => {
         const dollarGain = coin.amt * coin.current_price - coin.total;
         if (coin.amt === 0) {
@@ -111,7 +86,7 @@ const PortfolioList = (props) => {
         <Segment basic key={0}>
           <span style={{ color: "grey" }}>
             {" "}
-            {`Username currently has ${portfolio.length} coins. Go to `}{" "}
+            {`Username currently has ${props.portfolio.length} coins. Go to `}{" "}
             <a href="/market">Market</a> to add some transactions!
             <Icon name="cart" />
           </span>
@@ -132,13 +107,12 @@ const mapStateToProps = (state) => {
   return {
     market: state.market,
     transactions: state.transactions,
+    portfolio: state.portfolio.list,
   };
 };
 
 const mapDispatchToProps = {
-  getTransactions: () => getTransactions(),
   coinSelect: (coin) => coinSelect(coin),
-  getMarket: () => getMarket(),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PortfolioList);

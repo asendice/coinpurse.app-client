@@ -1,4 +1,3 @@
-// <--- this seems boiler plate af --->
 import React from "react";
 import ReactDOM from "react-dom";
 import "./css/App.css";
@@ -20,5 +19,3 @@ ReactDOM.render(
   </Provider>,
   document.querySelector("#root")
 );
-
-// <--- this seems boiler plate af --->

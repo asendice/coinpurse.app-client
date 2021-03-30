@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Segment, Label, Popup, Icon, Header } from "semantic-ui-react";
 import Title from "../components/Title";
 import SearchNotFound from "../components/SearchNotFound";
-import { roundComma, rounder } from "../number/NumberChanger";
+import { roundComma } from "../number/NumberChanger";
 import { getTransactions } from "../actions";
 import { connect } from "react-redux";
 

@@ -40,7 +40,7 @@ const VerticalHeader = (props) => {
           <Menu.Menu position="right">
             <Menu.Item>
               <Divider />
-              <Button basic icon toggle onClick={handleToggle}>
+              <Button icon toggle onClick={handleToggle}>
                 <Icon name="content" />
               </Button>
             </Menu.Item>

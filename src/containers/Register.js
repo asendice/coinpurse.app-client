@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import {
-  Form,
   Container,
   Segment,
   Grid,
@@ -10,115 +9,82 @@ import {
   Statistic,
   Icon,
   Image,
-  Label,
+  Modal,
+  Button,
 } from "semantic-ui-react";
+import RegisterForm from "./RegisterForm";
 import CosmoPic from "../img/regPic.png";
 import { copyRight } from "../number/NumberChanger";
 import { connect } from "react-redux";
-import { Field, reduxForm, formValueSelector } from "redux-form";
+import { register } from "../actions";
 
-const renderInput = ({ input, label, type, meta: { touched, error, warning } }) => {
-  return (
-    <div>
-      <input {...input} placeholder={label} type={type} />
-      {touched &&
-        ((error && <span>{error}</span>) ||
-          (warning && <span>{warning}</span>))}
-    </div>
-  );
-};
+const Register = (props) => {
+  const [open, setOpen] = useState(false);
 
-const required = (x) => {
-  if (!x || x === "") {
-    return (
-      <span style={{ color: "red" }}>
-        *This field is required to create your account.
-      </span>
-    );
-  }
-  return undefined;
-};
+  const onFormSubmit = (values) => {
+    props.register(values);
+    setOpen(true);
+  };
 
-const email = (value) =>
-  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ? (
-    <span style={{ color: "red" }}>*Invalid Email address.</span>
-  ) : undefined;
+  const renderModalInfo = () => {
+    if (props.registerInfo.status === 200) {
+      return (
+        <>
+          <Modal.Header>
+            Success, "{props.registerInfo.data.result.name}" has successfully
+            registered to Coinpurse!
+          </Modal.Header>
+          <Modal.Content>
+            <Button href="/login" color="green" style={{ float: "right" }}>
+              Login
+            </Button>
+          </Modal.Content>
+        </>
+      );
+    } else if (props.registerInfo.status === 422) {
+      const mapRegInfo = props.registerInfo.data.errors.map((errors) => {
+        return errors.user || errors.password || errors.email;
+      });
+      return (
+        <>
+          <Modal.Header>
+            Failed to register your account because {mapRegInfo}
+          </Modal.Header>
+          <Modal.Content>
+            <Button href="/register" color="orange" style={{ float: "right" }}>
+              Try Again
+            </Button>
+          </Modal.Content>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Modal.Header>Failed to register.</Modal.Header>
+          <Modal.Content>
+            <Button href="/register" color="orange" style={{ float: "right" }}>
+              Try Again
+            </Button>
+          </Modal.Content>
+        </>
+      );
+    }
+  };
 
-const alphaNumeric = (value) =>
-  value && /[^a-zA-Z0-9 ]/i.test(value)
-    ? "Only alphanumeric characters"
-    : undefined;
-
-const length = (value) =>
-  value && value.length < 4 ? (
-    <span style={{ color: "red" }}>
-      {`*This field must contain more than 4 characters.`}
-    </span>
-  ) : undefined;
-const maxLength = (value) =>
-  value && value.length > 11 ? (
-    <span style={{ color: "red" }}>
-      {`*This field must contain no more than 12 characters.`}
-    </span>
-  ) : undefined;
-
-const userNameVal = (value) =>
-  value && value.includes(" ") ? (
-    <span style={{ color: "red" }}>*This field cannot include spaces.</span>
-  ) : undefined;
-
-let Signup = () => {
   return (
     <>
-      <Container fluid style={{ minHeight: "100vh" }}>
+      <Container style={{ minHeight: 890 }}>
         <Grid columns={2} stackable>
           <Grid.Column computer={10} tablet={16}>
             <Segment padded="very">
               <Segment basic textAlign="center">
                 <Header as="h1">Join Now -- It's Free & Easy!</Header>
               </Segment>
-              <Form textAlign="left">
-                <Label>Username</Label>
-                <Field
-                  type="text"
-                  name="username"
-                  component={renderInput}
-                  placeholder="username"
-                  validate={[length, userNameVal, maxLength, required, alphaNumeric]}
-                />
-                <Divider hidden />
-                <Label>Email</Label>
-                <Field
-                  name="email"
-                  component={renderInput}
-                  type="email"
-                  validate={[email, required]}
-                />
-                <Divider hidden />
-                <Label>Password</Label>
-                <Field
-                  name="password"
-                  component={renderInput}
-                  type="password"
-                  validate={[length, required]}
-                />
-                <Divider hidden />
-                <Label>Crypto Knowledge </Label>
-                <Field name="skill" component="select">
-                  <option></option>
-                  <option>new</option>
-                  <option>novice</option>
-                  <option>intermediate</option>
-                  <option>advanced</option>
-                </Field>
-                <Divider hidden />
-                <button className="ui button massive fluid ">
-                  Create Your Free Account!
-                </button>
-              </Form>
+              <RegisterForm onFormSubmit={onFormSubmit} />
               <Segment basic textAlign="center">
                 <Header as="h4">
-                  Already Have An Account? <a href="/login">Log In! Let's Go!</a>
+                  Already Have An Account?{" "}
+                  <a href="/login">Log In! Let's Go!</a>
                 </Header>
               </Segment>
             </Segment>
@@ -167,27 +133,34 @@ let Signup = () => {
             </Segment>
           </Grid.Column>
         </Grid>
-        <Divider hidden/>
-        <Divider hidden/>
-        <Divider />
-        <Segment basic textAlign="center">
-          {copyRight()}
-        </Segment>
+        <Divider hidden />
+        <Divider hidden />
       </Container>
+      <Divider />
+      <Segment basic textAlign="center">
+        {copyRight()}
+      </Segment>
+      <Modal
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+        open={open}
+        size="small"
+        centered
+      >
+        {renderModalInfo()}
+      </Modal>
     </>
   );
 };
 
-Signup = reduxForm({
-  form: "signup",
-})(Signup);
-
-const selector = formValueSelector("signup");
-Signup = connect((state) => {
-  const values = selector(state, "username", "email", "password", "skill");
+const mapStateToProps = (state) => {
   return {
-    values,
+    registerInfo: state.registerInfo,
   };
-})(Signup);
+};
 
-export default Signup;
+const mapDispatchToProps = {
+  register: (formValues) => register(formValues),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);
