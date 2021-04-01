@@ -53,10 +53,17 @@ export const deleteFavorite = (id) => (dispatch) => {
     );
 };
 
-export const getFavorites = () => {
+export const getFavorites = (userId) => {
   return async (dispatch) => {
     await localHost
-      .get("/favorites")
+      .get("/favorites", {
+        params: {
+          userId: userId,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((response) => {
         if (response) {
           return response.data;
@@ -73,14 +80,17 @@ export const getFavorites = () => {
 };
 
 export const postFavorite = (coin) => {
+  const json = JSON.stringify(coin);
   return (dispatch) => {
-    localHost
-      .post("/favorites", {
-        coin: coin,
+    backendApi
+      .post("/favorites", json, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
       .then((response) => {
         if (response) {
-          return response;
+          return response.data;
         } else {
           const error = new Error(
             `Error ${response.status}: ${response.statusText}`
@@ -89,7 +99,7 @@ export const postFavorite = (coin) => {
           throw error;
         }
       })
-      .then((response) => dispatch(addFavorite(response.data)))
+      .then((favorites) => dispatch(addFavorite(favorites)))
       .catch((error) => {
         console.log("postFavorite", error.message);
       });
@@ -100,33 +110,39 @@ export const postFavorite = (coin) => {
 
 //<-----> BEGINNING OF ACTION CREATORS FOR TRANSACTIONS <----->
 
+// export const postTransaction = (trans) => {
+//   console.log(trans, "post trans");
+//   return (dispatch) => {
+//     localHost
+//       .post("/transactions", {
+//         trans: trans,
+//       })
+//       .then((response) => {
+//         if (response) {
+//           return response;
+//         } else {
+//           const error = new Error(
+//             `Error ${response.status}: ${response.statusText}`
+//           );
+//           error.response = response;
+//           throw error;
+//         }
+//       })
+//       .then((response) => dispatch(addTransaction(response.data)))
+//       .catch((error) => {
+//         console.log("postTransaction", error.message);
+//       });
+//   };
+// };
 export const postTransaction = (trans) => {
+  const json = JSON.stringify(trans);
   return (dispatch) => {
-    localHost
-      .post("/transactions", {
-        trans: trans,
+    backendApi
+      .post("/transactions", json, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
-      .then((response) => {
-        if (response) {
-          return response;
-        } else {
-          const error = new Error(
-            `Error ${response.status}: ${response.statusText}`
-          );
-          error.response = response;
-          throw error;
-        }
-      })
-      .then((response) => dispatch(addTransaction(response)))
-      .catch((error) => {
-        console.log("postTransaction", error.message);
-      });
-  };
-};
-export const getTransactions = () => {
-  return async (dispatch) => {
-    await localHost
-      .get("/transactions")
       .then((response) => {
         if (response) {
           return response.data;
@@ -139,9 +155,46 @@ export const getTransactions = () => {
         }
       })
       .then((transactions) =>
+        dispatch(addTransaction(transactions.data.message))
+      )
+      .catch((error) => {
+        console.log("postTransaction", error.message);
+      });
+  };
+};
+export const getTransactions = (userId) => {
+  const id = {
+    userId: userId,
+  };
+
+  return async (dispatch) => {
+    await backendApi
+      .get("/transactions", {
+        params: {
+          userId: userId,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        console.log("response.data.message", response.data.message);
+        console.log("response.data", response.data);
+
+        if (response) {
+          return response.data;
+        } else {
+          const error = new Error(
+            `Error ${response.status}: ${response.statusText}`
+          );
+          error.response = response;
+          throw error;
+        }
+      })
+      .then((transactions) =>
         dispatch(
-          addTransactions(transactions),
-          dispatch(createPortList(transactions))
+          addTransactions(transactions.message),
+          dispatch(createPortList(transactions.message))
         )
       );
   };
@@ -197,7 +250,6 @@ export const register = (formValues) => {
             `Error ${response.status}: ${response.statusText}`
           );
           console.log(error, "error");
-          console.log(error, "error");
           error.response = JSON.stringify(response);
         }
       })
@@ -229,6 +281,7 @@ export const login = (formValues) => {
       })
       .then((response) => {
         if (response) {
+          localStorage.setItem("user", JSON.stringify(response));
           return response;
         } else {
           const error = new Error(
@@ -251,4 +304,12 @@ export const loggedin = (res) => {
     type: "LOG_RESPONSE",
     payload: res,
   };
+};
+
+export const logout = () => (dispatch) => {
+  localStorage.removeItem("user");
+
+  dispatch({
+    type: "LOGOUT",
+  });
 };

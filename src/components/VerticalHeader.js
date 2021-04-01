@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Menu, Icon, Header, Button, Divider, Grid } from "semantic-ui-react";
 import { NavLink } from "react-router-dom";
+import { connect } from "react-redux";
+import { logout } from "../actions";
 
 const VerticalHeader = (props) => {
   const [menuStyle, setMenuStyle] = useState({
@@ -28,7 +30,7 @@ const VerticalHeader = (props) => {
     <>
       {/* menu display for mobile vp only  */}
       <Grid className="mobile only" style={{ marginTop: "1px" }}>
-        <Menu borderless fluid >
+        <Menu borderless fluid>
           <NavLink exact to="/">
             <Menu.Item link>
               <Header as="h2">
@@ -46,8 +48,7 @@ const VerticalHeader = (props) => {
             </Menu.Item>
           </Menu.Menu>
         </Menu>
-
-        <Menu borderless vertical fluid style={mobileMenuStyle} >
+        <Menu borderless vertical fluid style={mobileMenuStyle}>
           <NavLink exact to={`/${props.menuProps.itemOne}`}>
             <Menu.Item link>
               <Header as="h3" onClick={handleToggle}>
@@ -115,7 +116,6 @@ const VerticalHeader = (props) => {
                 </Header>
               </Menu.Item>
             </NavLink>
-
             <Divider hidden />
             <Divider hidden />
             <Divider hidden />
@@ -143,7 +143,6 @@ const VerticalHeader = (props) => {
       <Grid className="computer only">
         <Grid.Column>
           <Menu
-            
             size="small"
             attached
             vertical
@@ -153,7 +152,7 @@ const VerticalHeader = (props) => {
           >
             <NavLink exact to="/">
               <Menu.Item link>
-                <Header as="h3">
+                <Header as="h2">
                   <Header.Content>{props.menuProps.name}</Header.Content>
                 </Header>
               </Menu.Item>
@@ -166,35 +165,68 @@ const VerticalHeader = (props) => {
                 </Header>
               </Menu.Item>
             </NavLink>
-            <NavLink exact to={`/${props.menuProps.itemTwo}`}>
-              <Menu.Item link>
-                <Header as="h3">
-                  <Icon name="folder" />
+
+            {!props.isLoggedIn ? (
+              <Menu.Item disabled>
+                <Header as="h3" color="grey">
+                  <Icon color="grey" name="folder" />
                   <Header.Content>{props.menuProps.itemTwo}</Header.Content>
                 </Header>
               </Menu.Item>
-            </NavLink>
+            ) : (
+              <NavLink exact to={`/${props.menuProps.itemTwo}`}>
+                <Menu.Item link>
+                  <Header as="h3">
+                    <Icon name="folder" />
+                    <Header.Content>{props.menuProps.itemTwo}</Header.Content>
+                  </Header>
+                </Menu.Item>
+              </NavLink>
+            )}
 
             <Divider hidden />
             <Divider hidden />
             <Divider hidden />
             <Divider hidden />
-            <NavLink to="/register">
-              <Menu.Item floated="right">
-                <Button fluid>
-                  <Icon name="signup" size="large" color="grey" />
-                  Sign Up
-                </Button>
-              </Menu.Item>
-            </NavLink>
-            <NavLink to="/login">
-              <Menu.Item>
-                <Button fluid>
-                  <Icon name="sign in" size="large" color="grey" />
-                  Log In
-                </Button>
-              </Menu.Item>
-            </NavLink>
+
+            {!props.isLoggedIn ? (
+              <NavLink to="/register">
+                <Menu.Item>
+                  <Button fluid>
+                    <Icon name="signup" size="large" color="grey" />
+                    Sign Up
+                  </Button>
+                </Menu.Item>
+              </NavLink>
+            ) : (
+              ""
+            )}
+
+            {!props.isLoggedIn ? (
+              <NavLink to="/login">
+                <Menu.Item>
+                  <Button fluid>
+                    <Icon name="sign in" size="large" color="grey" />
+                    Log In
+                  </Button>
+                </Menu.Item>
+              </NavLink>
+            ) : (
+              ""
+            )}
+
+            {props.isLoggedIn ? (
+              <NavLink to="/">
+                <Menu.Item style={{ position: "fixed", bottom: 50 }}>
+                  <Button fluid onClick={() => props.logout()}>
+                    <Icon name="log out" size="large" color="grey" />
+                    Sign Out
+                  </Button>
+                </Menu.Item>
+              </NavLink>
+            ) : (
+              ""
+            )}
           </Menu>
         </Grid.Column>
       </Grid>
@@ -202,4 +234,15 @@ const VerticalHeader = (props) => {
   );
 };
 
-export default VerticalHeader;
+const mapStateToProps = (state) => {
+  return {
+    userInfo: state.userInfo.user,
+    isLoggedIn: state.userInfo.loggedIn,
+  };
+};
+
+const mapDispatchToProps = {
+  logout: () => logout(),
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(VerticalHeader);

@@ -9,10 +9,13 @@ import { connect } from "react-redux";
 const RecentTransactions = (props) => {
   const [term, setTerm] = useState("");
 
+  console.log(props.transactions.transactions, 'p.t.t');
+  console.log(props.transactions.transactions, 'p.t.t');
+
   const GetTransData = () => {
     const { getTransactions } = props;
     useEffect(() => {
-      getTransactions();
+      getTransactions(props.userId);
     }, [getTransactions]);
   };
   GetTransData();
@@ -22,16 +25,19 @@ const RecentTransactions = (props) => {
   };
 
   const sortTrans = props.transactions.transactions.sort(
-    (a, b) =>
-      b.trans.date.localeCompare(a.trans.date) ||
-      b.trans.time.localeCompare(a.trans.time)
+    (a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time)
   );
+
+  console.log(sortTrans, "sortTrans");
+  console.log(sortTrans, "sortTrans");
+  console.log(sortTrans, "sortTrans");
+  console.log(sortTrans);
 
   const filterTransactionsByTerm = sortTrans.filter((trans) => {
     if (
-      trans.trans.name.toLowerCase().includes(term) ||
-      trans.trans.symbol.toLowerCase().includes(term) ||
-      trans.trans.date.includes(term)
+      trans.name.toLowerCase().includes(term) ||
+      trans.symbol.toLowerCase().includes(term) ||
+      trans.date.includes(term)
     ) {
       return trans;
     } else {
@@ -58,33 +64,37 @@ const RecentTransactions = (props) => {
           <tr key={trans.id}>
             <td>
               <Label>
-                <div>{trans.trans.date}</div>
-                <div>{trans.trans.time}</div>
+                <div>{trans.date}</div>
+                <div>{trans.time}</div>
               </Label>
             </td>
             <td>
               <img
                 className="ui image avatar"
-                src={trans.trans.image}
-                alt={trans.trans.id}
+                src={trans.image}
+                alt={trans.id}
               />
             </td>
-            <td className="td-dis">{trans.trans.name}</td>
+            <td className="td-dis">{trans.name}</td>
             <td>
-              {trans.trans.buy ? (
-                <Header as ="h4"  style={{color:"green"}}>{(trans.trans.amt)}</Header>
+              {trans.buy ? (
+                <Header as="h4" style={{ color: "green" }}>
+                  {trans.amt}
+                </Header>
               ) : (
-                <Header as ="h4"  style={{color:"red"}}>{(trans.trans.amt)}</Header>
+                <Header as="h4" style={{ color: "red" }}>
+                  {trans.amt}
+                </Header>
               )}
             </td>
-            <td>{`$${roundComma(trans.trans.price)}`}</td>
+            <td>{`$${roundComma(trans.price)}`}</td>
             <td className="td-dis">{`$${roundComma(
-              Number(trans.trans.amt * trans.trans.price)
+              Number(trans.amt * trans.price)
             )}`}</td>
             <td>
-              {trans.trans.note ? (
+              {trans.note ? (
                 <Popup
-                  content={trans.trans.note}
+                  content={trans.note}
                   position="top center"
                   trigger={<Icon name="clipboard" style={{ color: "grey" }} />}
                 />
@@ -108,17 +118,18 @@ const RecentTransactions = (props) => {
           term={term}
           onTermSubmit={onTermSubmit}
           label="Transaction History"
+          userNameDisplay="none"
         />
         <table className="ui unstackable table">
           <thead>
             <tr>
               <th className="two wide">Date / Time</th>
-              <th className="one wide"></th>
-              <th className="td-dis two-wide">Name</th>
-              <th className="two-wide">Qty</th>
-              <th className="two-wide">Price</th>
-              <th className="td-dis two-wide">Total</th>
-              <th className="one-wide">Notes</th>
+              <th></th>
+              <th className="td-dis">Name</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th className="td-dis">Total</th>
+              <th className="one wide">Notes</th>
             </tr>
           </thead>
           <tbody>{renderTransactions()}</tbody>
@@ -131,11 +142,14 @@ const RecentTransactions = (props) => {
 const mapStateToProps = (state) => {
   return {
     transactions: state.transactions,
+    userInfo: state.userInfo.user,
+    isLoggedIn: state.userInfo.loggedIn,
+    userId: state.userInfo.user.data.message._id,
   };
 };
 
 const mapDispatchToProps = {
-  getTransactions: () => getTransactions(),
+  getTransactions: (userId) => getTransactions(userId),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecentTransactions);

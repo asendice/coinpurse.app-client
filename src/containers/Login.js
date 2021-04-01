@@ -20,14 +20,12 @@ const Login = (props) => {
     setOpen(true);
   };
 
-  console.log(props.userInfo, "data.errors");
 
   const renderModal = () => {
-    if (props.userInfo.status && props.userInfo.status !== 200) {
+    if (!props.loggedIn) {
       const mapUserInfoError = props.userInfo.data.errors.map((errors) => {
         return errors.user || errors.password;
       });
-      console.log(mapUserInfoError, "mapped");
       console.log(mapUserInfoError, "mapped");
       return (
         <Modal
@@ -39,11 +37,15 @@ const Login = (props) => {
         >
           <Modal.Header>
             Login failed: {mapUserInfoError}
-            <Icon name="x" style={{ float: "right" }} />
+            <Icon
+              onClick={() => setOpen(false)}
+              name="x"
+              style={{ float: "right", cursor: "pointer" }}
+            />
           </Modal.Header>
         </Modal>
       );
-    } else if(props.userInfo.status === 200) {
+    } else if (props.loggedIn) {
       return <Redirect to="/market" />;
     }
   };
@@ -75,13 +77,14 @@ const Login = (props) => {
         <Divider />
         {copyRight()}
       </Segment>
-      {renderModal()}
+      {props.userInfo ? renderModal() : ""}
     </>
   );
 };
 const mapStateToProps = (state) => {
   return {
-    userInfo: state.userInfo,
+    userInfo: state.userInfo.user,
+    loggedIn: state.userInfo.loggedIn,
   };
 };
 

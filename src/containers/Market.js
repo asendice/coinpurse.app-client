@@ -21,12 +21,10 @@ const Market = (props) => {
   const [term, setTerm] = useState("");
   const [open, setOpen] = useState(false);
 
-  console.log(props.userInfo, "from market");
-
   useEffect(() => {
     props.getMarket();
     props.getFavorites();
-    props.getTransactions();
+    props.getTransactions(props.userId);
   }, [open]);
 
   const onTermSubmit = (term) => {
@@ -151,7 +149,9 @@ const mapStateToProps = (state) => {
     favorites: state.favorites,
     portfolio: state.portfolio,
     transactions: state.transactions,
-    userInfo: state.userInfo,
+    userInfo: state.userInfo.user,
+    isLoggedIn: state.userInfo.loggedIn,
+    userId: state.userInfo.user.data.message._id
   };
 };
 
@@ -159,7 +159,7 @@ const mapDispatchToProps = {
   getFavorites: () => getFavorites(),
   coinSelect: (coin) => coinSelect(coin),
   getMarket: () => getMarket(),
-  getTransactions: () => getTransactions(),
+  getTransactions: (userId) => getTransactions(userId),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Market);

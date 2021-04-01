@@ -58,6 +58,16 @@ const UserStats = (props) => {
     return a + b;
   }, 0);
 
+  const SendGain = () => {
+    useEffect(() => {
+      const percentGain = ((portfolioTotal - origTotal) / origTotal) * 100;
+      console.log(percentGain)
+      props.setPortPercentGain(percentGain);
+    }, [props.open]);
+  };
+
+  SendGain();
+
   const renderPortTotal = () => {
     return (
       <Statistic>

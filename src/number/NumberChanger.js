@@ -18,7 +18,7 @@ const ifNegative = (num) => {
 };
 
 const rounder = (num) => {
-  if (num.toString().length > 7) {
+  if (num && num.length > 7) {
     return Math.round(num * 10000) / 10000;
   } else {
     return Math.round(num * 100) / 100;

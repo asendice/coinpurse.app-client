@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   roundComma,
   renderArrow,
@@ -6,10 +6,22 @@ import {
   ifNegative,
 } from "../number/NumberChanger";
 import { Segment, Header, Card, Image, Icon, Divider } from "semantic-ui-react";
-import { coinSelect } from "../actions";
+import { coinSelect, getTransactions, getMarket } from "../actions";
 import { connect } from "react-redux";
 
 const PortfolioList = (props) => {
+
+
+  const GetData = () => {
+    const { getMarket, getTransactions } = props;
+    useEffect(() => {
+      getMarket();
+      getTransactions(props.userId);
+    }, [getMarket, getTransactions, props.open]);
+  };
+
+  GetData();
+
   const onCoinClick = (coin) => {
     props.coinSelect(coin);
     props.setOpen(true);
@@ -34,8 +46,6 @@ const PortfolioList = (props) => {
       }));
 
     const upToDatePortfolio = mergeByName(filterMarket, props.portfolio);
-
-    console.log(upToDatePortfolio);
 
     const portSorted = upToDatePortfolio.sort((a, b) => {
       return b.total - a.total;
@@ -108,11 +118,16 @@ const mapStateToProps = (state) => {
     market: state.market,
     transactions: state.transactions,
     portfolio: state.portfolio.list,
+    userInfo: state.userInfo.user,
+    isLoggedIn: state.userInfo.loggedIn,
+    userId: state.userInfo.user.data.message._id
   };
 };
 
 const mapDispatchToProps = {
   coinSelect: (coin) => coinSelect(coin),
+  getMarket: () => getMarket(),
+  getTransactions: (userId) => getTransactions(userId),
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PortfolioList);

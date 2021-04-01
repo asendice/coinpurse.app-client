@@ -29,12 +29,13 @@ const CoinModal = (props) => {
   const [activeIndex, setActiveIndex] = useState(1);
   const [index] = useState(0);
   const [buy, setBuy] = useState(false);
+
   useEffect(() => {
     setActiveIndex(1);
-    props.getFavorites();
+    props.getFavorites(props.userId);
     props.modalInfo();
     props.getMarket();
-    props.getTransactions();
+    props.getTransactions(props.userId);
   }, [props.open]);
 
   const values = [
@@ -72,7 +73,11 @@ const CoinModal = (props) => {
       }
     });
     if (!mapFav.includes(false)) {
-      props.postFavorite(coin.symbol);
+      const fav = {
+        userId: props.userId,
+        symbol: coin.symbol
+      }
+      props.postFavorite(fav);
     } else {
       props.deleteFavorite(filterFav[0].id);
     }
@@ -121,6 +126,7 @@ const CoinModal = (props) => {
       (today.getSeconds() < 10 ? "0" : "") +
       today.getSeconds();
     if (buy || coinAmt >= Number(values.amt)) {
+      values.userId = props.userInfo.data.message._id;
       values.name = props.selectedCoin.name;
       values.symbol = props.selectedCoin.symbol;
       values.buy = buy;
@@ -267,13 +273,21 @@ const CoinModal = (props) => {
         </span>
         <span>
           <Popup
-            content={heart.includes(true) ? "Favorited" : "Add to Favorites?"}
+            content={
+              !props.isLoggedIn
+                ? "Log in to add favorites."
+                : heart.includes(true)
+                ? "Favorited"
+                : "Add to Favorites?"
+            }
             trigger={
               <Icon
                 link
                 name={heart.includes(true) ? "heart" : "heart outline"}
-                color="red"
-                onClick={() => favoriteClick(props.selectedCoin)}
+                color={!props.isLoggedIn ? "grey" : "red"}
+                onClick={() =>
+                  !props.isLoggedIn ? null : favoriteClick(props.selectedCoin)
+                }
               />
             }
           />
@@ -302,32 +316,38 @@ const CoinModal = (props) => {
         </Grid>
       </Modal.Content>
       <Modal.Content>
-        <Accordion>
-          <Accordion.Title
-            onClick={() => accordionClick()}
-            index={index}
-            active={activeIndex === 0}
-            icon={<Icon name={activeIndex === 0 ? "minus" : "plus"} />}
-            content={
-              <Label size="large" color="grey">
-                {activeIndex === 0
-                  ? `Enter Transaction Information for ${props.selectedCoin.name}`
-                  : "Add Transactions?"}
-              </Label>
-            }
-          />
-          <Accordion.Content
-            active={activeIndex === 0}
-            content={
-              <TransactionForm
-                coin={props.selectedCoin}
-                onFormSubmit={onFormSubmit}
-                onBuyClick={onBuyClick}
-                onSellClick={onSellClick}
+        <Popup
+          content={!props.isLoggedIn ? "Log in to create portfolio." : null}
+          disabled={!props.isLoggedIn ? false : true}
+          trigger={
+            <Accordion>
+              <Accordion.Title
+                onClick={() => (!props.isLoggedIn ? null : accordionClick())}
+                index={index}
+                active={activeIndex === 0}
+                icon={<Icon name={activeIndex === 0 ? "minus" : "plus"} />}
+                content={
+                  <Label size="large" color="grey">
+                    {activeIndex === 0
+                      ? `Enter Transaction Information for ${props.selectedCoin.name}`
+                      : "Add Transaction?"}
+                  </Label>
+                }
               />
-            }
-          />
-        </Accordion>
+              <Accordion.Content
+                active={activeIndex === 0}
+                content={
+                  <TransactionForm
+                    coin={props.selectedCoin}
+                    onFormSubmit={onFormSubmit}
+                    onBuyClick={onBuyClick}
+                    onSellClick={onSellClick}
+                  />
+                }
+              />
+            </Accordion>
+          }
+        />
       </Modal.Content>
     </Modal>
   );
@@ -341,6 +361,9 @@ const mapStateToProps = (state) => {
     market: state.market,
     transactions: state.transactions,
     portfolio: state.portfolio.list,
+    userInfo: state.userInfo.user,
+    isLoggedIn: state.userInfo.loggedIn,
+    userId: state.userInfo.user ? state.userInfo.user.data.message._id : ""
   };
 };
 
@@ -350,7 +373,7 @@ const mapDispatchToProps = {
   deleteFavorite: (coinId) => deleteFavorite(coinId),
   postFavorite: (coin) => postFavorite(coin),
   postTransaction: (trans) => postTransaction(trans),
-  getTransactions: () => getTransactions(),
+  getTransactions: (userId) => getTransactions(userId),
   getMarket: () => getMarket(),
 };
 

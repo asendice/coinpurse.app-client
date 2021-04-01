@@ -2,15 +2,16 @@ const portListReducer = (state = { list: [] }, action) => {
   switch (action.type) {
     case "CREATE_PORTLIST":
       const transactions = action.payload;
+      console.log(action.payload, 'action.payload')
       const mapTransactions = transactions.map((trans) => {
         return {
-          name: trans.trans.name,
-          amt: trans.trans.buy
-            ? Number(trans.trans.amt)
-            : -Math.abs(trans.trans.amt),
-          total: trans.trans.buy
-            ? Number(trans.trans.amt * trans.trans.price)
-            : -Math.abs(trans.trans.amt * trans.trans.price),
+          name: trans.name,
+          amt: trans.buy
+            ? Number(trans.amt)
+            : -Math.abs(trans.amt),
+          total: trans.buy
+            ? Number(trans.amt * trans.price)
+            : -Math.abs(trans.amt * trans.price),
         };
       });
       const addAmts = Array.from(

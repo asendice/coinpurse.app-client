@@ -6,8 +6,6 @@ import { connect } from "react-redux";
 
 const renderTextArea = ({
   input,
-  label,
-  type,
   meta: { touched, error, warning },
 }) => {
   return (
