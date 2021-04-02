@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { roundComma, ifNegative } from "../number/NumberChanger";
+import { roundComma, ifNegative } from "../utils/Helper";
 import {
   Header,
   Segment,
@@ -73,7 +73,7 @@ const UserStats = (props) => {
       <Statistic>
         <Statistic.Value>{`$${roundComma(portfolioTotal)}`}</Statistic.Value>
         <Statistic.Label style={{ color: "grey" }}>
-          Estimated Total
+          Estimated Total Value
         </Statistic.Label>
       </Statistic>
     );

@@ -3,11 +3,10 @@ import { BrowserRouter, Route } from "react-router-dom";
 import { Container, Grid } from "semantic-ui-react";
 import VerticalHeader from "./VerticalHeader";
 import Market from "../containers/Market";
-import Portfolio from "./Portfolio";
+import Portfolio from "../containers/Portfolio";
 import Landing from "./Landing";
 import Login from "../containers/Login";
 import Register from "../containers/Register";
-import UserName from "../containers/UserName";
 
 const Main = () => {
   const menuProps = {

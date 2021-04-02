@@ -5,16 +5,11 @@ import {
   Grid,
   Header,
   Divider,
-  Card,
-  Statistic,
-  Icon,
-  Image,
   Modal,
   Button,
 } from "semantic-ui-react";
 import RegisterForm from "./RegisterForm";
-import CosmoPic from "../img/regPic.png";
-import { copyRight } from "../number/NumberChanger";
+import { copyRight } from "../utils/Helper";
 import { connect } from "react-redux";
 import { register } from "../actions";
 
@@ -38,6 +33,7 @@ const Register = (props) => {
             <Button href="/login" color="green" style={{ float: "right" }}>
               Login
             </Button>
+            <Divider hidden />
           </Modal.Content>
         </>
       );
@@ -48,12 +44,13 @@ const Register = (props) => {
       return (
         <>
           <Modal.Header>
-            Failed to register your account because {mapRegInfo}
+            Failed to register your account because {mapRegInfo}...
           </Modal.Header>
           <Modal.Content>
             <Button href="/register" color="orange" style={{ float: "right" }}>
               Try Again
             </Button>
+            <Divider hidden />
           </Modal.Content>
         </>
       );
@@ -73,10 +70,11 @@ const Register = (props) => {
 
   return (
     <>
-      <Container style={{ minHeight: 890 }}>
-        <Grid columns={2} stackable>
-          <Grid.Column computer={10} tablet={16}>
-            <Segment padded="very">
+      <Container style={{ minHeight: 860 }}>
+        <Grid columns={3}>
+          <Grid.Column computer={2}></Grid.Column>
+          <Grid.Column computer={12} tablet={16}>
+            <Segment padded="very" >
               <Segment basic textAlign="center">
                 <Header as="h1">Join Now -- It's Free & Easy!</Header>
               </Segment>
@@ -88,53 +86,11 @@ const Register = (props) => {
                 </Header>
               </Segment>
             </Segment>
+            <Divider hidden />
+            <Divider hidden />
           </Grid.Column>
-          <Grid.Column computer={6} tablet={16}>
-            <Segment basic>
-              <Card centered fluid>
-                <Card.Content>
-                  <Header textAlign="center" as="h2">
-                    Active Users:
-                  </Header>
-                </Card.Content>
-                <Card.Content textAlign="center">
-                  <Segment>
-                    <Statistic size="small">
-                      <Statistic.Value>
-                        <Icon name="user outline" /> 0
-                      </Statistic.Value>
-                    </Statistic>
-                  </Segment>
-                </Card.Content>
-              </Card>
-              <Card centered fluid>
-                <Card.Content>
-                  <div>
-                    <Icon name="exchange" className="right floated large" />
-                    <Header as="h2">Your Portfolio</Header>
-                  </div>
-                  <Card.Meta>THIS COULD BE YOU</Card.Meta>
-                  <Card.Description>
-                    <Header>$235,678</Header>
-                  </Card.Description>
-                  <Card.Content>
-                    <Card.Meta className="right floated">
-                      To the Moon! <Icon name="rocket" />
-                    </Card.Meta>
-                  </Card.Content>
-                </Card.Content>
-              </Card>
-              <Card link href="/market" centered fluid>
-                <Card.Content>
-                  <Header as="h3">Market</Header>
-                </Card.Content>
-                <Image src={CosmoPic} />
-              </Card>
-            </Segment>
-          </Grid.Column>
+          <Grid.Column></Grid.Column>
         </Grid>
-        <Divider hidden />
-        <Divider hidden />
       </Container>
       <Divider />
       <Segment basic textAlign="center">

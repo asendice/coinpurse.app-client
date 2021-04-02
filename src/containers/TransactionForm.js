@@ -1,5 +1,5 @@
 import React from "react";
-import { date, time } from "../number/NumberChanger";
+import { date, time } from "../utils/Helper";
 import { Divider, Segment, Form, TextArea, Label } from "semantic-ui-react";
 import { Field, reduxForm, formValueSelector } from "redux-form";
 import { connect } from "react-redux";

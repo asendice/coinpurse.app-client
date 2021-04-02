@@ -33,7 +33,7 @@ const VerticalHeader = (props) => {
         <Menu borderless fluid>
           <NavLink exact to="/">
             <Menu.Item link>
-              <Header as="h2">
+              <Header as="h2" onClick={handleToggle}>
                 <Icon name="exchange" size="mini" />
                 <Header.Content>{props.menuProps.name}</Header.Content>
               </Header>
@@ -57,30 +57,61 @@ const VerticalHeader = (props) => {
               </Header>
             </Menu.Item>
           </NavLink>
-          <NavLink exact to={`${props.menuProps.itemTwo}`}>
-            <Menu.Item link>
-              <Header as="h3" onClick={handleToggle}>
-                <Icon name="folder" />
-                <Header.Content>{props.menuProps.itemTwo}</Header.Content>
-              </Header>
-            </Menu.Item>
-          </NavLink>
-          <NavLink to="/register">
-            <Menu.Item>
-              <Button onClick={handleToggle}>
-                <Icon name="signup" size="large" color="grey" />
-                Sign Up
-              </Button>
-            </Menu.Item>
-          </NavLink>
-          <NavLink to="/login">
-            <Menu.Item>
-              <Button onClick={handleToggle}>
-                <Icon name="sign in" size="large" color="grey" />
-                Log In
-              </Button>
-            </Menu.Item>
-          </NavLink>
+
+          {!props.isLoggedIn ? (
+            <NavLink exact to={`${props.menuProps.itemTwo}`}>
+              <Menu.Item disabled>
+                <Header
+                  as="h3"
+                  onClick={handleToggle}
+                  style={{ color: "grey" }}
+                >
+                  <Icon name="folder" />
+                  <Header.Content>{props.menuProps.itemTwo}</Header.Content>
+                </Header>
+              </Menu.Item>
+            </NavLink>
+          ) : (
+            <NavLink exact to={`${props.menuProps.itemTwo}`}>
+              <Menu.Item link>
+                <Header as="h3" onClick={handleToggle}>
+                  <Icon name="folder" />
+                  <Header.Content>{props.menuProps.itemTwo}</Header.Content>
+                </Header>
+              </Menu.Item>
+            </NavLink>
+          )}
+          {!props.isLoggedIn ? (
+            <NavLink to="/register">
+              <Menu.Item>
+                <Button onClick={handleToggle}>
+                  <Icon name="signup" size="large" color="grey" />
+                  Sign Up
+                </Button>
+              </Menu.Item>
+            </NavLink>
+          ) : (
+            ""
+          )}
+          {!props.isLoggedIn ? (
+            <NavLink to="/login">
+              <Menu.Item>
+                <Button onClick={handleToggle}>
+                  <Icon name="sign in" size="large" color="grey" />
+                  Log In
+                </Button>
+              </Menu.Item>
+            </NavLink>
+          ) : (
+            <NavLink to="/">
+              <Menu.Item>
+                <Button onClick={() => props.logout()}>
+                  <Icon name="log out" size="large" color="grey" />
+                  Sign Out
+                </Button>
+              </Menu.Item>
+            </NavLink>
+          )}
         </Menu>
       </Grid>
       {/* ^^ menu display for movile vp only  */}
@@ -109,31 +140,72 @@ const VerticalHeader = (props) => {
                 </Header>
               </Menu.Item>
             </NavLink>
-            <NavLink exact to="/portfolio">
-              <Menu.Item>
-                <Header>
-                  <Icon name="folder" size="large" />
-                </Header>
-              </Menu.Item>
-            </NavLink>
+
+            {!props.isLoggedIn ? (
+              <NavLink exact to="/portfolio">
+                <Menu.Item disabled>
+                  <Header>
+                    <Icon
+                      name="folder"
+                      size="large"
+                      style={{ color: "grey" }}
+                    />
+                  </Header>
+                </Menu.Item>
+              </NavLink>
+            ) : (
+              <NavLink exact to="/portfolio">
+                <Menu.Item>
+                  <Header>
+                    <Icon name="folder" size="large" />
+                  </Header>
+                </Menu.Item>
+              </NavLink>
+            )}
             <Divider hidden />
             <Divider hidden />
             <Divider hidden />
             <Divider hidden />
-            <NavLink exact to="/register">
-              <Menu.Item>
-                <Header>
-                  <Icon name="signup" size="large" color="grey" />
-                </Header>
-              </Menu.Item>
-            </NavLink>
-            <NavLink exact to="/login">
-              <Menu.Item>
-                <Header>
-                  <Icon name="sign in" size="large" color="grey" />
-                </Header>
-              </Menu.Item>
-            </NavLink>
+
+            {!props.isLoggedIn ? (
+              <NavLink exact to="/register">
+                <Menu.Item>
+                  <Header>
+                    <Icon name="signup" size="large" color="grey" />
+                  </Header>
+                </Menu.Item>
+              </NavLink>
+            ) : (
+              ""
+            )}
+
+            {!props.isLoggedIn ? (
+              <NavLink exact to="/login">
+                <Menu.Item>
+                  <Header>
+                    <Icon name="sign in" size="large" color="grey" />
+                  </Header>
+                </Menu.Item>
+              </NavLink>
+            ) : (
+              ""
+            )}
+
+            {props.isLoggedIn ? (
+              <NavLink to="/">
+                <Menu.Item style={{ position: "fixed", bottom: 50 }}>
+                  <Icon
+                    name="log out"
+                    size="large"
+                    color="grey"
+                    onClick={() => props.logout()}
+                  />
+                  Sign Out
+                </Menu.Item>
+              </NavLink>
+            ) : (
+              ""
+            )}
           </Menu>
         </Grid.Column>
       </Grid>

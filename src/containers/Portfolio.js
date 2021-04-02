@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Title from "./Title";
-import Favorites from "../containers/Favorites";
-import RecentTransactions from "../containers/RecentTransactions";
-import PortfolioList from "../containers/PortfolioList";
-import UserStats from "../containers/UserStats";
-import CoinModal from "../containers/CoinModal";
-import { roundComma, rounder } from "../number/NumberChanger";
-import { copyRight } from "../number/NumberChanger";
+import Title from "../components/Title";
+import Favorites from "./Favorites";
+import RecentTransactions from "./RecentTransactions";
+import PortfolioList from "./PortfolioList";
+import UserStats from "./UserStats";
+import CoinModal from "./CoinModal";
+import { copyRight } from "../utils/Helper";
 import { Redirect } from "react-router";
 import { Grid, Segment, Container, Divider } from "semantic-ui-react";
 import { getMarket, getTransactions } from "../actions";
@@ -17,8 +16,6 @@ const Portfolio = (props) => {
   const [portTotal, setPortTotal] = useState(0);
   const [portGain, setPortGain] = useState(0);
   const [portPercentGain, setPortPercentGain] = useState(0);
-
-  console.log(portPercentGain);
 
   useEffect(() => {
     props.getMarket();
@@ -32,7 +29,8 @@ const Portfolio = (props) => {
             <Title
               label={`Portfolio`}
               portPercentGain={portPercentGain}
-              searchBarDisplay="none"
+              searchBarDisplay={false}
+              userNameDisplay={true}
             />
             <Grid>
               <Grid.Row>

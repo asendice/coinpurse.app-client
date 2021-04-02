@@ -4,7 +4,7 @@ import {
   renderArrow,
   rounder,
   ifNegative,
-} from "../number/NumberChanger";
+} from "../utils/Helper";
 import { Segment, Header, Card, Image, Icon, Divider } from "semantic-ui-react";
 import { coinSelect, getTransactions, getMarket } from "../actions";
 import { connect } from "react-redux";

@@ -2,15 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Segment, Label, Popup, Icon, Header } from "semantic-ui-react";
 import Title from "../components/Title";
 import SearchNotFound from "../components/SearchNotFound";
-import { roundComma } from "../number/NumberChanger";
+import { roundComma } from "../utils/Helper";
 import { getTransactions } from "../actions";
 import { connect } from "react-redux";
 
 const RecentTransactions = (props) => {
   const [term, setTerm] = useState("");
-
-  console.log(props.transactions.transactions, 'p.t.t');
-  console.log(props.transactions.transactions, 'p.t.t');
 
   const GetTransData = () => {
     const { getTransactions } = props;
@@ -28,11 +25,6 @@ const RecentTransactions = (props) => {
     (a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time)
   );
 
-  console.log(sortTrans, "sortTrans");
-  console.log(sortTrans, "sortTrans");
-  console.log(sortTrans, "sortTrans");
-  console.log(sortTrans);
-
   const filterTransactionsByTerm = sortTrans.filter((trans) => {
     if (
       trans.name.toLowerCase().includes(term) ||
@@ -48,7 +40,7 @@ const RecentTransactions = (props) => {
   const renderNotFound = () => {
     if (filterTransactionsByTerm.length === 0) {
       return (
-        <div>
+        <div key="nf">
           <SearchNotFound term={term} nf="Zero Transactions Found..." />
         </div>
       );
@@ -61,7 +53,7 @@ const RecentTransactions = (props) => {
     if (props.transactions.transactions.length > 0) {
       return filterTransactionsByTerm.map((trans) => {
         return (
-          <tr key={trans.id}>
+          <tr key={trans._id}>
             <td>
               <Label>
                 <div>{trans.date}</div>
@@ -118,7 +110,8 @@ const RecentTransactions = (props) => {
           term={term}
           onTermSubmit={onTermSubmit}
           label="Transaction History"
-          userNameDisplay="none"
+          userNameDisplay={false}
+          searchBarDisplay={true}
         />
         <table className="ui unstackable table">
           <thead>

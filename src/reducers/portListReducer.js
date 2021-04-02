@@ -2,7 +2,6 @@ const portListReducer = (state = { list: [] }, action) => {
   switch (action.type) {
     case "CREATE_PORTLIST":
       const transactions = action.payload;
-      console.log(action.payload, 'action.payload')
       const mapTransactions = transactions.map((trans) => {
         return {
           name: trans.name,

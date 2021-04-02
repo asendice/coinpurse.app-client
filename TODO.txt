@@ -1,15 +1,12 @@
 
 -----Tasks TO DO ----------------------------------------------------------
 
-)Search Portfolio input set focus to all (fav, portList, transHistory) coins 
 
 
-)UserStats and Favorites stack on top of each other at an earlier vp
 
 )Transaction History pagination / Search / mobile
 
 
-)Register page -- needs to be mobile, figure out what to do with the market img
 ---------------------------------------------------------------------------
 
 

@@ -5,7 +5,7 @@ import {
   convertMc,
   renderArrow,
   copyRight,
-} from "../number/NumberChanger";
+} from "../utils/Helper";
 import { connect } from "react-redux";
 import {
   getMarket,
@@ -21,9 +21,11 @@ const Market = (props) => {
   const [term, setTerm] = useState("");
   const [open, setOpen] = useState(false);
 
+  console.log(props.favorites.favorites);
+
   useEffect(() => {
     props.getMarket();
-    props.getFavorites();
+    props.getFavorites(props.userId);
     props.getTransactions(props.userId);
   }, [open]);
 
@@ -61,7 +63,7 @@ const Market = (props) => {
 
   const renderMarket = () => {
     const mapFavs = props.favorites.favorites.map((fav) => {
-      return fav.coin;
+      return fav.symbol;
     });
     return filterMarketForTerm.map((coin) => {
       return (
@@ -114,7 +116,7 @@ const Market = (props) => {
   return (
     <>
       <Segment basic style={{ minHeight: 850 }}>
-        <Title term={term} onTermSubmit={onTermSubmit} label="Market" />
+        <Title term={term} onTermSubmit={onTermSubmit} label="Market" userNameDisplay={true} searchBarDisplay={true} />
         <Table unstackable basic="very">
           <Table.Header>
             <Table.Row>
@@ -151,12 +153,12 @@ const mapStateToProps = (state) => {
     transactions: state.transactions,
     userInfo: state.userInfo.user,
     isLoggedIn: state.userInfo.loggedIn,
-    userId: state.userInfo.user.data.message._id
+    userId: state.userInfo.user ? state.userInfo.user.data.message._id : "",
   };
 };
 
 const mapDispatchToProps = {
-  getFavorites: () => getFavorites(),
+  getFavorites: (userId) => getFavorites(userId),
   coinSelect: (coin) => coinSelect(coin),
   getMarket: () => getMarket(),
   getTransactions: (userId) => getTransactions(userId),

@@ -23,12 +23,14 @@ import {
   getTransactions,
   getMarket,
 } from "../actions";
-import { roundComma, rounder, ifNegative } from "../number/NumberChanger";
+import { roundComma, rounder, ifNegative } from "../utils/Helper";
 
 const CoinModal = (props) => {
   const [activeIndex, setActiveIndex] = useState(1);
   const [index] = useState(0);
   const [buy, setBuy] = useState(false);
+  console.log(props.favorites.favorites, "p.f.f");
+  console.log(props.favorites.favorites, "p.f.f");
 
   useEffect(() => {
     setActiveIndex(1);
@@ -56,17 +58,13 @@ const CoinModal = (props) => {
     setActiveIndex(newIndex);
   };
 
-  const heart = props.favorites.favorites.map((fav) => {
-    return fav.coin.includes(props.selectedCoin.symbol);
-  });
-
   const favoriteClick = (coin) => {
     const filterFav = props.favorites.favorites.filter(
-      (fav) => fav.coin === coin.symbol
+      (fav) => fav.symbol === coin.symbol
     );
 
     const mapFav = props.favorites.favorites.map((fav) => {
-      if (fav.coin === coin.symbol) {
+      if (fav.symbol === props.selectedCoin.symbol) {
         return false;
       } else {
         return true;
@@ -75,11 +73,14 @@ const CoinModal = (props) => {
     if (!mapFav.includes(false)) {
       const fav = {
         userId: props.userId,
-        symbol: coin.symbol
-      }
+        symbol: coin.symbol,
+      };
+      console.log(mapFav, "mapFav");
+      console.log(props.favorites.favorites, "p.t.t.");
+      console.log(mapFav, "mapFav");
       props.postFavorite(fav);
     } else {
-      props.deleteFavorite(filterFav[0].id);
+      props.deleteFavorite(filterFav[0]._id);
     }
   };
 
@@ -257,14 +258,11 @@ const CoinModal = (props) => {
     }
   };
 
-  return (
-    <Modal
-      onClose={() => props.setOpen(false)}
-      onOpen={() => props.setOpen(true)}
-      open={props.open}
-      size="large"
-      centered
-    >
+  const renderModalHeader = () => {
+    const hearts = props.favorites.favorites.map((fav) => {
+      return fav.symbol === props.selectedCoin.symbol;
+    });
+    return (
       <Modal.Header>
         <Image avatar src={props.selectedCoin.image} />
         {props.selectedCoin.name}
@@ -276,17 +274,17 @@ const CoinModal = (props) => {
             content={
               !props.isLoggedIn
                 ? "Log in to add favorites."
-                : heart.includes(true)
+                : hearts.includes(true)
                 ? "Favorited"
                 : "Add to Favorites?"
             }
             trigger={
               <Icon
                 link
-                name={heart.includes(true) ? "heart" : "heart outline"}
+                name={hearts.includes(true) ? "heart" : "heart outline"}
                 color={!props.isLoggedIn ? "grey" : "red"}
                 onClick={() =>
-                  !props.isLoggedIn ? null : favoriteClick(props.selectedCoin)
+                  props.isLoggedIn ? favoriteClick(props.selectedCoin) : null
                 }
               />
             }
@@ -308,6 +306,18 @@ const CoinModal = (props) => {
           />
         </span>
       </Modal.Header>
+    );
+  };
+
+  return (
+    <Modal
+      onClose={() => props.setOpen(false)}
+      onOpen={() => props.setOpen(true)}
+      open={props.open}
+      size="large"
+      centered
+    >
+      {renderModalHeader()}
       <Modal.Content>
         <Grid container columns={4} stackable>
           <Grid.Row>{renderLabel()}</Grid.Row>
@@ -363,12 +373,12 @@ const mapStateToProps = (state) => {
     portfolio: state.portfolio.list,
     userInfo: state.userInfo.user,
     isLoggedIn: state.userInfo.loggedIn,
-    userId: state.userInfo.user ? state.userInfo.user.data.message._id : ""
+    userId: state.userInfo.user ? state.userInfo.user.data.message._id : "",
   };
 };
 
 const mapDispatchToProps = {
-  getFavorites: () => getFavorites(),
+  getFavorites: (userId) => getFavorites(userId),
   modalInfo: () => modalInfo(),
   deleteFavorite: (coinId) => deleteFavorite(coinId),
   postFavorite: (coin) => postFavorite(coin),

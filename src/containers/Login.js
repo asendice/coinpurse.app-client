@@ -8,7 +8,7 @@ import {
   Container,
   Modal,
 } from "semantic-ui-react";
-import { copyRight } from "../number/NumberChanger";
+import { copyRight } from "../utils/Helper";
 import { Redirect } from "react-router";
 import { login } from "../actions";
 import LoginForm from "../containers/LoginForm";
@@ -52,7 +52,7 @@ const Login = (props) => {
 
   return (
     <>
-      <Container style={{ minHeight: 850 }}>
+      <Container style={{ minHeight: 800 }}>
         <Segment basic textAlign="center">
           <Header as="h1">
             <Icon name="exchange" />

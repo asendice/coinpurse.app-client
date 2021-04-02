@@ -40,8 +40,13 @@ export const addFavorites = (coins) => {
 };
 
 export const deleteFavorite = (id) => (dispatch) => {
-  localHost
-    .delete(`/favorites/${id}`)
+  console.log(id, "delete id");
+  backendApi
+    .delete(`/favorites`, {
+      params: {
+        id: id,
+      },
+    })
     .then((response) => {
       console.log(response);
     })
@@ -54,8 +59,9 @@ export const deleteFavorite = (id) => (dispatch) => {
 };
 
 export const getFavorites = (userId) => {
+  console.log("userId", userId);
   return async (dispatch) => {
-    await localHost
+    await backendApi
       .get("/favorites", {
         params: {
           userId: userId,
@@ -75,7 +81,7 @@ export const getFavorites = (userId) => {
           throw error;
         }
       })
-      .then((favorites) => dispatch(addFavorites(favorites)));
+      .then((favorites) => dispatch(addFavorites(favorites.message)));
   };
 };
 
@@ -90,7 +96,8 @@ export const postFavorite = (coin) => {
       })
       .then((response) => {
         if (response) {
-          return response.data;
+          console.log('resoponse', response)
+          return response;
         } else {
           const error = new Error(
             `Error ${response.status}: ${response.statusText}`
@@ -99,7 +106,7 @@ export const postFavorite = (coin) => {
           throw error;
         }
       })
-      .then((favorites) => dispatch(addFavorite(favorites)))
+      .then((favorites) => dispatch(addFavorite(favorites.data.result)))
       .catch((error) => {
         console.log("postFavorite", error.message);
       });
@@ -163,9 +170,8 @@ export const postTransaction = (trans) => {
   };
 };
 export const getTransactions = (userId) => {
-  const id = {
-    userId: userId,
-  };
+  console.log("userId", userId);
+  console.log("userId", userId);
 
   return async (dispatch) => {
     await backendApi

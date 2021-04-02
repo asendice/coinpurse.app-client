@@ -36,9 +36,9 @@ const email = (value) =>
   ) : undefined;
 
 const alphaNumeric = (value) =>
-  value && /[^a-zA-Z0-9 ]/i.test(value)
-    ? "Only alphanumeric characters"
-    : undefined;
+  value && /[^a-zA-Z0-9 ]/i.test(value) ? (
+    <span style={{ color: "red" }}>*This field can only contain alphanumeric characters</span>
+  ) : undefined;
 
 const length = (value) =>
   value && value.length < 4 ? (
@@ -47,7 +47,7 @@ const length = (value) =>
     </span>
   ) : undefined;
 const maxLength = (value) =>
-  value && value.length > 11 ? (
+  value && value.length > 12 ? (
     <span style={{ color: "red" }}>
       {`*This field must contain no more than 12 characters.`}
     </span>

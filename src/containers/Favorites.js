@@ -1,25 +1,27 @@
 import React, { useEffect } from "react";
-import { roundComma, renderArrow } from "../number/NumberChanger";
+import { roundComma, renderArrow } from "../utils/Helper";
 import { Segment, Header, Icon, Divider, Table } from "semantic-ui-react";
 import { deleteFavorite, getFavorites, getMarket } from "../actions";
 import { connect } from "react-redux";
 
 const Favorites = (props) => {
   useEffect(() => {
-    props.getFavorites();
+    props.getFavorites(props.userId);
     props.getMarket();
   }, []);
 
+  // console.log(props.favorites.favorites, "p.t.t");
+
   const handleDeleteClick = (symbol) => {
     const filterFav = props.favorites.favorites.filter(
-      (coin) => coin.coin === symbol
+      (coin) => coin.symbol === symbol
     );
-    props.deleteFavorite(filterFav[0].id);
+    props.deleteFavorite(filterFav[0]._id);
   };
 
   const renderTableRow = () => {
     const mapFavorites = props.favorites.favorites.map((fav) => {
-      return fav.coin;
+      return fav.symbol;
     });
     const filterMarket = props.market.filter((coin) => {
       if (mapFavorites.includes(coin.symbol)) {
@@ -28,6 +30,7 @@ const Favorites = (props) => {
         return null;
       }
     });
+    console.log(mapFavorites, "mapFavorites");
     if (props.favorites.favorites.length > 0) {
       return filterMarket.map((fav) => {
         return (
@@ -75,7 +78,7 @@ const Favorites = (props) => {
       <Segment basic>
         <Segment
           basic
-          style={{ overflow: "auto", maxHeight: 300, minHeight: 300}}
+          style={{ overflow: "auto", maxHeight: 300, minHeight: 300 }}
         >
           <Table basic="very" unstackable>
             <tbody>{renderTableRow()}</tbody>
@@ -90,11 +93,14 @@ const mapStateToProps = (state) => {
   return {
     favorites: state.favorites,
     market: state.market,
+    userInfo: state.userInfo.user,
+    isLoggedIn: state.userInfo.loggedIn,
+    userId: state.userInfo.user ? state.userInfo.user.data.message._id : "",
   };
 };
 
 const mapDispatchToProps = {
-  getFavorites: () => getFavorites(),
+  getFavorites: (userId) => getFavorites(userId),
   getMarket: () => getMarket(),
   deleteFavorite: (coinId) => deleteFavorite(coinId),
 };

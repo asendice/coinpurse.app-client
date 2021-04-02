@@ -1,7 +1,6 @@
 import React from "react";
 import SearchBar from "./SearchBar";
-import { rounder } from '../number/NumberChanger'
-import { Header, Grid, Divider, Icon, Label } from "semantic-ui-react";
+import { Header, Grid, Divider, Icon } from "semantic-ui-react";
 import { connect } from "react-redux";
 
 const Title = (props) => {
@@ -13,13 +12,12 @@ const Title = (props) => {
             <Header as="h1">{props.label}</Header>
           </Grid.Column>
           <Grid.Column>
-            <Label style={{ float: "right" }}>
-              <Header as="h3" style={{ display: props.userNameDisplay }}>
-                <Icon name="user outline" size="small" />
-                {props.userInfo.data.message.name}
-                {rounder(props.portPercentGain)}
+            {props.userNameDisplay && props.userInfo ? (
+              <Header as="h3" floated="right">
+                <Icon name="user outline" />
+                {props.userInfo.data.message.name}{" "}
               </Header>
-            </Label>
+            ) : null}
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
@@ -27,18 +25,16 @@ const Title = (props) => {
             textAlign="right"
             style={{ display: props.searchBarDisplay }}
           >
-            <SearchBar
-              label={` Search ${props.label}...`}
-              term={props.term}
-              onTermSubmit={props.onTermSubmit}
-            />
+            {props.searchBarDisplay ? (
+              <SearchBar
+                label={` Search ${props.label}...`}
+                term={props.term}
+                onTermSubmit={props.onTermSubmit}
+              />
+            ) : null}
           </Grid.Column>
         </Grid.Row>
       </Grid>
-      <Divider hidden />
-      <Divider hidden />
-      <Divider hidden />
-      <Divider hidden />
       <Divider hidden />
     </>
   );

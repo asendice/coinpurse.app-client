@@ -9,7 +9,7 @@ const UserName = (props) => {
         <Segment style={{ float: "right" }} basic>
           <Header>
             {" "}
-            <Icon size="tini" name="user" />
+            <Icon size="huge" name="user" />
             {props.userInfo.data.message.name}
           </Header>
         </Segment>
@@ -23,7 +23,7 @@ const UserName = (props) => {
 const mapStateToProps = (state) => {
   return {
     userInfo: state.userInfo,
-    isLoggedIn: state.userInfo.status === 200,
+    isLoggedIn: state.userInfo.isLoggedIn,
   };
 };
 
