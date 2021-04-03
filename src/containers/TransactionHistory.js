@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Segment, Label, Popup, Icon, Header } from "semantic-ui-react";
-import Title from "../components/Title";
+import Title from "./Title";
 import SearchNotFound from "../components/SearchNotFound";
 import { roundComma } from "../utils/Helper";
 import { getTransactions } from "../actions";
 import { connect } from "react-redux";
 
-const RecentTransactions = (props) => {
+const TransactionHistory = (props) => {
   const [term, setTerm] = useState("");
 
   const GetTransData = () => {
@@ -104,7 +104,6 @@ const RecentTransactions = (props) => {
 
   return (
     <>
-      {/* style={{ overflow: "auto", maxHeight: 600 }} <--- Might add this type of styling  */}
       <Segment basic style={{ minHeight: 900 }}>
         <Title
           term={term}
@@ -112,6 +111,8 @@ const RecentTransactions = (props) => {
           label="Transaction History"
           userNameDisplay={false}
           searchBarDisplay={true}
+          popupContent="Search by name ('Bitcoin'), symbol ('btc'), or date ('5-29-2020')."
+          popupDisplay={true}
         />
         <table className="ui unstackable table">
           <thead>
@@ -145,4 +146,4 @@ const mapDispatchToProps = {
   getTransactions: (userId) => getTransactions(userId),
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RecentTransactions);
+export default connect(mapStateToProps, mapDispatchToProps)(TransactionHistory);

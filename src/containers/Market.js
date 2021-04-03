@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Segment, Table, Icon, Divider } from "semantic-ui-react";
-import {
-  roundComma,
-  convertMc,
-  renderArrow,
-  copyRight,
-} from "../utils/Helper";
+import { roundComma, convertMc, renderArrow, copyRight } from "../utils/Helper";
 import { connect } from "react-redux";
 import {
   getMarket,
@@ -13,15 +8,13 @@ import {
   getFavorites,
   getTransactions,
 } from "../actions";
-import Title from "../components/Title";
+import Title from "../containers/Title";
 import SearchNotFound from "../components/SearchNotFound";
 import CoinModal from "./CoinModal";
 
 const Market = (props) => {
   const [term, setTerm] = useState("");
   const [open, setOpen] = useState(false);
-
-  console.log(props.favorites.favorites);
 
   useEffect(() => {
     props.getMarket();
@@ -105,7 +98,7 @@ const Market = (props) => {
             {mapFavs.includes(coin.symbol) ? (
               <Icon link name="heart" color="grey" />
             ) : (
-              ""
+              null
             )}
           </Table.Cell>
         </Table.Row>
@@ -116,7 +109,13 @@ const Market = (props) => {
   return (
     <>
       <Segment basic style={{ minHeight: 850 }}>
-        <Title term={term} onTermSubmit={onTermSubmit} label="Market" userNameDisplay={true} searchBarDisplay={true} />
+        <Title
+          term={term}
+          onTermSubmit={onTermSubmit}
+          label="Market"
+          userNameDisplay={true}
+          searchBarDisplay={true}
+        />
         <Table unstackable basic="very">
           <Table.Header>
             <Table.Row>

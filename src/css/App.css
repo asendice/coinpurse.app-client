@@ -1,4 +1,4 @@
-/* hides elements if vp is at <= 555px wrote for the table in Market.js  */
+/* hides elements if vp is at <= 555px wrote for the table in Market.js TransactionHistory.js */
 @media screen and (max-width: 800px) {
   .td-dis {
     display: none;

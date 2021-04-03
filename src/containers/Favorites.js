@@ -10,8 +10,6 @@ const Favorites = (props) => {
     props.getMarket();
   }, []);
 
-  // console.log(props.favorites.favorites, "p.t.t");
-
   const handleDeleteClick = (symbol) => {
     const filterFav = props.favorites.favorites.filter(
       (coin) => coin.symbol === symbol
@@ -30,7 +28,6 @@ const Favorites = (props) => {
         return null;
       }
     });
-    console.log(mapFavorites, "mapFavorites");
     if (props.favorites.favorites.length > 0) {
       return filterMarket.map((fav) => {
         return (

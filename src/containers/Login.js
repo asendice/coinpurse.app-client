@@ -20,20 +20,18 @@ const Login = (props) => {
     setOpen(true);
   };
 
-
   const renderModal = () => {
     if (!props.loggedIn) {
       const mapUserInfoError = props.userInfo.data.errors.map((errors) => {
         return errors.user || errors.password;
       });
-      console.log(mapUserInfoError, "mapped");
       return (
         <Modal
           onClose={() => setOpen(false)}
           onOpen={() => setOpen(true)}
           open={open}
           size="small"
-          textAlign="center"
+          centered={false}
         >
           <Modal.Header>
             Login failed: {mapUserInfoError}
@@ -52,7 +50,7 @@ const Login = (props) => {
 
   return (
     <>
-      <Container style={{ minHeight: 800 }}>
+      <Container style={{ minHeight: 840 }}>
         <Segment basic textAlign="center">
           <Header as="h1">
             <Icon name="exchange" />
@@ -77,7 +75,7 @@ const Login = (props) => {
         <Divider />
         {copyRight()}
       </Segment>
-      {props.userInfo ? renderModal() : ""}
+      {props.userInfo ? renderModal() : null}
     </>
   );
 };

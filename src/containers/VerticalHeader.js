@@ -90,9 +90,7 @@ const VerticalHeader = (props) => {
                 </Button>
               </Menu.Item>
             </NavLink>
-          ) : (
-            ""
-          )}
+          ) : null}
           {!props.isLoggedIn ? (
             <NavLink to="/login">
               <Menu.Item>
@@ -175,9 +173,7 @@ const VerticalHeader = (props) => {
                   </Header>
                 </Menu.Item>
               </NavLink>
-            ) : (
-              ""
-            )}
+            ) : null}
 
             {!props.isLoggedIn ? (
               <NavLink exact to="/login">
@@ -187,9 +183,7 @@ const VerticalHeader = (props) => {
                   </Header>
                 </Menu.Item>
               </NavLink>
-            ) : (
-              ""
-            )}
+            ) : null}
 
             {props.isLoggedIn ? (
               <NavLink to="/">
@@ -200,12 +194,9 @@ const VerticalHeader = (props) => {
                     color="grey"
                     onClick={() => props.logout()}
                   />
-                  Sign Out
                 </Menu.Item>
               </NavLink>
-            ) : (
-              ""
-            )}
+            ) : null}
           </Menu>
         </Grid.Column>
       </Grid>
@@ -270,9 +261,7 @@ const VerticalHeader = (props) => {
                   </Button>
                 </Menu.Item>
               </NavLink>
-            ) : (
-              ""
-            )}
+            ) : null}
 
             {!props.isLoggedIn ? (
               <NavLink to="/login">
@@ -283,9 +272,7 @@ const VerticalHeader = (props) => {
                   </Button>
                 </Menu.Item>
               </NavLink>
-            ) : (
-              ""
-            )}
+            ) : null}
 
             {props.isLoggedIn ? (
               <NavLink to="/">
@@ -296,9 +283,7 @@ const VerticalHeader = (props) => {
                   </Button>
                 </Menu.Item>
               </NavLink>
-            ) : (
-              ""
-            )}
+            ) : null}
           </Menu>
         </Grid.Column>
       </Grid>

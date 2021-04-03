@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Title from "../components/Title";
+import Title from "../containers/Title";
 import Favorites from "./Favorites";
-import RecentTransactions from "./RecentTransactions";
+import TransactionHistory from "./TransactionHistory";
 import PortfolioList from "./PortfolioList";
 import UserStats from "./UserStats";
 import CoinModal from "./CoinModal";
@@ -66,7 +66,7 @@ const Portfolio = (props) => {
               </Grid.Row>
               <Grid.Row columns={1}>
                 <Grid.Column>
-                  <RecentTransactions />
+                  <TransactionHistory />
                 </Grid.Column>
               </Grid.Row>
             </Grid>

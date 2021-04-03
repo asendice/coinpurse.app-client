@@ -1,6 +1,6 @@
 import React from "react";
-import SearchBar from "./SearchBar";
-import { Header, Grid, Divider, Icon } from "semantic-ui-react";
+import SearchBar from "../components/SearchBar";
+import { Header, Grid, Divider, Icon, Popup } from "semantic-ui-react";
 import { connect } from "react-redux";
 
 const Title = (props) => {
@@ -24,7 +24,12 @@ const Title = (props) => {
           <Grid.Column
             textAlign="right"
             style={{ display: props.searchBarDisplay }}
-          >
+          > {props.popupDisplay ? (
+            <Popup
+              content={props.popupContent}
+              trigger={<Icon  color="grey" name="info circle" />}
+             />
+          ) : null}
             {props.searchBarDisplay ? (
               <SearchBar
                 label={` Search ${props.label}...`}

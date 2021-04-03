@@ -12,8 +12,8 @@ export const getMarket = () => {
 
 export const modalInfo = () => {
   return async (dispatch) => {
-    const response = await localHost.get("/modalInfo");
-    dispatch({ type: "MODAL_INFO", payload: response.data });
+    const response = await backendApi.get("/modalInfo");
+    dispatch({ type: "MODAL_INFO", payload: response.data.message });
   };
 };
 
@@ -40,15 +40,11 @@ export const addFavorites = (coins) => {
 };
 
 export const deleteFavorite = (id) => (dispatch) => {
-  console.log(id, "delete id");
   backendApi
     .delete(`/favorites`, {
       params: {
         id: id,
       },
-    })
-    .then((response) => {
-      console.log(response);
     })
     .then((fav) =>
       dispatch({
@@ -59,7 +55,6 @@ export const deleteFavorite = (id) => (dispatch) => {
 };
 
 export const getFavorites = (userId) => {
-  console.log("userId", userId);
   return async (dispatch) => {
     await backendApi
       .get("/favorites", {
@@ -96,7 +91,6 @@ export const postFavorite = (coin) => {
       })
       .then((response) => {
         if (response) {
-          console.log('resoponse', response)
           return response;
         } else {
           const error = new Error(
@@ -116,31 +110,6 @@ export const postFavorite = (coin) => {
 //<-----> END OF ACTION CREATORS FOR FAVORITE <----->
 
 //<-----> BEGINNING OF ACTION CREATORS FOR TRANSACTIONS <----->
-
-// export const postTransaction = (trans) => {
-//   console.log(trans, "post trans");
-//   return (dispatch) => {
-//     localHost
-//       .post("/transactions", {
-//         trans: trans,
-//       })
-//       .then((response) => {
-//         if (response) {
-//           return response;
-//         } else {
-//           const error = new Error(
-//             `Error ${response.status}: ${response.statusText}`
-//           );
-//           error.response = response;
-//           throw error;
-//         }
-//       })
-//       .then((response) => dispatch(addTransaction(response.data)))
-//       .catch((error) => {
-//         console.log("postTransaction", error.message);
-//       });
-//   };
-// };
 export const postTransaction = (trans) => {
   const json = JSON.stringify(trans);
   return (dispatch) => {
@@ -170,9 +139,6 @@ export const postTransaction = (trans) => {
   };
 };
 export const getTransactions = (userId) => {
-  console.log("userId", userId);
-  console.log("userId", userId);
-
   return async (dispatch) => {
     await backendApi
       .get("/transactions", {
@@ -184,9 +150,6 @@ export const getTransactions = (userId) => {
         },
       })
       .then((response) => {
-        console.log("response.data.message", response.data.message);
-        console.log("response.data", response.data);
-
         if (response) {
           return response.data;
         } else {

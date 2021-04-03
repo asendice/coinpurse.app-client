@@ -101,7 +101,7 @@ const Register = (props) => {
         onOpen={() => setOpen(true)}
         open={open}
         size="small"
-        centered
+        centered={false}
       >
         {renderModalInfo()}
       </Modal>

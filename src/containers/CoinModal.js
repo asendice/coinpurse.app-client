@@ -7,6 +7,7 @@ import {
   Header,
   Image,
   Grid,
+  Button,
   Label,
   Icon,
   Popup,
@@ -29,8 +30,8 @@ const CoinModal = (props) => {
   const [activeIndex, setActiveIndex] = useState(1);
   const [index] = useState(0);
   const [buy, setBuy] = useState(false);
-  console.log(props.favorites.favorites, "p.f.f");
-  console.log(props.favorites.favorites, "p.f.f");
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [failedOpen, setFailedOpen] = useState(false);
 
   useEffect(() => {
     setActiveIndex(1);
@@ -75,9 +76,6 @@ const CoinModal = (props) => {
         userId: props.userId,
         symbol: coin.symbol,
       };
-      console.log(mapFav, "mapFav");
-      console.log(props.favorites.favorites, "p.t.t.");
-      console.log(mapFav, "mapFav");
       props.postFavorite(fav);
     } else {
       props.deleteFavorite(filterFav[0]._id);
@@ -137,16 +135,10 @@ const CoinModal = (props) => {
       values.date = date;
       values.time = time;
       props.postTransaction(values);
+      setConfirmOpen(true);
       props.setOpen(false);
-      alert(
-        buy
-          ? `Buy Transaction Submitted For ${values.amt} ${props.selectedCoin.name}`
-          : `Sell Transaction Submitted For ${values.amt} ${props.selectedCoin.name}`
-      );
     } else {
-      alert(
-        `Transaction cancelled of ${props.selectedCoin.name} due to not having a sufficent amount.`
-      );
+      setFailedOpen(true);
     }
   };
 
@@ -310,56 +302,94 @@ const CoinModal = (props) => {
   };
 
   return (
-    <Modal
-      onClose={() => props.setOpen(false)}
-      onOpen={() => props.setOpen(true)}
-      open={props.open}
-      size="large"
-      centered
-    >
-      {renderModalHeader()}
-      <Modal.Content>
-        <Grid container columns={4} stackable>
-          <Grid.Row>{renderLabel()}</Grid.Row>
-          <Divider />
-          <Grid.Row>{renderPortData()}</Grid.Row>
-        </Grid>
-      </Modal.Content>
-      <Modal.Content>
-        <Popup
-          content={!props.isLoggedIn ? "Log in to create portfolio." : null}
-          disabled={!props.isLoggedIn ? false : true}
-          trigger={
-            <Accordion>
-              <Accordion.Title
-                onClick={() => (!props.isLoggedIn ? null : accordionClick())}
-                index={index}
-                active={activeIndex === 0}
-                icon={<Icon name={activeIndex === 0 ? "minus" : "plus"} />}
-                content={
-                  <Label size="large" color="grey">
-                    {activeIndex === 0
-                      ? `Enter Transaction Information for ${props.selectedCoin.name}`
-                      : "Add Transaction?"}
-                  </Label>
-                }
-              />
-              <Accordion.Content
-                active={activeIndex === 0}
-                content={
-                  <TransactionForm
-                    coin={props.selectedCoin}
-                    onFormSubmit={onFormSubmit}
-                    onBuyClick={onBuyClick}
-                    onSellClick={onSellClick}
-                  />
-                }
-              />
-            </Accordion>
-          }
-        />
-      </Modal.Content>
-    </Modal>
+    <>
+      <Modal
+        onClose={() => props.setOpen(false)}
+        onOpen={() => props.setOpen(true)}
+        open={props.open}
+        size="large"
+        centered
+      >
+        {renderModalHeader()}
+        <Modal.Content>
+          <Grid container columns={4} stackable>
+            <Grid.Row>{renderLabel()}</Grid.Row>
+            <Divider />
+            <Grid.Row>{renderPortData()}</Grid.Row>
+          </Grid>
+        </Modal.Content>
+        <Modal.Content>
+          <Popup
+            content={!props.isLoggedIn ? "Log in to create portfolio." : null}
+            disabled={!props.isLoggedIn ? false : true}
+            trigger={
+              <Accordion>
+                <Accordion.Title
+                  onClick={() => (!props.isLoggedIn ? null : accordionClick())}
+                  index={index}
+                  active={activeIndex === 0}
+                  icon={<Icon name={activeIndex === 0 ? "minus" : "plus"} />}
+                  content={
+                    <Label size="large" color="grey">
+                      {activeIndex === 0
+                        ? `Enter Transaction Information for ${props.selectedCoin.name}`
+                        : "Add Transaction?"}
+                    </Label>
+                  }
+                />
+                <Accordion.Content
+                  active={activeIndex === 0}
+                  content={
+                    <TransactionForm
+                      coin={props.selectedCoin}
+                      onFormSubmit={onFormSubmit}
+                      onBuyClick={onBuyClick}
+                      onSellClick={onSellClick}
+                    />
+                  }
+                />
+              </Accordion>
+            }
+          />
+        </Modal.Content>
+      </Modal>
+      <Modal
+        size="small"
+        centered={false}
+        onClose={() => setConfirmOpen(false)}
+        onOpen={() => setConfirmOpen(true)}
+        open={confirmOpen}
+      >
+        <Modal.Header>
+          {buy
+            ? `Submitted Buy Transaction for ${props.selectedCoin.name}`
+            : `Submitted Sell Transaction for ${props.selectedCoin.name}`}
+          <Icon
+            name="x"
+            onClick={() => setConfirmOpen(false)}
+            style={{ float: "right", cursor: "pointer" }}
+          />
+        </Modal.Header>
+      </Modal>
+      <Modal
+        centered={false}
+        size="small"
+        onClose={() => setFailedOpen(false)}
+        onOpen={() => setFailedOpen(true)}
+        open={failedOpen}
+      >
+        <Modal.Header>
+          {`Transaction cancelled. Reason: insufficient amount of  ${props.selectedCoin.name}.`}
+          <Button
+            onClick={() => setFailedOpen(false)}
+            color="orange"
+            style={{ float: "right" }}
+          >
+            Try Again
+          </Button>
+        </Modal.Header>
+      </Modal>
+    </>
   );
 };
 
